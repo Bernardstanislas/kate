@@ -48,6 +48,12 @@ module.exports = {
         return module.exports.genericError(409, 'Game already exists');
     },
     /**
+     * Game not found
+     */
+    gameNotFound: function() {
+        return module.exports.genericError(404, 'Game not found');
+    },
+    /**
      * Team already exists
      */
     teamAlreadyExists: function(alignement) {
