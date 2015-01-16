@@ -22,7 +22,7 @@ module.exports = {
                         var err = ErrorService.gameAlreadyExists();
                         res.json(err.httpCode, {error: err.message});
                     } else {
-                        Game.create({name: name}).exec(function(err, game) {
+                        Game.create({name: parameters.name}).exec(function(err, game) {
                             if (err) {
                                 var err = ErrorService.databaseError();
                                 res.json(err.httpCode, {error: err.message});
@@ -40,15 +40,17 @@ module.exports = {
      */
     all: function(req, res) {
         Game.find().exec(function(err, games) {
-            var err = ErrorService.databaseError();
-            res.json(err.httpCode, {error: err.message});
+            if (err) {
+                var err = ErrorService.databaseError();
+                res.json(err.httpCode, {error: err.message});
+            } else {
+                var gamesPublicData = [];
+                games.forEach(function(game) {
+                    gamesPublicData.push(game.publicData());
+                });
 
-            var gamesPublicData = [];
-            games.foreach(function(game) {
-                gamesPublicData.push(game.publicData);
-            });
-
-            res.json(200, gamesPublicData);
+                res.json(200, gamesPublicData);
+            }
         });
     },
     /**
@@ -63,7 +65,7 @@ module.exports = {
                     if (err) {
                         var err = ErrorService.databaseError();
                         res.json(err.httpCode, {error: err.message});
-                    } else {
+                    } else if (game) {
                         if (null == game[parameters.alignement + 'Token']) {
                             TokenService.create(game, function(err, value) {
                                 if (err) {
@@ -76,6 +78,9 @@ module.exports = {
                             var err = ErrorService.teamAlreadyExists(parameters.alignement);
                             res.json(err.httpCode, {error: err.message});
                         }
+                    } else {
+                        var err = ErrorService.gameNotFound();
+                        res.json(err.httpCode, {error: err.message});
                     }
                 });
             }
