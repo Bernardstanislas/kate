@@ -13,7 +13,7 @@ namespace Bot
 			#region Events subcriptions
 			client.MapSet += new MapSetEventHandler(this.onMapSet);
 			client.MapInitialization += new MapInitializationEventHandler(this.onMapInitialization);
-			client.MapUpdate += new MapUpdateEventHandler(this.onMapInitialization);
+			client.MapUpdate += new MapUpdateEventHandler(this.onMapUpdate);
 			client.HomeSet += new HomeSetEventHandler(this.onHomeSet);
 			client.HousesSet += new HousesSetEventHandler(this.onHousesSet);
 			client.GameEnd += new EventHandler(this.onGameEnd);
@@ -22,13 +22,13 @@ namespace Bot
 		}
 
 		#region Event listeners
-		protected virtual void onMapSet(object sender, MapSetEventArgs mapSetEventArgs);
-		protected virtual void onMapInitialization(object sender, MapInitializationEventArgs mapInitializationEventArgs);
-		protected virtual void onMapUpdate(object sender, MapUpdateEventArgs mapUpdateEventsArgs);
-		protected virtual void onHomeSet(object sender, HomeSetEventArgs homeSetEventArgs);
-		protected virtual void onHousesSet(object sender, HousesSetEventArgs housesSetEventArgs);
-		protected virtual void onGameEnd(object sender, EventArgs eventArgs);
-		protected virtual void onDisconnection(object sender, EventArgs eventArgs);
+		public abstract void onMapSet(object sender, MapSetEventArgs mapSetEventArgs);
+		public abstract void onMapInitialization(object sender, MapInitializationEventArgs mapInitializationEventArgs);
+		public abstract void onMapUpdate(object sender, MapUpdateEventArgs mapUpdateEventsArgs);
+		public abstract void onHomeSet(object sender, HomeSetEventArgs homeSetEventArgs);
+		public abstract void onHousesSet(object sender, HousesSetEventArgs housesSetEventArgs);
+		public abstract void onGameEnd(object sender, EventArgs eventArgs);
+		public abstract void onDisconnection(object sender, EventArgs eventArgs);
 		#endregion
 	}
 }

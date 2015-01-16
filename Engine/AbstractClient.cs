@@ -38,9 +38,9 @@ namespace Engine
 		// Fires a MapUpdate event when called
 		protected virtual void OnMapUpdate(MapUpdateEventArgs mapUpdateEventsArgs)
 		{
-			if (MapUpdateEventHandler != null)
+			if (MapUpdate != null)
 			{
-				MapUpdateEventHandler (this, mapUpdateEventsArgs);
+				MapUpdate (this, mapUpdateEventsArgs);
 			}
 		}
 
@@ -56,9 +56,9 @@ namespace Engine
 		// Fires a HousesSet event when called
 		protected virtual void OnHousesSet(HousesSetEventArgs housesSetEventArgs)
 		{
-			if (HousesSetEventHandler != null)
+			if (HousesSet != null)
 			{
-				HousesSetEventHandler (this, housesSetEventArgs);
+				HousesSet (this, housesSetEventArgs);
 			}
 		}
 
@@ -83,10 +83,10 @@ namespace Engine
 		#endregion
 
 		// Open the client connection to the engine server
-		public virtual void open();
+		public abstract void open();
 
 		// Close the client connection to the engine server
-		public virtual void close();
+		public abstract void close();
 	}
 
 	#region Event handlers delegates

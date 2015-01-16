@@ -9,12 +9,12 @@ namespace Engine
 			//TODO code a default constructor
 		}
 
-		public void open()
+		public override void open()
 		{
 			//TODO code the opening routine
 		}
 
-		public void close()
+		public override void close()
 		{
 			//TODO code the closing routine
 		}
