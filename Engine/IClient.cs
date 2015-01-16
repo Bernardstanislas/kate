@@ -1,4 +1,5 @@
 ﻿using System;
+using Models.Commands;
 
 namespace Engine
 {
@@ -13,6 +14,8 @@ namespace Engine
 		event EventHandler Disconnection;
 
 		void open();
+		void declareName(DeclareName declareName);
+		void executeAction (IAction action);
 		void close();
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using Models.Commands;
 
 namespace Engine
 {
@@ -82,11 +83,17 @@ namespace Engine
 		#endregion
 		#endregion
 
-		// Open the client connection to the engine server
+		// Opens the client connection to the engine server
 		public abstract void open();
 
-		// Close the client connection to the engine server
+		// Closes the client connection to the engine server
 		public abstract void close();
+
+		// Declares the AI's name to the engine server
+		public abstract void declareName(DeclareName declareName);
+
+		// Executes the current turn's command (moves or attack)
+		public abstract void executeAction(IAction action);
 	}
 
 	#region Event handlers delegates
