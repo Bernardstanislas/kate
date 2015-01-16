@@ -19,7 +19,11 @@ module.exports = {
             } else {
                 if (allowedValues.hasOwnProperty(parameterName)) {
                     if (allowedValues[parameterName].indexOf(parameters[parameterName]) == -1) {
-                        return callback(ErrorService.badParameter(parameterName, parameters[parameterName], allowedValues))
+                        return callback(ErrorService.badParameter(
+                            parameterName, 
+                            parameters[parameterName], 
+                            allowedValues[parameterName]
+                        ));
                     }
 
                 }

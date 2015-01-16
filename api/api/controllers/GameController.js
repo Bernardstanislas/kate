@@ -55,7 +55,7 @@ module.exports = {
      * Register to a game
      */
     register: function(req, res) {
-        ParameterService.check(req, ['name', 'alignement'], {team: ['vampire, werewolf']}, function(err, parameters) {
+        ParameterService.check(req, ['name', 'alignement'], {alignement: ['vampire', 'werewolf']}, function(err, parameters) {
             if (err) {
                 res.json(err.httpCode, {error: err.message});
             } else {
