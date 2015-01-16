@@ -11,5 +11,5 @@
 
 module.exports.models = {
     connection: 'mongodb',
-    migrate: 'drop',
+    migrate: 'alter',
 };

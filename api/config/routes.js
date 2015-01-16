@@ -21,7 +21,7 @@
  */
 
 module.exports.routes = {
-    'post /game/create': 'GameController.create',
-    'get /game/all': 'GameController.all',
-    'post /game/register': 'GameController.register',
+    'post /games/create': 'GameController.create',
+    'get /games/all': 'GameController.all',
+    'post /games/register': 'GameController.register',
 };
