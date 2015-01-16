@@ -22,13 +22,13 @@ module.exports = {
             defaultsTo: false,
         },
         publicData: function() {
-            var availablePlayers = [];
-            if (null == this.vampire) availablePlayers.push('vampire');
-            if (null == this.werewolf) availablePlayers.push('werewolf');
+            var availableTeams = [];
+            if (null == this.vampire) availableTeams.push('vampire');
+            if (null == this.werewolf) availableTeams.push('werewolf');
    
             return {
                 name: this.name,
-                availablePlayers: availablePlayers,
+                availableTeams: availableTeams,
                 done: this.done,
             };
         },
