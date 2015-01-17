@@ -18,15 +18,14 @@ module.exports = {
     },
     beforeCreate: function(token, cb) {
         var bcrypt = require('bcrypt');
-
         bcrypt.genSalt(10, function(err, salt) {
             if (err) return cb(err);
             bcrypt.hash(token.value, salt, function(err, hash) {
                 if (err) return cb(err);
                 token.value = hash;
-            });
 
-            cb();
+                cb();
+            });
         });
     },
 };
