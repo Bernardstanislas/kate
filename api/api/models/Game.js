@@ -38,14 +38,17 @@ module.exports = {
             type: 'string',
             defaultsTo: 'vampire',
         },
+        availableTeams: function() {
+            var teams = [];
+            if (null == this.vampire) teams.push('vampire');
+            if (null == this.werewolf) teams.push('werewolf');
+
+            return teams;
+        },
         properties: function() {
-            var availableTeams = [];
-            if (null == this.vampire) availableTeams.push('vampire');
-            if (null == this.werewolf) availableTeams.push('werewolf');
-   
             return {
                 name: this.name,
-                availableTeams: availableTeams,
+                availableTeams: this.availableTeams,
                 done: this.done,
                 turn: this.turn, 
             };
@@ -56,8 +59,6 @@ module.exports = {
             state.height = this.height;
 
             state.tiles = MapService.twoDimmensionnal(this.tiles, ['humans', 'vampires', 'werewolfs']);
-
-            console.log(state);
 
             return state;
         },
