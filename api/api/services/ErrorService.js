@@ -38,14 +38,8 @@ module.exports = {
      */
     badParameter: function(parameter, value, allowedValues) {
         return module.exports.genericError(400, 
-            'Bad ' + parameter + ' parameter value: ' + value + '. Allowed values: ' + allowedValues.toString()
+            'Bad ' + parameter + ' parameter value: ' + value + '. Allowed values: ' + allowedValues.join(', ')
         );
-    },
-    /**
-     * Game already exists
-     */
-    gameAlreadyExists: function() {
-        return module.exports.genericError(409, 'Game already exists');
     },
     /**
      * Game not found
@@ -56,13 +50,37 @@ module.exports = {
     /**
      * Team already exists
      */
-    teamAlreadyExists: function(alignement) {
-        return module.exports.genericError(409, 'Team ' + alignement + ' already registered');
+    teamAlreadyExists: function(team) {
+        return module.exports.genericError(409, 'Team ' + team + ' already registered');
+    },
+    /**
+     * Missing team
+     */
+    missingTeam: function(team) {
+        return module.exports.genericError(400, 'Team ' + team + ' is missing');
     },
     /**
      * Map parse error
      */
     mapError: function(message) {
         return module.exports.genericError(400, 'Map error: ' + message);
+    },
+    /**
+     * Invalid token
+     */
+    invalidToken: function() {
+        return module.exports.genericError(400, 'Invalid token');
+    },
+    /**
+     * Not your turn
+     */
+    notYourTurn: function() {
+        return module.exports.genericError(400, 'Not your turn');
+    },
+    /**
+     * Game done
+     */
+    gameDone: function() {
+        return module.exports.genericError(400, 'Game is done');
     },
 };
