@@ -68,7 +68,7 @@ module.exports = {
             } else {
                 var gamesProperties = [];
                 games.forEach(function(game) {
-                    gamesPublicData.push(game.properties());
+                    gamesProperties.push(game.properties());
                 });
 
                 res.json(200, gamesProperties);
