@@ -9,7 +9,6 @@ module.exports = {
     attributes: {
         name: {
             type: 'string',
-            unique: true,
             required: true,
         },
         vampireToken: {
@@ -18,9 +17,8 @@ module.exports = {
         werewolfToken: {
             model: 'Token',
         },
-        done: {
-            type: 'boolean',
-            defaultsTo: false,
+        victory: {
+            type: 'string',
         },
         width: {
             type: 'integer',
@@ -38,21 +36,31 @@ module.exports = {
             type: 'string',
             defaultsTo: 'vampire',
         },
+        /**
+         * Get available teams
+         */
         availableTeams: function() {
             var teams = [];
-            if (null == this.vampire) teams.push('vampire');
-            if (null == this.werewolf) teams.push('werewolf');
+            if (null == this.vampireToken) teams.push('vampire');
+            if (null == this.werewolfToken) teams.push('werewolf');
 
             return teams;
         },
+        /**
+         * Get game properties
+         */
         properties: function() {
             return {
+                id: this.id,
                 name: this.name,
-                availableTeams: this.availableTeams,
-                done: this.done,
+                victory: this.victory,
+                availableTeams: this.availableTeams(),
                 turn: this.turn, 
             };
         },
+        /**
+         * Get game state
+         */
         state: function() {
             var state = this.properties();
             state.width = this.width;
@@ -62,6 +70,9 @@ module.exports = {
 
             return state;
         },
+        /**
+         * Generate game tiles from a map
+         */
         generateTiles: function(map, callback) {
             var humans = MapService.twoDimmensionnal(map.humans, ['count']);
             var vampires = MapService.twoDimmensionnal(map.vampires, ['count']);
@@ -80,11 +91,53 @@ module.exports = {
             }
 
             this.save(function(err) {
-                if (err) {
-                    return callback(ErrorService.databaseError());
-                } else {
-                    return callback();
+                if (err) return callback(ErrorService.databaseError());
+                
+                return callback();
+            });
+        },
+        /**
+         * Execute a move
+         */
+        executeMove: function(move, callback) {
+
+
+
+        },
+        /**
+         * Check victory, switch turns
+         */
+        nextTurn: function(move, callback) {
+            var tiles = MapService.twoDimmensionnal(this.tiles, ['humans', 'vampires', 'werewolfs']);
+
+            var left = {vampires: 0, werewolfs: 0};
+            for (x = 0; x < this.width; x++) {
+                for (y = 0; y < this.height; y++) {
+                    left.vampires += tiles[x][y].vampires;
+                    left.werewolfs += tiles[x][y].werewolfs;
                 }
+            }
+
+            if (vampires.left == 0 || werewolfs.left == 0) {
+                if (vampires.left > 0) { 
+                    this.victory = 'vampire';
+                } else if (werewolfs.left > 0) {
+                    this.victory = 'werewolf';
+                } else {
+                    this.victory = 'draw';
+                }
+            } else {
+                if (this.turn == 'vampire') {
+                    this.turn = 'werewolf';
+                } else {
+                    this.turn = 'vampire';
+                }
+            }
+
+            this.save(function(err) {
+                if (err) return callback(ErrorService.databaseError());
+                
+                return callback(null);
             });
         },
     },
