@@ -59,4 +59,10 @@ module.exports = {
     teamAlreadyExists: function(alignement) {
         return module.exports.genericError(409, 'Team ' + alignement + ' already registered');
     },
+    /**
+     * Map parse error
+     */
+    mapError: function(message) {
+        return module.exports.genericError(400, 'Map error: ' + message);
+    },
 };
