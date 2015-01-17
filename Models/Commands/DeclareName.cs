@@ -2,7 +2,7 @@
 
 namespace Models.Commands
 {
-	public class DeclareName
+	public class DeclareName: ICommand
 	{
 		public DeclareName ()
 		{

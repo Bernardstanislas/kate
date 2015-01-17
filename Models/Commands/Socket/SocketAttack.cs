@@ -3,13 +3,19 @@ using Models.Commands;
 
 namespace Models.Commands.Socket
 {
-	public class SocketAttack: ISocketCommand, ISocketAction
+	public class SocketAttack: ISocketCommand
 	{
 		private readonly Attack Attack;
 
-		public SocketAttack (Attack Attack)
+		public SocketAttack (Attack attack)
 		{
-			this.Attack = Attack;
+			if (attack == null)
+			{
+				throw new ArgumentNullException ();
+			} else
+			{
+				this.Attack = attack;
+			}
 		}
 
 		public byte[] toBytes ()

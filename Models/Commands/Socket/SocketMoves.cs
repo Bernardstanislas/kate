@@ -2,13 +2,19 @@
 
 namespace Models.Commands.Socket
 {
-	public class SocketMoves: ISocketCommand, ISocketAction
+	public class SocketMoves: ISocketCommand
 	{
 		private readonly Moves Moves;
 
-		public SocketMoves (Moves Moves)
+		public SocketMoves (Moves moves)
 		{
-			this.Moves = Moves;
+			if (moves == null)
+			{
+				throw new ArgumentNullException ();
+			} else
+			{
+				this.Moves = moves;
+			}
 		}
 
 		public byte[] toBytes ()

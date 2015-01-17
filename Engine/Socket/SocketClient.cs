@@ -2,11 +2,13 @@
 using Models.Commands;
 using Models.Commands.Socket;
 
+
 namespace Engine.Socket
 {
 	public class SocketClient: AbstractClient
 	{
-		public SocketClient ()
+
+		public SocketClient (String serverIpString, int serverPort)
 		{
 			//TODO code a default constructor
 			throw new NotImplementedException();
@@ -26,17 +28,14 @@ namespace Engine.Socket
 
 		public override void declareName(DeclareName declareName)
 		{
+			ISocketCommand commandToSend = SocketCommandFactory.buildSocketCommand (declareName);
 			throw new NotImplementedException();
 		}
 
 		public override void executeAction(IAction action)
 		{
+			ISocketCommand commandToSend = SocketCommandFactory.buildSocketCommand (action);
 			throw new NotImplementedException();
-			ISocketAction socketAction = action as ISocketAction;
-			if (socketAction != null)
-			{
-				//TODO send the socket action
-			}
 		}
 	}
 }

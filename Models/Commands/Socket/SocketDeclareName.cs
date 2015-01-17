@@ -6,9 +6,15 @@ namespace Models.Commands.Socket
 	{
 		private readonly DeclareName DeclareName;
 
-		public SocketDeclareName (DeclareName DeclareName)
+		public SocketDeclareName (DeclareName declareName)
 		{
-			this.DeclareName = DeclareName;
+			if (declareName == null)
+			{
+				throw new ArgumentNullException ();
+			} else
+			{
+				this.DeclareName = declareName;
+			}
 		}
 
 		public byte[] toBytes ()
