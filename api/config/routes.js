@@ -24,5 +24,5 @@ module.exports.routes = {
     'post /games/create': 'PrepareGameController.create',
     'get /games/all': 'PrepareGameController.all',
     'post /games/register': 'PrepareGameController.register',
-    'get /games//state': 'PrepareGameController.state',
+    'get /games/:name/state': 'GameController.state',
 };
