@@ -116,13 +116,15 @@ module.exports = {
         var twoDimmensionnalCounts = {};
 
         positions.forEach(function(position) {
-            if (!twoDimmensionnalCounts.hasOwnProperty(position.x)) twoDimmensionnalCounts[position.x] = {};
             var data = {};
             keys.forEach(function(key) {
-                data[key] = position[key];
+                if (position[key] != 0) data[key] = position[key];
             });
 
-            twoDimmensionnalCounts[position.x][position.y] = data;
+            if (Object.keys(data).length != 0) { 
+                if (!twoDimmensionnalCounts.hasOwnProperty(position.x)) twoDimmensionnalCounts[position.x] = {};
+                twoDimmensionnalCounts[position.x][position.y] = data;
+            }
         });
 
         return twoDimmensionnalCounts;
