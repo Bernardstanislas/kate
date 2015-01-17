@@ -12,7 +12,8 @@ namespace Models.Commands.Socket
 			{typeof(Moves).ToString(), (ICommand command) => new SocketMoves(command as Moves)}
 		};
 
-		public static ISocketCommand buildSocketCommand(ICommand command) {
+		public static ISocketCommand buildSocketCommand(ICommand command)
+		{
 			return socketCommandsReference [command.GetType ().ToString ()] (command);
 		}
 	}
