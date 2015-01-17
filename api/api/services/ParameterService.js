@@ -6,30 +6,31 @@
 
 module.exports = {
     /**
-     * Check parameters
+     * Check post parameters
      *
      * callback(err, parameters)
      */
     check: function(req, expectedParameters, allowedValues, callback) {
         var parameters = req.params.all();
+        var err = null;
 
-        expectedParameters.forEach(function(parameterName) {
+        expectedParameters.every(function(parameterName) {
             if (!parameters.hasOwnProperty(parameterName)) {
-                return callback(ErrorService.missingParameter(parameterName));
+                err = ErrorService.missingParameter(parameterName);
             } else {
                 if (allowedValues.hasOwnProperty(parameterName)) {
                     if (allowedValues[parameterName].indexOf(parameters[parameterName]) == -1) {
-                        return callback(ErrorService.badParameter(
+                        err = ErrorService.badParameter(
                             parameterName, 
                             parameters[parameterName], 
                             allowedValues[parameterName]
-                        ));
+                        );
                     }
-
                 }
             }
+            return (null == err);
         });
-
-        return callback(null, parameters);
+        
+        return callback(err, parameters);
     },
 };

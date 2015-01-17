@@ -14,46 +14,36 @@ module.exports = {
             if (err) {
                 res.json(err.httpCode, {error: err.message});
             } else {
-                Game.findOneByName(parameters.name, function (err, game) {
+                var map;
+                if (parameters.map) {
+                    map = parameters.map;
+                } else {
+                    map = MapService.generateRandom();
+                }
+                MapService.parseMap(map, function(err) {
                     if (err) {
-                        var err = ErrorService.databaseError();
-                        res.json(err.httpCode, {error: err.message});
-                    } else if (game) {
-                        var err = ErrorService.gameAlreadyExists();
                         res.json(err.httpCode, {error: err.message});
                     } else {
-                        var map;
-                        if (parameters.map) {
-                            map = parameters.map;
-                        } else {
-                            map = MapService.generateRandom();
-                        }
-                        MapService.parseMap(map, function(err) {
+                        Game.create({
+                            name: parameters.name, 
+                            width: map.width, 
+                            height: map.height
+                        }).exec(function(err, game) {
                             if (err) {
+                                var err = ErrorService.databaseError();
                                 res.json(err.httpCode, {error: err.message});
                             } else {
-                                Game.create({
-                                    name: parameters.name, 
-                                    width: map.width, 
-                                    height: map.height
-                                }).exec(function(err, game) {
+                                game.generateTiles(map, function(err) {
                                     if (err) {
-                                        var err = ErrorService.databaseError();
                                         res.json(err.httpCode, {error: err.message});
                                     } else {
-                                        game.generateTiles(map, function(err) {
-                                            if (err) {
-                                                res.json(err.httpCode, {error: err.message});
-                                            } else {
-                                                res.ok();   
-                                            }
-                                        });
+                                        res.json(200, game.properties());  
                                     }
                                 });
                             }
-                        });  
+                        });
                     }
-                });
+                });  
             }
         });
     },
@@ -61,7 +51,7 @@ module.exports = {
      * Get all games
      */
     all: function(req, res) {
-        Game.find().exec(function(err, games) {
+        Game.find().populate('werewolfToken').populate('vampireToken').exec(function(err, games) {
             if (err) {
                 var err = ErrorService.databaseError();
                 res.json(err.httpCode, {error: err.message});
@@ -79,27 +69,22 @@ module.exports = {
      * Register to a game
      */
     register: function(req, res) {
-        ParameterService.check(req, ['name', 'alignement'], {alignement: ['vampire', 'werewolf']}, function(err, parameters) {
+        ParameterService.check(req, ['id', 'team'], {team: ['vampire', 'werewolf']}, function(err, parameters) {
             if (err) {
                 res.json(err.httpCode, {error: err.message});
             } else {
-                Game.findOneByName(parameters.name).exec(function(err, game) {
+                Game.findOneById(parameters.id).populate('werewolfToken').populate('vampireToken').exec(function(err, game) {
                     if (err) {
                         var err = ErrorService.databaseError();
                         res.json(err.httpCode, {error: err.message});
                     } else if (game) {
-                        if (null == game[parameters.alignement + 'Token']) {
-                            TokenService.create(game, function(err, value) {
-                                if (err) {
-                                    res.json(err.httpCode, {error: err.message});
-                                } else {
-                                    res.json(200, {token: value});
-                                }
-                            });
-                        } else {
-                            var err = ErrorService.teamAlreadyExists(parameters.alignement);
-                            res.json(err.httpCode, {error: err.message});
-                        }
+                        TokenService.create(game, parameters.team, function(err, value) {
+                            if (err) {
+                                res.json(err.httpCode, {error: err.message});
+                            } else {
+                                res.json(200, {token: value});
+                            }
+                        });
                     } else {
                         var err = ErrorService.gameNotFound();
                         res.json(err.httpCode, {error: err.message});

@@ -9,52 +9,67 @@ module.exports = {
      * Parse map
      */
     parseMap: function(map, callback) {
-        ['width', 'height', 'vampires', 'werewolfs', 'humans'].forEach(function(expectedKey) {
-            if (!map.hasOwnProperty(expectedKey)) return callback(ErrorService.mapError('Key ' + expectedKey + ' not found'));
+        var err = null;
+
+        ['width', 'height', 'vampires', 'werewolfs', 'humans'].every(function(expectedKey) {
+            if (!map.hasOwnProperty(expectedKey)) err = ErrorService.mapError('Key ' + expectedKey + ' not found');
+            return (null == err);
         });
 
-        ['width', 'height'].forEach(function(expectedKey) {
-            if (map[expectedKey] != parseInt(map[expectedKey], 10)) return callback(ErrorService.mapError(
+        ['width', 'height'].every(function(expectedKey) {
+            if (map[expectedKey] != parseInt(map[expectedKey], 10)) err = ErrorService.mapError(
                 'Value of key ' + expectedKey + ' is not an integer'
-            ));
+            );
+            return (null == err);
         });
 
-        ['vampires', 'werewolfs', 'humans'].forEach(function(expectedKey) {
-            map[expectedKey].forEach(function(position) {
-                ['x', 'y', 'count'].forEach(function(expectedSubKey) {
-                    if (!position.hasOwnProperty(expectedSubKey)) return callback(ErrorService.mapError(
-                        'Key ' + expectedSubKey + ' not found in one of ' + expectedKey + ' positions'
-                    ));
-
-                    if (position[expectedSubKey] != parseInt(position[expectedSubKey], 10)) return callback(ErrorService.mapError(
-                        'Value of key ' + expectedSubKey + ' is not an integer in one of ' + expectedKey + ' positions'
-                    ));
+        ['vampires', 'werewolfs', 'humans'].every(function(expectedKey) {
+            map[expectedKey].every(function(position) {
+                ['x', 'y', 'count'].every(function(expectedSubKey) {
+                    if (!position.hasOwnProperty(expectedSubKey)) {
+                        err = ErrorService.mapError(
+                            'Key ' + expectedSubKey + ' not found in one of ' + expectedKey + ' positions'
+                        );
+                    } else if (position[expectedSubKey] != parseInt(position[expectedSubKey], 10)) { 
+                        err = ErrorService.mapError(
+                            'Value of key ' + expectedSubKey + ' is not an integer in one of ' + expectedKey + ' positions'
+                        );
+                    }
+                    return (null == err);
                 });
+                return (null == err);
             });
+            return (null == err);
         });
 
-        ['humans', 'vampires', 'werewolfs'].forEach(function(key) {
-            map[key].forEach(function(position) {
+        ['humans', 'vampires', 'werewolfs'].every(function(key) {
+            map[key].every(function(position) {
                 if (
                     position.x < 0 || position.x > map.width || 
                     position.y < 0 || position.y > map.height 
-                ) return callback(ErrorService.mapError(
-                    'Position overflow: [' + position.x + ', ' + position.y  + '] in one of ' + expectedKey + ' positions'
-                ));
-
-                ['vampires', 'werewolfs'].forEach(function(comparedKey) {
-                    if (map[key] != map[comparedKey]) {
-                        map[comparedKey].forEach(function(comparedPosition) {
-                            if (position.x == comparedPosition.x && position.y == comparedPosition.y) return callback(ErrorService.mapError(
-                                'Duplicated position [' + position.x + ', ' + position.y  + '] between ' + key + ' and ' + comparedKey
-                            ));
-                        });
-                    }
-                });
+                ) {
+                    err = ErrorService.mapError(
+                        'Position overflow: [' + position.x + ', ' + position.y  + '] in one of ' + expectedKey + ' positions'
+                    );
+                } else {
+                    ['vampires', 'werewolfs'].every(function(comparedKey) {
+                        if (map[key] != map[comparedKey]) {
+                            map[comparedKey].every(function(comparedPosition) {
+                                if (position.x == comparedPosition.x && position.y == comparedPosition.y) err = ErrorService.mapError(
+                                    'Duplicated position [' + position.x + ', ' + position.y  + '] between ' + key + ' and ' + comparedKey
+                                );
+                                return (null == err);
+                            });
+                        }
+                        return (null == err);
+                    });
+                }
+                return (null == err);
             });
+            return (null == err);
         });
 
-        return callback();
+        return callback(err);
     },
     /**
      * Generate a random map
