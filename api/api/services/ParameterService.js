@@ -12,8 +12,9 @@ module.exports = {
      */
     check: function(req, expectedParameters, allowedValues, callback) {
         var parameters = req.params.all();
-        var err = null;
+        if (!parameters instanceof Object) return ErrorService.badFormat('parameters', 'object');
 
+        var err = null;
         expectedParameters.every(function(parameterName) {
             if (!parameters.hasOwnProperty(parameterName)) {
                 err = ErrorService.missingParameter(parameterName);

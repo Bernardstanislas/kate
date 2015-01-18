@@ -21,7 +21,7 @@ module.exports = {
                 var updatedData = {};
                 updatedData[team + 'Token'] = token.id;
                 Game.update(game.id, updatedData).exec(function(err, game) {
-                    if (err) return callback(ErrorService.databaseError());
+                    if (err) return callback(ErrorService.badDatabaseError());
 
                     return callback(null, value);
                 });
@@ -29,7 +29,7 @@ module.exports = {
         });
     },
     /**
-     * Check token authentication
+     * Check token
      *
      * callback(err, game)
      */
@@ -37,16 +37,18 @@ module.exports = {
         var bcrypt = require('bcrypt');
         var authenticatedAs = null;
 
-        bcrypt.compare(token, game.vampireToken.value, function (err, match) {
+        var vampireTokenValue = ((null == game.vampireToken) ? '' : game.vampireToken.value);
+        var werewolfTokenValue = ((null == game.werewolfToken) ? '' : game.werewolfToken.value);
+        bcrypt.compare(token, vampireTokenValue, function (err, match) {
             if (err) return callback(ErrorService.databaseError());
             if (match) {
-                if (game.turn == 'vampire') return callback(null, game);
+                if (game.turn == 'vampires') return callback(null, game);
                 return callback(ErrorService.notYourTurn());
             } else {
-                bcrypt.compare(token, game.werewolfToken.value, function (err, match) {
+                bcrypt.compare(token, werewolfTokenValue, function (err, match) {
                     if (err) return callback(ErrorService.databaseError());
                     if (match) {
-                        if (game.turn == 'werewolf') return callback(null, game);
+                        if (game.turn == 'werewolfs') return callback(null, game);
                         return callback(ErrorService.notYourTurn());
                     } else {
                         return callback(ErrorService.invalidToken());

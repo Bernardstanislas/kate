@@ -24,20 +24,18 @@ module.exports = {
                     if (err) {
                         res.json(err.httpCode, {error: err.message});
                     } else {
-                        Game.create({
-                            name: parameters.name, 
-                            width: map.width, 
-                            height: map.height
-                        }).exec(function(err, game) {
+                        Game.create({name: parameters.name}, function(err, game) {
                             if (err) {
                                 var err = ErrorService.databaseError();
                                 res.json(err.httpCode, {error: err.message});
                             } else {
-                                game.generateTiles(map, function(err) {
+                                game.generateTiles(map);
+                                game.save(function(err, game) {
                                     if (err) {
+                                        var err = ErrorService.badDatabaseError();
                                         res.json(err.httpCode, {error: err.message});
                                     } else {
-                                        res.json(200, game.properties());  
+                                        res.json(200, game.state());
                                     }
                                 });
                             }

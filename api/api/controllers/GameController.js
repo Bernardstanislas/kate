@@ -45,31 +45,39 @@ module.exports = {
         if (null != req.options.game.victory) {
             var err = ErrorService.gameDone();
             res.json(err.httpCode, {error: err.message});
-        } else if (game.availableTeams().length > 0) {
-            var err = ErrorService.missingTeam(game.availableTeams()[0]);
+        } else if (req.options.game.availableTeams().length > 0) {
+            var err = ErrorService.missingTeam(req.options.game.availableTeams()[0]);
             res.json(err.httpCode, {error: err.message});
         } else {
             ParameterService.check(req, ['move'], {}, function(err, parameters) {
                 if (err) {
                     res.json(err.httpCode, {error: err.message});
                 } else {
-                    MoveService.check(parameters.move, function(err, move) {
+                    MoveService.check(parameters.move, function(err) {
                         if (err) {
                             res.json(err.httpCode, {error: err.message});
                         } else {
-                            req.options.game.executeMove(move, function(err) {
+                            Game.findOneById(req.options.game.id).populateAll().exec(function(err, game) {
                                 if (err) {
+                                    var err = ErrorService.databaseError;
                                     res.json(err.httpCode, {error: err.message});
                                 } else {
-                                    req.options.game.nextTurn(function(err) {
+                                    var twoDimmensionnalTiles = MapService.twoDimmensionnal(game.tiles, ['humans', 'vampires', 'werewolfs'], true);
+                                    game.executeMove(twoDimmensionnalTiles, parameters.move, function(err) {
                                         if (err) {
                                             res.json(err.httpCode, {error: err.message});
                                         } else {
-                                            res.json(200, req.options.game.state);
+                                            game.nextTurn(twoDimmensionnalTiles, function(err) {
+                                                if (err) {
+                                                    res.json(err.httpCode, {error: err.message});
+                                                } else {
+                                                    res.json(200, game.state());
+                                                }
+                                            });
                                         }
                                     });
                                 }
-                            });
+                            });                 
                         }
                     });
                 }
