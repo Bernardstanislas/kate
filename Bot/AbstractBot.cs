@@ -23,10 +23,10 @@ namespace Bot
 
 		#region Event listeners
 		public abstract void onMapSet(object sender, MapSetEventArgs mapSetEventArgs);
-		public abstract void onMapInitialization(object sender, MapInitializationEventArgs mapInitializationEventArgs);
+		public abstract void onMapInitialization(object sender, MapUpdateEventArgs mapInitializationEventArgs);
 		public abstract void onMapUpdate(object sender, MapUpdateEventArgs mapUpdateEventsArgs);
-		public abstract void onHomeSet(object sender, HomeSetEventArgs homeSetEventArgs);
-		public abstract void onHousesSet(object sender, HousesSetEventArgs housesSetEventArgs);
+		public abstract void onHomeSet(object sender, MapUpdateEventArgs homeSetEventArgs);
+		public abstract void onHousesSet(object sender, MapUpdateEventArgs housesSetEventArgs);
 		public abstract void onGameEnd(object sender, EventArgs eventArgs);
 		public abstract void onDisconnection(object sender, EventArgs eventArgs);
 		#endregion

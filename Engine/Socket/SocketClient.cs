@@ -29,13 +29,20 @@ namespace Engine.Socket
 		public override void declareName(DeclareName declareName)
 		{
 			ISocketCommand commandToSend = SocketCommandFactory.buildSocketCommand (declareName);
-			throw new NotImplementedException();
+			sendBytes (commandToSend);
 		}
 
 		public override void executeAction(IAction action)
 		{
 			ISocketCommand commandToSend = SocketCommandFactory.buildSocketCommand (action);
-			throw new NotImplementedException();
+			sendBytes (commandToSend);
+		}
+
+		private void sendBytes(ISocketCommand socketCommandToSend)
+		{
+			byte[] bytesToSend = socketCommandToSend.toBytes ();
+			//TODO send the bytes
+			throw new NotImplementedException ();
 		}
 	}
 }

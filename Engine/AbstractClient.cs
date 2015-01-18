@@ -1,5 +1,7 @@
 ﻿using System;
 using Models.Commands;
+using Models.Map;
+using System.Collections.Generic;
 
 namespace Engine
 {
@@ -28,7 +30,7 @@ namespace Engine
 		}
 
 		// Fires a MapInitialization event when called
-		protected virtual void OnMapInitialization(MapInitializationEventArgs mapInitializationEventArgs)
+		protected virtual void OnMapInitialization(MapUpdateEventArgs mapInitializationEventArgs)
 		{
 			if (MapInitialization != null)
 			{
@@ -46,7 +48,7 @@ namespace Engine
 		}
 
 		// Fires a HomeSet event when called
-		protected virtual void OnHomeSet(HomeSetEventArgs homeSetEventArgs)
+		protected virtual void OnHomeSet(MapUpdateEventArgs homeSetEventArgs)
 		{
 			if (HomeSet != null)
 			{
@@ -55,7 +57,7 @@ namespace Engine
 		}
 
 		// Fires a HousesSet event when called
-		protected virtual void OnHousesSet(HousesSetEventArgs housesSetEventArgs)
+		protected virtual void OnHousesSet(MapUpdateEventArgs housesSetEventArgs)
 		{
 			if (HousesSet != null)
 			{
@@ -98,10 +100,10 @@ namespace Engine
 
 	#region Event handlers delegates
 	public delegate void MapSetEventHandler(object sender, MapSetEventArgs e);
-	public delegate void MapInitializationEventHandler(object sender, MapInitializationEventArgs e);
+	public delegate void MapInitializationEventHandler(object sender, MapUpdateEventArgs e);
 	public delegate void MapUpdateEventHandler(object sender, MapUpdateEventArgs e);
-	public delegate void HomeSetEventHandler(object sender, HomeSetEventArgs e);
-	public delegate void HousesSetEventHandler(object sender, HousesSetEventArgs e);
+	public delegate void HomeSetEventHandler(object sender, MapUpdateEventArgs e);
+	public delegate void HousesSetEventHandler(object sender, MapUpdateEventArgs e);
 	#endregion
 
 	#region Custom event args
@@ -112,24 +114,26 @@ namespace Engine
 		//TODO add the relevant data to the event args
 	}
 
-	public class MapInitializationEventArgs: EventArgs
-	{
-		//TODO add the relevant data to the event args
-	}
-
 	public class MapUpdateEventArgs: EventArgs
 	{
-		//TODO add the relevant data to the event args
-	}
+		private ICollection<IMapUpdater> mapUpdaters;
 
-	public class HomeSetEventArgs: EventArgs
-	{
-		//TODO add the relevant data to the event args
-	}
+		public ICollection<IMapUpdater> MapUpdaters
+		{
+			get
+			{
+				return mapUpdaters;
+			}
+			set
+			{
+				mapUpdaters = value;
+			}
+		}
 
-	public class HousesSetEventArgs: EventArgs
-	{
-		//TODO add the relevant data to the event args
+		public MapUpdateEventArgs(ICollection<IMapUpdater> mapUpdaters)
+		{
+			this.MapUpdaters = mapUpdaters;
+		}
 	}
 	#endregion
 }
