@@ -45,4 +45,10 @@ module.exports = {
         
         return array;
     },
+    /**
+     * Is integer
+     */
+    isInteger: function(integer) {
+        return integer == parseInt(integer, 10) && integer >= 0;
+    }
 };
