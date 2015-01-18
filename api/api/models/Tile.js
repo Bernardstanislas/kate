@@ -9,7 +9,6 @@ module.exports = {
     attributes: {
         game: {
             model: 'Game',
-            required: true,
         },
         x: {
             type: 'integer',

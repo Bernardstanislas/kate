@@ -13,7 +13,6 @@ module.exports = {
         },
         game: {
             model: 'Game',
-            required: true,
         },
     },
     beforeCreate: function(token, cb) {
