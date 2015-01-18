@@ -22,6 +22,12 @@ module.exports = {
         return module.exports.genericError(500, 'Database error');
     },
     /**
+     * Bad database error (non-atomic partial update)
+     */
+    badDatabaseError: function() {
+        return module.exports.genericError(500, 'Bad database error');
+    },
+    /**
      * Server error
      */
     serverError: function() {
@@ -66,6 +72,12 @@ module.exports = {
         return module.exports.genericError(400, 'Map error: ' + message);
     },
     /**
+     * Move parse error
+     */
+    moveError: function(message) {
+        return module.exports.genericError(400, 'Move error: ' + message);
+    },
+    /**
      * Invalid token
      */
     invalidToken: function() {
@@ -82,5 +94,11 @@ module.exports = {
      */
     gameDone: function() {
         return module.exports.genericError(400, 'Game is done');
+    },
+    /**
+     * Integrity error
+     */
+    integrityError: function(x, y) {
+        return module.exports.genericError(500, 'Integrity error on tile [' + x + ', ' + y + ']');
     },
 };
