@@ -1,3 +1,12 @@
 # Node
 api/node_modules
 api/.tmp
+
+# C# IDE related files
+*.csproj
+*.sln
+*.userprefs
+
+# Compilation related files
+bin/
+obj/
