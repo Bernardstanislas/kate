@@ -1,3 +1,7 @@
+# Node
+api/node_modules
+api/.tmp
+
 # C# IDE related files
 *.csproj
 *.sln
