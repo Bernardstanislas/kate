@@ -111,7 +111,9 @@ namespace Engine
 
 	public class MapSetEventArgs: EventArgs
 	{
-		//TODO add the relevant data to the event args
+		public int XDimension{ get; set;}
+		public int YDimension{ get; set;}
+
 	}
 
 	public class MapUpdateEventArgs: EventArgs

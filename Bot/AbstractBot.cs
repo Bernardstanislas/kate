@@ -1,11 +1,13 @@
 ﻿using System;
 using Engine;
+using Models.Map;
 
 namespace Bot
 {
 	public abstract class AbstractBot: IBot
 	{
 		protected readonly IClient client;
+		protected IMap currentMap;
 
 		protected AbstractBot(IClient client)
 		{
@@ -22,7 +24,13 @@ namespace Bot
 		}
 
 		#region Event listeners
-		public abstract void onMapSet(object sender, MapSetEventArgs mapSetEventArgs);
+		public virtual void onMapSet(object sender, MapSetEventArgs mapSetEventArgs) {
+			if (currentMap == null) {
+				currentMap = new Map (mapSetEventArgs.XDimension, mapSetEventArgs.YDimension);
+			} else {
+				throw new ArgumentException ("Trying to set the size of the map but it already exists.");
+			}
+		}
 		public abstract void onMapInitialization(object sender, MapUpdateEventArgs mapInitializationEventArgs);
 		public abstract void onMapUpdate(object sender, MapUpdateEventArgs mapUpdateEventsArgs);
 		public abstract void onHomeSet(object sender, MapUpdateEventArgs homeSetEventArgs);
