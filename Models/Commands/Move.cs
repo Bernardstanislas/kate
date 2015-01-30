@@ -6,13 +6,11 @@ namespace Models.Commands
 {
 	public class Move
 	{
-		private ICollection<IMapUpdater> mapUpdaters;
+		public IMapUpdater Result{ get;}
 
-		public ICollection<IMapUpdater> MapUpdaters{ get; set;}
-
-		public Move (ICollection<IMapUpdater> mapUpdaters)
+		public Move (IMapUpdater result)
 		{
-			this.mapUpdaters = mapUpdaters;
+			this.Result = result;
 		}
 	}
 }
