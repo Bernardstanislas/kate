@@ -30,6 +30,7 @@ namespace Bot
             Random rnd = new Random();
             List<Tile> myTiles = new List<Tile>();
 
+            //We get our own tiles and they got a 50% chance of being processed, ie put into the myTiles list
             foreach (Tile tile in currentMap.getGrid())
             {
                 if (tile.Owner.Equals(Models.Player.ME))
@@ -42,7 +43,21 @@ namespace Bot
                 }
             }
 
-            //TODO : process the tiles and create the MOVE commands.
+            // We create a Move list which will be passed to the client
+            List<Move> turnMoves = new List<Move>();
+
+            //I feel like I'm missing something there, I got no clue on how to tell the MapUpdater how to move the ppl
+            foreach (Tile tile in myTiles)
+            {
+                int popToMove = rnd.Next(1, tile.Population);
+
+                MapUpdater mapUpdater = new MapUpdater(tile);
+                
+                Move move = new Move(mapUpdater);
+                turnMoves.Add(move);
+            }
+
+            client.executeMoves(turnMoves);
         }
 
         private void startBot()
