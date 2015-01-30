@@ -25,7 +25,7 @@ namespace Engine
 		{
 			if (MapSet != null)
 			{
-				MapSet (this, mapSetEventArgs);
+				MapSet(this, mapSetEventArgs);
 			}
 		}
 
@@ -34,7 +34,7 @@ namespace Engine
 		{
 			if (MapInitialization != null)
 			{
-				MapInitialization (this, mapInitializationEventArgs);
+				MapInitialization(this, mapInitializationEventArgs);
 			}
 		}
 
@@ -43,7 +43,7 @@ namespace Engine
 		{
 			if (MapUpdate != null)
 			{
-				MapUpdate (this, mapUpdateEventsArgs);
+				MapUpdate(this, mapUpdateEventsArgs);
 			}
 		}
 
@@ -52,7 +52,7 @@ namespace Engine
 		{
 			if (HomeSet != null)
 			{
-				HomeSet (this, homeSetEventArgs);
+				HomeSet(this, homeSetEventArgs);
 			}
 		}
 
@@ -61,7 +61,7 @@ namespace Engine
 		{
 			if (HousesSet != null)
 			{
-				HousesSet (this, housesSetEventArgs);
+				HousesSet(this, housesSetEventArgs);
 			}
 		}
 
@@ -70,7 +70,7 @@ namespace Engine
 		{
 			if (GameEnd != null)
 			{
-				GameEnd (this, eventArgs);
+				GameEnd(this, eventArgs);
 			}
 		}
 
@@ -79,7 +79,7 @@ namespace Engine
 		{
 			if (Disconnection != null)
 			{
-				Disconnection (this, eventArgs);
+				Disconnection(this, eventArgs);
 			}
 		}
 		#endregion

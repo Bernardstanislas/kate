@@ -6,20 +6,17 @@ namespace Models.Commands.Socket
 	{
 		private readonly Move Move;
 
-		public SocketMove (Move move)
+		public SocketMove(Move move)
 		{
 			if (move == null)
-			{
-				throw new ArgumentNullException ();
-			} else
-			{
+				throw new ArgumentNullException();
+			else
 				this.Move = move;
-			}
 		}
 
-		public byte[] toBytes ()
+		public byte[] toBytes()
 		{
-			throw new NotImplementedException ();
+			throw new NotImplementedException();
 		}
 	}
 }
