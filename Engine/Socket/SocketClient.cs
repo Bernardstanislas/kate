@@ -1,7 +1,7 @@
 ﻿using System;
 using Models.Commands;
 using Models.Commands.Socket;
-
+using System.Collections.Generic;
 
 namespace Engine.Socket
 {
@@ -32,10 +32,11 @@ namespace Engine.Socket
 			sendBytes (commandToSend);
 		}
 
-		public override void executeAction(IAction action)
+		public override void executeMoves(ICollection<Move> moves)
 		{
-			ISocketCommand commandToSend = SocketCommandFactory.buildSocketCommand (action);
-			sendBytes (commandToSend);
+			//ISocketCommand commandToSend = SocketCommandFactory.buildSocketCommand (action);
+			//sendBytes (commandToSend);
+			throw new NotImplementedException ();
 		}
 
 		private void sendBytes(ISocketCommand socketCommandToSend)

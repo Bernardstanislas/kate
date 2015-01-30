@@ -95,7 +95,7 @@ namespace Engine
 		public abstract void declareName(DeclareName declareName);
 
 		// Executes the current turn's command (moves or attack)
-		public abstract void executeAction(IAction action);
+		public abstract void executeMoves(ICollection<Move> moves);
 	}
 
 	#region Event handlers delegates

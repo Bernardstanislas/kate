@@ -1,5 +1,6 @@
 ﻿using System;
 using Models.Commands;
+using System.Collections.Generic;
 
 namespace Engine
 {
@@ -15,7 +16,7 @@ namespace Engine
 
 		void open();
 		void declareName(DeclareName declareName);
-		void executeAction (IAction action);
+		void executeMoves (ICollection<Move> moves);
 		void close();
 	}
 }

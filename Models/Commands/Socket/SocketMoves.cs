@@ -2,18 +2,18 @@
 
 namespace Models.Commands.Socket
 {
-	public class SocketMoves: ISocketCommand
+	public class SocketMove: ISocketCommand
 	{
-		private readonly Moves Moves;
+		private readonly Move Move;
 
-		public SocketMoves (Moves moves)
+		public SocketMove (Move move)
 		{
-			if (moves == null)
+			if (move == null)
 			{
 				throw new ArgumentNullException ();
 			} else
 			{
-				this.Moves = moves;
+				this.Move = move;
 			}
 		}
 
