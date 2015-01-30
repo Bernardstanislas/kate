@@ -10,3 +10,4 @@ api/.tmp
 # Compilation related files
 bin/
 obj/
+*.suo
