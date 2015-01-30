@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Models.Map
 {
@@ -10,6 +11,14 @@ namespace Models.Map
 		{
 			grid = new Tile[xSize,ySize];
 		}
+
+        public override IEnumerable<Tile> getGrid()
+        {
+            foreach (Tile tile in grid)
+            {
+                yield return tile;
+            }
+        }
 
 		public override void setTile(Tile newTile) {
 			grid [newTile.XCoordinate, newTile.YCoordinate] = newTile;
