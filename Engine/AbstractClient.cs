@@ -111,9 +111,14 @@ namespace Engine
 
 	public class MapSetEventArgs: EventArgs
 	{
-		public int XDimension{ get; set;}
-		public int YDimension{ get; set;}
+		public int width { get; set; }
+		public int height { get; set; }
 
+        public MapSetEventArgs(int width, int height) : base()
+        {
+            this.width = width;
+            this.height = height;
+        }
 	}
 
 	public class MapUpdateEventArgs: EventArgs

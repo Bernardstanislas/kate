@@ -4,10 +4,10 @@ namespace Models
 {
 	public enum Player
 	{
-		ME,
-		OPPONENT,
-		HUMANS,
-		NEUTRAL
+		Me,
+		Opponent,
+		Humans,
+		Neutral
 	}
 }
 
