@@ -11,3 +11,5 @@ api/.tmp
 bin/
 obj/
 *.suo
+App.config
+Properties/AssemblyInfo.cs
