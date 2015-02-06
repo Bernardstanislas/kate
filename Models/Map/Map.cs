@@ -5,7 +5,7 @@ namespace Models.Map
 {
 	public class Map : AbstractMap
 	{
-		private Tile[,] grid;
+        private Tile[,] grid;
 
 		public Map (int xSize, int ySize)
 		{
@@ -18,6 +18,11 @@ namespace Models.Map
             {
                 yield return tile;
             }
+        }
+
+        public override int[] getMapDimension()
+        {
+            return new int[2] { grid.GetLength(0), grid.GetLength(1) };
         }
 
 		public override void setTile(Tile newTile) {
