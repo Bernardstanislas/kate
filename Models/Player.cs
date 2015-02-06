@@ -9,5 +9,12 @@ namespace Models
 		Humans,
 		Neutral
 	}
+
+    public enum Side
+    {
+        Vampire,
+        Werewolf,
+        Unknown
+    }
 }
 

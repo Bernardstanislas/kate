@@ -15,21 +15,37 @@ namespace Engine.Socket
 	public class SocketClient: AbstractClient
 	{
         private string serverIp;
-        private int serverPort;
+        private int serverPort = 0;
         private System.Net.Sockets.Socket socket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-        private Player side;
+        private bool isPlaying = false;
+
+        private Side side = Side.Unknown; // We need to store if we're playing werewolves or vampires, because the server won't explicity tell us
 
         public SocketClient(string serverIp, int serverPort)
         {
             this.serverIp = serverIp;
             this.serverPort = serverPort;
 
-            byte[] buffer = new byte[2048];
-
-            var homeTile = new int[2] {0,0}; // Keeping the home tile here to determine in the MAP command our side
-
             open();
+            initialize();
+
+            // Also listening for the first update if we're first to play (= Vampires)
+            if(side == Side.Vampire)
+                listenToServer();
+
+            ////// TODO ///////
+            // Suscribing to bot events telling us that they're finished to send
+            // And then we listen again
+            ///////////////////
+
+            close();
+        }
+
+        private void initialize()
+        {
+            byte[] buffer = new byte[2048];
+            var homeTile = new int[2] { 0, 0 }; // Keeping the home tile here to determine our side in the MAP command
 
             // Get Map size
             while (socket.Available < 5) { Thread.Sleep(10); }
@@ -83,16 +99,19 @@ namespace Engine.Socket
             for (int i = 0; i < instructionNumber; i++)
             {
                 int number;
-
+                Player side;
                 if (buffer[i + 2] != 0) // Humans on the tile
                 {
                     side = Player.Humans;
                     number = buffer[i + 2];
                 }
-                else 
+                else
                 {
                     if (buffer[i] == homeTile[0] && buffer[i + 1] == homeTile[1]) // Determining our side
+                    {
                         side = Player.Me;
+                        this.side = buffer[i + 3] != 0 ? Side.Vampire : Side.Werewolf;
+                    }
                     else
                         side = Player.Opponent;
 
@@ -108,13 +127,66 @@ namespace Engine.Socket
             OnMapInitialization(new MapUpdateEventArgs(updateList));
         }
 
+        private void listenToServer()
+        {
+            var buffer = new byte[2048];
+
+            // Waiting for a server message
+            while (socket.Available < 3) Thread.Sleep(10);
+            socket.Receive(buffer, 3, SocketFlags.Partial);
+
+            var command = toString(buffer.Take(3));
+            if (command == "END")
+                close(); // Game is ending, we close the connection
+            if (command != "UPD")
+                throw new ArgumentException("Error, didn't get either END or UPD");
+
+            // UPD recieved
+            while (socket.Available < 1) Thread.Sleep(10);
+            socket.Receive(buffer, 1, SocketFlags.Partial);
+            if (buffer[0] < 1)
+                throw new ArgumentException("Error, no updates sent");
+
+            int instructionNumber = buffer[0];
+            while (socket.Available < instructionNumber * 5) Thread.Sleep(10);
+            socket.Receive(buffer, instructionNumber * 5, SocketFlags.Partial);
+
+            var updateList = new List<IMapUpdater>();
+            for (int i = 0; i < instructionNumber; i++)
+            {
+                int number;
+                Player side;
+                if (buffer[i + 2] != 0) // Humans on the tile
+                {
+                    side = Player.Humans;
+                    number = buffer[i + 2];
+                }
+                else if (buffer[i + 3] != 0) // Vampires on the tile
+                {
+                    side = this.side == Side.Vampire ? Player.Me : Player.Opponent;
+                    number = buffer[i + 3];
+                }
+                else if (buffer[i + 4] != 0) // Werewolves on the tile
+                {
+                    side = this.side == Side.Werewolf ? Player.Me : Player.Opponent;
+                    number = buffer[i + 4];
+                }
+                else
+                    throw new ArgumentException("Error, the tile cannot be empty");
+                updateList.Add(new MapUpdater(new Tile(buffer[i], buffer[i + 1], side, number))); // Should have factories here
+            }
+            OnMapUpdate(new MapUpdateEventArgs(updateList));
+        }
+
 		public override void open()
 		{
             socket.Connect(new IPEndPoint(IPAddress.Parse(serverIp), serverPort));
+            isPlaying = true;
 		}
 
 		public override void close()
 		{
+            isPlaying = false;
             socket.Close();
             socket.Dispose();
 		}
