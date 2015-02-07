@@ -31,13 +31,38 @@ namespace Bot
 				throw new ArgumentException ("Trying to set the size of the map but it already exists.");
 			}
 		}
-		public abstract void onMapInitialization(object sender, MapUpdateEventArgs mapInitializationEventArgs);
-		public abstract void onMapUpdate(object sender, MapUpdateEventArgs mapUpdateEventsArgs);
-		public abstract void onHomeSet(object sender, MapUpdateEventArgs homeSetEventArgs);
-		public abstract void onHousesSet(object sender, MapUpdateEventArgs housesSetEventArgs);
+
+        public virtual void onMapInitialization(object sender, MapUpdateEventArgs mapInitializationEventArgs)
+        {
+            applyMapModifications(mapInitializationEventArgs, currentMap); 
+        }
+
+        public virtual void onMapUpdate(object sender, MapUpdateEventArgs mapUpdateEventsArgs)
+        {
+            applyMapModifications(mapUpdateEventsArgs, currentMap);
+        }
+
+        public virtual void onHomeSet(object sender, MapUpdateEventArgs homeSetEventArgs)
+        {
+            applyMapModifications(homeSetEventArgs, currentMap);
+        }
+
+        public virtual void onHousesSet(object sender, MapUpdateEventArgs housesSetEventArgs)
+        {
+            applyMapModifications(housesSetEventArgs, currentMap);
+        }
+
 		public abstract void onGameEnd(object sender, EventArgs eventArgs);
 		public abstract void onDisconnection(object sender, EventArgs eventArgs);
 		#endregion
+
+        private void applyMapModifications(MapUpdateEventArgs mapInitializationEventArgs, IMap targetMap)
+        {
+            foreach (MapUpdater mapUpdater in mapInitializationEventArgs.MapUpdaters)
+            {
+                mapUpdater.execute(targetMap);
+            } 
+        }
 	}
 }
 
