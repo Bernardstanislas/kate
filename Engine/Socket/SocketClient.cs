@@ -28,18 +28,22 @@ namespace Engine.Socket
             this.serverPort = serverPort;
 
             open();
+        }
+
+        public override void declareName(DeclareName declareName)
+        {
+            sendBytes(declareName);
+
             initialize();
+            listenToServer();
+        }
 
-            // Also listening for the first update if we're first to play (= Vampires)
-            if(side == Side.Vampire)
-                listenToServer();
+        public override void executeMoves(ICollection<Move> moves)
+        {
+            foreach (var move in moves)
+                sendBytes(move);
 
-            ////// TODO ///////
-            // Suscribing to bot events telling us that they're finished to send
-            // And then we listen again
-            ///////////////////
-
-            close();
+            listenToServer();
         }
 
         private void initialize()
@@ -89,7 +93,7 @@ namespace Engine.Socket
             while (socket.Available < 4) { Thread.Sleep(10); }
             socket.Receive(buffer, 4, SocketFlags.Partial);
             if (toString(buffer.Take(3)) != "MAP")
-                throw new Exception("Erreur, attendu: MAP");
+                throw new ArgumentException("MAP expected");
             int instructionNumber = buffer[3];
 
             while (socket.Available < instructionNumber * 5) { }
@@ -191,20 +195,9 @@ namespace Engine.Socket
             socket.Dispose();
 		}
 
-		public override void declareName(DeclareName declareName)
+		private void sendBytes(ICommand commandToSend)
 		{
-			sendBytes(SocketCommandFactory.buildSocketCommand(declareName));
-		}
-
-		public override void executeMoves(ICollection<Move> moves)
-		{
-            foreach (var move in moves)
-			    sendBytes(SocketCommandFactory.buildSocketCommand(move));
-		}
-
-		private void sendBytes(ISocketCommand socketCommandToSend)
-		{
-            socket.Send(socketCommandToSend.toBytes());
+            socket.Send(SocketCommandFactory.buildSocketCommand(commandToSend).toBytes());
 		}
 
         private string toString(IEnumerable<byte> bytes)
