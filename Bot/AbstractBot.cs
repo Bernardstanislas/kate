@@ -26,7 +26,7 @@ namespace Bot
 		#region Event listeners
 		public virtual void onMapSet(object sender, MapSetEventArgs mapSetEventArgs) {
 			if (currentMap == null) {
-				currentMap = new Map (mapSetEventArgs.XDimension, mapSetEventArgs.YDimension);
+				currentMap = new Map (mapSetEventArgs.width, mapSetEventArgs.height);
 			} else {
 				throw new ArgumentException ("Trying to set the size of the map but it already exists.");
 			}
