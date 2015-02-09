@@ -1,11 +1,12 @@
-﻿using System;
-
-namespace Models.Commands
+﻿namespace Models.Commands
 {
 	public class DeclareName: ICommand
 	{
-		public DeclareName ()
+        public string Name { get; private set; }
+
+		public DeclareName(string name)
 		{
+            this.Name = name;
 		}
 	}
 }

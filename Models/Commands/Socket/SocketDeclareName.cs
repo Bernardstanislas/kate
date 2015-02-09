@@ -1,25 +1,23 @@
 ﻿using System;
+using System.Text;
 
 namespace Models.Commands.Socket
 {
 	public class SocketDeclareName: ISocketCommand
 	{
-		private readonly DeclareName DeclareName;
+		private readonly DeclareName declareName;
 
 		public SocketDeclareName (DeclareName declareName)
 		{
 			if (declareName == null)
-			{
-				throw new ArgumentNullException ();
-			} else
-			{
-				this.DeclareName = declareName;
-			}
+				throw new ArgumentNullException();
+            else
+				this.declareName = declareName;
 		}
 
-		public byte[] toBytes ()
+		public byte[] toBytes()
 		{
-			throw new NotImplementedException ();
+            return Encoding.ASCII.GetBytes(declareName.Name);
 		}
 	}
 }

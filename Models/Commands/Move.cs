@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Models.Commands
 {
-	public class Move
+	public class Move : ICommand
 	{
 		public List<IMapUpdater> Result{ get; set;}
 

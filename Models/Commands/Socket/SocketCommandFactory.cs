@@ -13,7 +13,7 @@ namespace Models.Commands.Socket
 
 		public static ISocketCommand buildSocketCommand(ICommand command)
 		{
-			return socketCommandsReference [command.GetType ().ToString ()] (command);
+			return socketCommandsReference [command.GetType().ToString()] (command);
 		}
 	}
 }

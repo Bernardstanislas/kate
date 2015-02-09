@@ -13,7 +13,7 @@ namespace Models.Map
 
 		public virtual void updateMap (IMapUpdater mapUpdater)
 		{
-			mapUpdater.execute (this);
+			mapUpdater.execute(this);
 		}
 	}
 }
