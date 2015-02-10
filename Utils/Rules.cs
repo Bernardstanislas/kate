@@ -85,7 +85,6 @@ namespace kate
 								possibleMoves.Add(move);
 							}
 					}
-
 				}
 			}
 
@@ -104,6 +103,21 @@ namespace kate
 				}
 			}
 		return true;
+		}
+
+		public static List<Move> getLegalFullForceMoves(Map map)
+		{
+			List<Move> possibleFullForceMoves = getpossibleMoves (map, "fullForce");
+			List<Move> legalMoves = new List<Move>();
+			foreach (Move currentMove in possibleFullForceMoves) 
+			{
+				if (isLegalMove(currentMove, legalMoves))
+				{
+					legalMoves.Add(currentMove);
+				}
+			}
+
+			return legalMoves;
 		}
 		#endregion
 
