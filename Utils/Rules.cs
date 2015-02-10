@@ -9,22 +9,18 @@ namespace kate
 {
 	public static class Rules
 	{
-		public static List<Move> getpossibleMoves(Map map)
+		#region generateMoves
+		// Return all possible unit moves from a map (different from a combination of moves)
+		//
+		public static List<Move> getpossibleMoves(Map map, string param = "all")
 		{
 			List<Tile> myTiles = new List<Tile>();
+			myTiles = map.getMyTiles();
 			int[] gridDim = map.getMapDimension();
-
-			foreach (Tile tile in map.getGrid())
-			{
-				if (tile.Owner.Equals(Models.Player.Me))
-				{
-					myTiles.Add(tile);
-				}
-			}
 
 			List<Move> possibleMoves = new List<Move>();
 
-			foreach (Tile tile in myTiles.Where(tile => tile.Population > 0))
+			foreach (Tile tile in myTiles)
 			{
 				int xPos = tile.XCoordinate;
 				int yPos = tile.YCoordinate;
@@ -74,10 +70,22 @@ namespace kate
 								yPos += i;
 							}
 						}
+
+						Tile destTile = map.getTile (xPos, yPos);
+
+						if (param == "fullForce") // Assume that the move will use all the population on the tile
+						{
+							Move move = new Move (tile, destTile, tile.Population);
+							possibleMoves.Add(move);
+						}
+						else if (param == "all") // Generate different moves for different populatio to move
+							for (int pop = 1; pop <= tile.Population; pop++) 
+							{
+								Move move = new Move (tile, destTile, pop);
+								possibleMoves.Add(move);
+							}
 					}
-						Tile destTile = map.getTile(xPos, yPos);
-						Move move = new Move(tile, destTile, tile.Population);
-						possibleMoves.Add(move);
+
 				}
 			}
 
@@ -85,22 +93,19 @@ namespace kate
 		}
 
 
-		public static List<List<Move>> getLegalMovesLists(Map map, List<Move> moveList)
+		// Return true is a move is compatible with a list of other moves
+		public static bool isLegalMove(Move move, List<Move> moveList)
 		{
-			List<List<Move>> legalMoves = new List<List<Move>>();
-
-			foreach (Move move1 in moveList)
+			foreach (Move otherMove in moveList)
 			{
-				foreach (Move move2 in moveList.Where( move2 => move1 != move2))
+				if (move.Dest == otherMove.Origin)
 				{
-					if (move1.Dest != move2.Origin)
-					{
-						legalMoves.Add(move1);
-					}
+					return false;
 				}
 			}
+		return true;
 		}
-
+		#endregion
 
 
 	}
