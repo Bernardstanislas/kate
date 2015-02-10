@@ -123,19 +123,7 @@ namespace Engine
 
 	public class MapUpdateEventArgs: EventArgs
 	{
-		private ICollection<IMapUpdater> mapUpdaters;
-
-		public ICollection<IMapUpdater> MapUpdaters
-		{
-			get
-			{
-				return mapUpdaters;
-			}
-			set
-			{
-				mapUpdaters = value;
-			}
-		}
+        public ICollection<IMapUpdater> MapUpdaters { get; private set; }
 
 		public MapUpdateEventArgs(ICollection<IMapUpdater> mapUpdaters)
 		{
