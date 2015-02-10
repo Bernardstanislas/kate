@@ -16,10 +16,21 @@ namespace Kate.Maps
                     grid[i, j] = new Tile(i, j);
         }
 
-        public override IEnumerable<Tile> getGrid()
+		public override IEnumerable<Tile> getGrid()
+		{
+			foreach (Tile tile in grid)
+				yield return tile;
+		}
+
+		public override IEnumerable<Tile> getMyTiles()
         {
-            foreach (Tile tile in grid)
-                yield return tile;
+			foreach (Tile tile in grid)
+			{
+				if (tile.Owner.Equals (Models.Player.Me))
+				{
+					yield return tile;
+				}
+			}
         }
 
         public override int[] getMapDimension()
