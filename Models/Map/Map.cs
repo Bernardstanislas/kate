@@ -9,15 +9,17 @@ namespace Models.Map
 
 		public Map (int xSize, int ySize)
 		{
-			grid = new Tile[xSize,ySize];
+			grid = new Tile[xSize, ySize];
+
+            for (int i = 0; i < xSize; i++)
+                for (int j = 0; j < ySize; j++)
+                    grid[i, j] = new Tile(i, j);
 		}
 
         public override IEnumerable<Tile> getGrid()
         {
             foreach (Tile tile in grid)
-            {
                 yield return tile;
-            }
         }
 
         public override int[] getMapDimension()
@@ -25,12 +27,14 @@ namespace Models.Map
             return new int[2] { grid.GetLength(0), grid.GetLength(1) };
         }
 
-		public override void setTile(Tile newTile) {
-			grid [newTile.XCoordinate, newTile.YCoordinate] = newTile;
+		public override void setTile(Tile newTile) 
+        {
+			grid[newTile.XCoordinate, newTile.YCoordinate] = newTile;
 		}
 
-		public override Tile getTile (int xCoordinate, int yCoordinate) {
-			return grid [xCoordinate, yCoordinate];
+		public override Tile getTile (int xCoordinate, int yCoordinate) 
+        {
+			return grid[xCoordinate, yCoordinate];
 		}
 	}
 }
