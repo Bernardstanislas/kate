@@ -6,13 +6,15 @@ namespace Models.Commands
 {
 	public class Move : ICommand
 	{
-		public List<IMapUpdater> Result{ get; set;}
+		public Tile Origin { get; private set; }
+        public Tile Dest { get; private set; }
+        public int PopToMove { get; private set; }
 
 		public Move (Tile origin, Tile dest, int popToMove)
 		{
-
-
-			//this.Result = result;
+            Origin = origin;
+            Dest = dest;
+            PopToMove = popToMove;
 		}
 	}
 }
