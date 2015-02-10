@@ -4,11 +4,11 @@ namespace kate
 {
     class Program
     {
-        public static int Main()
+        public static void Main()
         {
-            Console.WriteLine("Salut moi c'est KATE");
+            Console.WriteLine("KATE is starting...");
+            new Game("127.0.0.1", 5555);           
             Console.ReadLine();
-            return 0;
         }
     }
 }
