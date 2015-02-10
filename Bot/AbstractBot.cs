@@ -7,11 +7,12 @@ namespace Bot
 	public abstract class AbstractBot: IBot
 	{
 		protected readonly IClient client;
-		protected IMap currentMap;
+		protected IMap map;
 
-		protected AbstractBot(IClient client)
+		protected AbstractBot(IClient client, IMap map)
 		{
 			this.client = client;
+            this.map = map;
 			#region Events subcriptions
 			client.MapSet += new MapSetEventHandler(this.onMapSet);
 			client.MapInitialization += new MapInitializationEventHandler(this.onMapInitialization);
@@ -25,8 +26,8 @@ namespace Bot
 
 		#region Event listeners
 		public virtual void onMapSet(object sender, MapSetEventArgs mapSetEventArgs) {
-			if (currentMap == null) {
-				currentMap = new Map (mapSetEventArgs.width, mapSetEventArgs.height);
+			if (map == null) {
+				map = new Map (mapSetEventArgs.width, mapSetEventArgs.height);
 			} else {
 				throw new ArgumentException ("Trying to set the size of the map but it already exists.");
 			}
@@ -34,22 +35,22 @@ namespace Bot
 
         public virtual void onMapInitialization(object sender, MapUpdateEventArgs mapInitializationEventArgs)
         {
-            applyMapModifications(mapInitializationEventArgs, currentMap); 
+            applyMapModifications(mapInitializationEventArgs, map); 
         }
 
         public virtual void onMapUpdate(object sender, MapUpdateEventArgs mapUpdateEventsArgs)
         {
-            applyMapModifications(mapUpdateEventsArgs, currentMap);
+            applyMapModifications(mapUpdateEventsArgs, map);
         }
 
         public virtual void onHomeSet(object sender, MapUpdateEventArgs homeSetEventArgs)
         {
-            applyMapModifications(homeSetEventArgs, currentMap);
+            applyMapModifications(homeSetEventArgs, map);
         }
 
         public virtual void onHousesSet(object sender, MapUpdateEventArgs housesSetEventArgs)
         {
-            applyMapModifications(housesSetEventArgs, currentMap);
+            applyMapModifications(housesSetEventArgs, map);
         }
 
 		public abstract void onGameEnd(object sender, EventArgs eventArgs);
