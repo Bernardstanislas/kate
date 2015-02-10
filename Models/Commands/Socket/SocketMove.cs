@@ -16,7 +16,13 @@ namespace Models.Commands.Socket
 
 		public byte[] toBytes()
 		{
-			throw new NotImplementedException();
+            var output = new byte[5];
+            output[0] = (byte)Move.Origin.XCoordinate;
+            output[1] = (byte)Move.Origin.YCoordinate;
+            output[2] = (byte)Move.PopToMove;
+            output[3] = (byte)Move.Dest.XCoordinate;
+            output[4] = (byte)Move.Dest.YCoordinate;
+            return output;
 		}
 	}
 }

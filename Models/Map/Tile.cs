@@ -61,7 +61,7 @@ namespace Models.Map
 			}
 			set
 			{
-				if (value == Player.NEUTRAL)
+				if (value == Player.Neutral)
 				{
 					Population = 0;
 				}
@@ -75,7 +75,7 @@ namespace Models.Map
 		#region Constructors
 		public Tile(): this(-1, -1) {}
 
-		public Tile(int xCoordinate, int yCoordinate): this(xCoordinate, yCoordinate, Player.NEUTRAL, 0) {}
+		public Tile(int xCoordinate, int yCoordinate): this(xCoordinate, yCoordinate, Player.Neutral, 0) {}
 
 		public Tile(int xCoordinate, int yCoordinate, Player owner, int population)
 		{
