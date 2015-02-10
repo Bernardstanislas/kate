@@ -9,7 +9,7 @@ namespace kate
 {
 	public static class Rules
 	{
-		public static List<Move> getLegalMoves(Map map)
+		public static List<Move> getpossibleMoves(Map map)
 		{
 			List<Tile> myTiles = new List<Tile>();
 			int[] gridDim = map.getMapDimension();
@@ -21,6 +21,8 @@ namespace kate
 					myTiles.Add(tile);
 				}
 			}
+
+			List<Move> possibleMoves = new List<Move>();
 
 			foreach (Tile tile in myTiles.Where(tile => tile.Population > 0))
 			{
@@ -75,9 +77,31 @@ namespace kate
 					}
 						Tile destTile = map.getTile(xPos, yPos);
 						Move move = new Move(tile, destTile, tile.Population);
-						legalMoves.Add(move);
+						possibleMoves.Add(move);
+				}
+			}
+
+			return possibleMoves;
+		}
+
+
+		public static List<List<Move>> getLegalMovesLists(Map map, List<Move> moveList)
+		{
+			List<List<Move>> legalMoves = new List<List<Move>>();
+
+			foreach (Move move1 in moveList)
+			{
+				foreach (Move move2 in moveList.Where( move2 => move1 != move2))
+				{
+					if (move1.Dest != move2.Origin)
+					{
+						legalMoves.Add(move1);
+					}
 				}
 			}
 		}
+
+
+
 	}
 }
