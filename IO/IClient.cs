@@ -1,6 +1,7 @@
 ﻿using System;
-using Kate.Commands;
 using System.Collections.Generic;
+
+using Kate.Commands;
 
 namespace Kate.IO
 {
@@ -9,7 +10,8 @@ namespace Kate.IO
 		event MapSetEventHandler MapSet;
 		event MapInitEventHandler MapInit;
 		event MapUpdateEventHandler MapUpdate;
-		event EventHandler GameEnd;
+        event EventHandler GameEnd;
+		event EventHandler GameDisconnection;
 
 		void open();
 		void declareName(DeclareName declareName);
