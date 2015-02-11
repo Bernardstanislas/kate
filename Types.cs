@@ -1,8 +1,8 @@
 ﻿using System;
 
-namespace Models
+namespace Kate.Types
 {
-	public enum Player
+	public enum Owner
 	{
 		Me,
 		Opponent,

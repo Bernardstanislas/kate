@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Models.Map
+namespace Kate.Maps
 {
 	public class MapUpdater: IMapUpdater
 	{

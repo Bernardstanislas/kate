@@ -1,22 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using System.Threading;
-using Models;
-using Models.Commands;
-using Models.Commands.Socket;
-using Models.Map;
-using System.Collections.Generic;
 
-namespace Engine.Socket
+using Kate.Commands;
+using Kate.Commands.Socket;
+using Kate.Maps;
+using Kate.Types;
+
+namespace Kate.IO
 {
 	public class SocketClient: AbstractClient
 	{
         private string serverIp;
         private int serverPort = 0;
-        private System.Net.Sockets.Socket socket = new System.Net.Sockets.Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+        private Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
         
         private Side side = Side.Unknown; // We need to store if we're playing werewolves or vampires, because the server won't explicity tell us
 
@@ -85,25 +86,26 @@ namespace Engine.Socket
             while (socket.Available < humanNumber * 2) { Thread.Sleep(50); }
             socket.Receive(buffer, humanNumber * 2, SocketFlags.Partial);
  
-            var housesList = new List<IMapUpdater>();
+            var housesList = new List<Tile>();
             for (int i = 0; i < humanNumber * 2; i += 2)
-                housesList.Add(new MapUpdater(new Tile(buffer[i], buffer[i + 1], Player.Humans, 0))); // Should have factories here
+                housesList.Add(new Tile(buffer[i], buffer[i + 1], Owner.Humans, 0));
 
             Console.WriteLine("HUM instruction received and processed");
-            OnHousesSet(new MapUpdateEventArgs(housesList));
+            OnMapInit(new MapUpdateEventArgs(housesList));
 
             // Get Home position
             while (socket.Available < 5) { Thread.Sleep(10); }
             socket.Receive(buffer, 5, SocketFlags.Partial);
             if (toString(buffer.Take(3)) != "HME")
                 throw new ArgumentException("HME expected");
-            var home = new List<IMapUpdater>();
+
+            var home = new List<Tile>();
             homeTile[0] = buffer[3];
             homeTile[1] = buffer[4];
-            home.Add(new MapUpdater(new Tile(buffer[3], buffer[4], Player.Me, 0))); // Should have factories here
+            home.Add(new Tile(buffer[3], buffer[4], Owner.Me, 0));
             
             Console.WriteLine("HME instruction received and processed");
-            OnHomeSet(new MapUpdateEventArgs(home));
+            OnMapInit(new MapUpdateEventArgs(home));
 
             // Get Map
             while (socket.Available < 4) { Thread.Sleep(10); }
@@ -115,25 +117,25 @@ namespace Engine.Socket
             while (socket.Available < instructionNumber * 5) { }
             socket.Receive(buffer, instructionNumber * 5, SocketFlags.Partial);
 
-            var updateList = new List<IMapUpdater>();
+            var updateList = new List<Tile>();
             for (int i = 0; i < instructionNumber * 5; i += 5)
             {
                 int number;
-                Player side;
+                Owner owner;
                 if (buffer[i + 2] != 0) // Humans on the tile
                 {
-                    side = Player.Humans;
+                    owner = Owner.Humans;
                     number = buffer[i + 2];
                 }
                 else
                 {
                     if (buffer[i] == homeTile[0] && buffer[i + 1] == homeTile[1]) // Determining our side
                     {
-                        side = Player.Me;
+                        owner = Owner.Me;
                         this.side = buffer[i + 3] != 0 ? Side.Vampire : Side.Werewolf;
                     }
                     else
-                        side = Player.Opponent;
+                        owner = Owner.Opponent;
 
                     if (buffer[i + 3] != 0) // Vampires on the tile
                         number = buffer[i + 3];
@@ -142,18 +144,16 @@ namespace Engine.Socket
                     else
                         throw new ArgumentException("Error, the tile cannot be empty");
                 }
-                updateList.Add(new MapUpdater(new Tile(buffer[i], buffer[i + 1], side, number))); // Should have factories here
+                updateList.Add(new Tile(buffer[i], buffer[i + 1], owner, number));
             }
 
             Console.WriteLine("MAP instruction recieved and processed");
-            OnMapInitialization(new MapUpdateEventArgs(updateList));
+            OnMapInit(new MapUpdateEventArgs(updateList));
         }
 
         private void listenToServer()
         {
             Console.WriteLine("Listening for updates");
-
-            bool isPlaying = true;
 
             var buffer = new byte[2048];
             do
@@ -166,62 +166,63 @@ namespace Engine.Socket
                 if (command == "END")
                 {
                     Console.WriteLine("Server is ending the game");
+                    buffer[0] = 1;
                     close(); // Game is ending, we close the connection
-                    isPlaying = false;
-                    break;
                 }
-                if (command != "UPD")
+                else if (command != "UPD")
                     throw new ArgumentException("Error, didn't get either END or UPD");
 
-                Console.WriteLine("Preparing for update");
-
-                // UPD recieved
-                while (socket.Available < 1) Thread.Sleep(10);
-                socket.Receive(buffer, 1, SocketFlags.Partial);
-
-                var updateList = new List<IMapUpdater>();
-
-                if (buffer[0] == 0)
-                    Console.WriteLine("Empty update");
                 else
                 {
-                    int instructionNumber = buffer[0];
-                    while (socket.Available < instructionNumber * 5) Thread.Sleep(10);
-                    socket.Receive(buffer, instructionNumber * 5, SocketFlags.Partial);
+                    Console.WriteLine("Preparing for update");
 
-                    for (int i = 0; i < instructionNumber * 5; i += 5)
+                    // UPD recieved
+                    while (socket.Available < 1) Thread.Sleep(10);
+                    socket.Receive(buffer, 1, SocketFlags.Partial);
+
+                    var updateList = new List<Tile>();
+
+                    if (buffer[0] == 0)
+                        Console.WriteLine("Empty update");
+                    else
                     {
-                        int number;
-                        Player side;
-                        if (buffer[i + 2] != 0) // Humans on the tile
+                        int instructionNumber = buffer[0];
+                        while (socket.Available < instructionNumber * 5) Thread.Sleep(10);
+                        socket.Receive(buffer, instructionNumber * 5, SocketFlags.Partial);
+
+                        for (int i = 0; i < instructionNumber * 5; i += 5)
                         {
-                            side = Player.Humans;
-                            number = buffer[i + 2];
+                            int number;
+                            Owner owner;
+                            if (buffer[i + 2] != 0) // Humans on the tile
+                            {
+                                owner = Owner.Humans;
+                                number = buffer[i + 2];
+                            }
+                            else if (buffer[i + 3] != 0) // Vampires on the tile
+                            {
+                                owner = this.side == Side.Vampire ? Owner.Me : Owner.Opponent;
+                                number = buffer[i + 3];
+                            }
+                            else if (buffer[i + 4] != 0) // Werewolves on the tile
+                            {
+                                owner = this.side == Side.Werewolf ? Owner.Me : Owner.Opponent;
+                                number = buffer[i + 4];
+                            }
+                            else
+                            {
+                                owner = Owner.Neutral;
+                                number = 0;
+                            }
+                            updateList.Add(new Tile(buffer[i], buffer[i + 1], owner, number));
                         }
-                        else if (buffer[i + 3] != 0) // Vampires on the tile
-                        {
-                            side = this.side == Side.Vampire ? Player.Me : Player.Opponent;
-                            number = buffer[i + 3];
-                        }
-                        else if (buffer[i + 4] != 0) // Werewolves on the tile
-                        {
-                            side = this.side == Side.Werewolf ? Player.Me : Player.Opponent;
-                            number = buffer[i + 4];
-                        }
-                        else
-                        {
-                            side = Player.Neutral;
-                            number = 0;
-                        }
-                        updateList.Add(new MapUpdater(new Tile(buffer[i], buffer[i + 1], side, number))); // Should have factories here
+                        Console.WriteLine("UPD instruction recieved and processed");
                     }
 
-                    Console.WriteLine("UPD instruction recieved and processed");
+                    OnMapUpdate(new MapUpdateEventArgs(updateList));
                 }
-
-                OnMapUpdate(new MapUpdateEventArgs(updateList));
-
-            } while (buffer[0] < 1 && isPlaying);
+                Console.WriteLine(buffer[0]);
+            } while (buffer[0] < 1);
         }
 
 		public override void open()
@@ -236,6 +237,7 @@ namespace Engine.Socket
             Console.WriteLine("Closing the conection with the game server");
             socket.Close();
             socket.Dispose();
+            OnGameEnd(new EventArgs());
 		}
 
 		private void sendBytes(ICommand commandToSend)

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Models.Commands.Socket
+namespace Kate.Commands.Socket
 {
 	public class SocketMove: ISocketCommand
 	{

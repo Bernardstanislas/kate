@@ -1,30 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using Engine;
-using Models.Map;
-using Models.Commands;
-using Models;
+using Kate.IO;
+using Kate.Maps;
+using Kate.Commands;
+using Kate.Types;
 
-namespace Bot
+namespace Kate.Bots
 {
     public class DumbBot : AbstractBot
     {
-        public DumbBot(IClient client, IMap map) : base(client, map)
-        {
-            client.MapUpdate += new MapUpdateEventHandler(this.playTurn);
-        }
-
-        public override void onGameEnd(object sender, EventArgs eventArgs)
-        {
-
-        }
+        public DumbBot(SocketClient socket, string name) : base(socket, name) { }
         
-        public override void onDisconnection(object sender, EventArgs eventArgs)
-        {
-
-        }
-        
-        private void playTurn(object sender, MapUpdateEventArgs mapUpdateEventsArgs)
+        public override void playTurn(object sender, MapUpdateEventArgs mapUpdateEventsArgs)
         {
             Random rnd = new Random();
             List<Tile> myTiles = new List<Tile>();
@@ -33,7 +20,7 @@ namespace Bot
             //We get our own tiles and they got a 50% chance of being processed, ie put into the myTiles list
             foreach (Tile tile in map.getGrid())
             {
-                if (tile.Owner.Equals(Models.Player.Me))
+                if (tile.Owner.Equals(Owner.Me))
                     myTiles.Add(tile);
             }
 

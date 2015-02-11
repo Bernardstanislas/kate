@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Models.Commands.Socket
+namespace Kate.Commands.Socket
 {
 	public static class SocketCommandFactory
 	{
