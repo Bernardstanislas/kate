@@ -13,8 +13,8 @@ using Kate.Types;
 
 namespace Kate.IO
 {
-	public class SocketClient: AbstractClient
-	{
+    public class SocketClient: AbstractClient
+    {
         private string serverIp;
         private int serverPort = 0;
         private Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -220,29 +220,29 @@ namespace Kate.IO
             }
         }
 
-		public override void open()
-		{
+        public override void open()
+        {
             Console.WriteLine("Client: Starting connection to the game server");
             socket.Connect(new IPEndPoint(IPAddress.Parse(serverIp), serverPort));
             Console.WriteLine("Client: Connected to game server");
-		}
+        }
 
-		public override void close()
-		{
+        public override void close()
+        {
             socket.Close();
             socket.Dispose();
             OnGameDisconnection(new EventArgs());
-		}
+        }
 
-		private void sendBytes(ICommand commandToSend)
-		{
+        private void sendBytes(ICommand commandToSend)
+        {
             socket.Send(SocketCommandFactory.buildSocketCommand(commandToSend).toBytes());
-		}
+        }
 
         private string toString(IEnumerable<byte> bytes)
         {
             return Encoding.ASCII.GetString(bytes.ToArray());
         }
-	}
+    }
 }
 

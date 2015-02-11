@@ -35,8 +35,8 @@ namespace Kate.Bots
                 int popToMove = rnd.Next(1, tile.Population);
 
                 //Then we randomly choose a direction to move
-                int xPos = tile.XCoordinate;
-                int yPos = tile.YCoordinate;
+                int xPos = tile.X;
+                int yPos = tile.Y;
 
                 int proba = rnd.Next(1, 11);
                 if (proba > 5)

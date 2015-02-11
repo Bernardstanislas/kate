@@ -3,18 +3,18 @@ using System.Collections.Generic;
 
 namespace Kate.Maps
 {
-	public class Map : AbstractMap
-	{
+    public class Map : AbstractMap
+    {
         private Tile[,] grid;
 
-		public Map (int xSize, int ySize)
-		{
-			grid = new Tile[xSize, ySize];
+        public Map (int xSize, int ySize)
+        {
+            grid = new Tile[xSize, ySize];
 
             for (int i = 0; i < xSize; i++)
                 for (int j = 0; j < ySize; j++)
                     grid[i, j] = new Tile(i, j);
-		}
+        }
 
         public override IEnumerable<Tile> getGrid()
         {
@@ -27,15 +27,15 @@ namespace Kate.Maps
             return new int[2] { grid.GetLength(0), grid.GetLength(1) };
         }
 
-		public override void setTile(Tile newTile) 
+        public override void setTile(Tile newTile) 
         {
-			grid[newTile.XCoordinate, newTile.YCoordinate] = newTile;
-		}
+            grid[newTile.X, newTile.Y] = newTile;
+        }
 
-		public override Tile getTile (int xCoordinate, int yCoordinate) 
+        public override Tile getTile(int xCoordinate, int yCoordinate) 
         {
-			return grid[xCoordinate, yCoordinate];
-		}
-	}
+            return grid[xCoordinate, yCoordinate];
+        }
+    }
 }
 
