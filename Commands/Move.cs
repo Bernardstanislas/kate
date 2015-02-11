@@ -1,6 +1,6 @@
 ﻿using System;
+
 using Kate.Maps;
-using System.Collections.Generic;
 
 namespace Kate.Commands
 {

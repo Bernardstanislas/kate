@@ -1,6 +1,7 @@
 ﻿using System;
-using Kate.IO;
+
 using Kate.Bots;
+using Kate.IO;
 
 namespace kate
 {
