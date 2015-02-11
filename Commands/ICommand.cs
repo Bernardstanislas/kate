@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Kate.Commands
+﻿namespace Kate.Commands
 {
 	public interface ICommand
 	{

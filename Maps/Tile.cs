@@ -1,6 +1,6 @@
 ﻿using System;
+
 using Kate.Types;
-using System.IO;
 
 namespace Kate.Maps
 {

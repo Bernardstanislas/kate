@@ -63,7 +63,8 @@
     <Compile Include="Maps\Map.cs" />
     <Compile Include="Maps\MapUpdater.cs" />
     <Compile Include="Maps\Tile.cs" />
-    <Compile Include="Types.cs" />
+    <Compile Include="Types\Owner.cs" />
+    <Compile Include="Types\Side.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
