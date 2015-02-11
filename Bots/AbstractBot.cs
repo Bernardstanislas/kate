@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+
+using Kate.Commands;
 using Kate.IO;
 using Kate.Maps;
-using Kate.Commands;
 
 namespace Kate.Bots
 {
@@ -18,8 +20,8 @@ namespace Kate.Bots
 			client.MapSet += new MapSetEventHandler(this.onMapSet);
 			client.MapInit += new MapInitEventHandler(this.onMapInit);
 			client.MapUpdate += new MapUpdateEventHandler(this.onMapUpdate);
-            client.MapUpdate += new MapUpdateEventHandler(this.playTurn);
-			client.GameEnd += new EventHandler(this.onGameEnd);
+            client.GameEnd += new EventHandler(this.onGameEnd);
+			client.GameDisconnection += new EventHandler(this.onGameDisconnection);
 			#endregion
 
             client.declareName(new DeclareName(name));
@@ -28,29 +30,36 @@ namespace Kate.Bots
 		#region Event listeners
 		public virtual void onMapSet(object sender, MapSetEventArgs mapSetEventArgs) 
         {
-			if (map == null)
-				map = new Kate.Maps.Map(mapSetEventArgs.Width, mapSetEventArgs.Height);
-			else
-				throw new ArgumentException("Trying to set the size of the map but it already exists.");
+            map = new Map(mapSetEventArgs.Width, mapSetEventArgs.Height);
+            Console.WriteLine("Bot: Map has been set");
 		}
 
         public virtual void onMapInit(object sender, MapUpdateEventArgs mapUpdateEventArgs)
         {
             applyMapModifications(mapUpdateEventArgs);
+            Console.WriteLine("Bot: Init update processed");
         }
 
         public virtual void onMapUpdate(object sender, MapUpdateEventArgs mapUpdateEventArgs)
         {
-            applyMapModifications(mapUpdateEventArgs); 
+            applyMapModifications(mapUpdateEventArgs);
+            Console.WriteLine("Bot: Update processed");
+
+            client.executeMoves(playTurn());
         }
 
-        public abstract void playTurn(object sender, MapUpdateEventArgs mapUpdateEventArgs);
-
-		public virtual void onGameEnd(object sender, EventArgs eventArgs)
+        public virtual void onGameEnd(object sender, EventArgs eventArgs)
         {
-            Console.WriteLine("Game Over");
+            Console.WriteLine("Bot: Game Over");
+        }
+
+		public virtual void onGameDisconnection(object sender, EventArgs eventArgs)
+        {
+            Console.WriteLine("Bot: Connection with the server is over");
         }
 		#endregion
+
+        public abstract ICollection<Move> playTurn();
 
         private void applyMapModifications(MapUpdateEventArgs mapUpdateEventArgs)
         {

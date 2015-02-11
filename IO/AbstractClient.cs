@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+
 using Kate.Commands;
 using Kate.Maps;
-using System.Collections.Generic;
 
 namespace Kate.IO
 {
@@ -13,7 +14,8 @@ namespace Kate.IO
 		public event MapSetEventHandler MapSet;
         public event MapInitEventHandler MapInit;
 		public event MapUpdateEventHandler MapUpdate;
-		public event EventHandler GameEnd;
+        public event EventHandler GameEnd;
+		public event EventHandler GameDisconnection;
 		#endregion
 
 		#region Events launchers
@@ -44,6 +46,13 @@ namespace Kate.IO
 			if (GameEnd != null)
 				GameEnd(this, eventArgs);
 		}
+
+        // Fires a GameDisconnection event when called
+        protected virtual void OnGameDisconnection(EventArgs eventArgs)
+        {
+            if (GameDisconnection != null)
+                GameDisconnection(this, eventArgs);
+        }
 		#endregion
 		#endregion
 
@@ -64,6 +73,8 @@ namespace Kate.IO
 	public delegate void MapSetEventHandler(object sender, MapSetEventArgs e);
 	public delegate void MapInitEventHandler(object sender, MapUpdateEventArgs e);
 	public delegate void MapUpdateEventHandler(object sender, MapUpdateEventArgs e);
+    public delegate void GameEnd(object sender, EventArgs e);
+    public delegate void GameDisconnectionEventHandler(object sender, EventArgs e);
 	#endregion
 
 	#region Custom event args

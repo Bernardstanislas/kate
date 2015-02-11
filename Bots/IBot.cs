@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+
+using Kate.Commands;
 using Kate.IO;
 
 namespace Kate.Bots
@@ -9,10 +12,11 @@ namespace Kate.Bots
 		void onMapSet(object sender, MapSetEventArgs mapSetEventArgs);
 		void onMapInit(object sender, MapUpdateEventArgs mapInitializationEventArgs);
 		void onMapUpdate(object sender, MapUpdateEventArgs mapUpdateEventArgs);
-		void onGameEnd(object sender, EventArgs eventArgs);
+        void onGameEnd(object sender, EventArgs eventArgs);
+		void onGameDisconnection(object sender, EventArgs eventArgs);
 		#endregion
 
-        void playTurn(object sender, MapUpdateEventArgs mapUpdateEventArgs);
+        ICollection<Move> playTurn();
 	}
 }
 

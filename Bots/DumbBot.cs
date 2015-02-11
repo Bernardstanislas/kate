@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+
+using Kate.Commands;
 using Kate.IO;
 using Kate.Maps;
-using Kate.Commands;
 using Kate.Types;
 
 namespace Kate.Bots
@@ -11,7 +12,7 @@ namespace Kate.Bots
     {
         public DumbBot(SocketClient socket, string name) : base(socket, name) { }
         
-        public override void playTurn(object sender, MapUpdateEventArgs mapUpdateEventsArgs)
+        public override ICollection<Move> playTurn()
         {
             Random rnd = new Random();
             List<Tile> myTiles = new List<Tile>();
@@ -59,7 +60,7 @@ namespace Kate.Bots
                 turnMoves.Add(move);
             }
 
-            client.executeMoves(turnMoves);
+            return turnMoves;
         }
     }
 }
