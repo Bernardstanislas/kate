@@ -1,8 +1,8 @@
 ﻿using System;
-using Models.Map;
+using Kate.Maps;
 using System.Collections.Generic;
 
-namespace Models.Commands
+namespace Kate.Commands
 {
 	public class Move : ICommand
 	{

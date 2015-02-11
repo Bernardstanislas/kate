@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Models.Commands
+namespace Kate.Commands
 {
 	public interface ICommand
 	{

@@ -3,7 +3,6 @@ api/node_modules
 api/.tmp
 
 # C# IDE related files
-*.csproj
 *.sln
 *.userprefs
 
@@ -12,4 +11,3 @@ bin/
 obj/
 *.suo
 App.config
-Properties/AssemblyInfo.cs

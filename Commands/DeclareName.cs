@@ -1,4 +1,4 @@
-﻿namespace Models.Commands
+﻿namespace Kate.Commands
 {
 	public class DeclareName: ICommand
 	{

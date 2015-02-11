@@ -1,4 +1,6 @@
 ﻿using System;
+using Kate.IO;
+using Kate.Bots;
 
 namespace kate
 {
@@ -7,8 +9,9 @@ namespace kate
         public static void Main()
         {
             Console.WriteLine("KATE is starting...");
-            new Game("127.0.0.1", 5555);           
-            Console.ReadLine();
+            var socket = new SocketClient("127.0.0.1", 5555);
+            new DumbBot(socket, "KATE");
+            Console.ReadKey(true);
         }
     }
 }

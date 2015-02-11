@@ -1,8 +1,8 @@
 ﻿using System;
-using Models;
+using Kate.Types;
 using System.IO;
 
-namespace Models.Map
+namespace Kate.Maps
 {
 	[Serializable()]
 	public class Tile
@@ -10,7 +10,7 @@ namespace Models.Map
 		#region Private fields
 		private int xCoordinate;
 		private int yCoordinate;
-		private Player owner;
+		private Owner owner;
 		private int population;
 		#endregion
 
@@ -53,7 +53,7 @@ namespace Models.Map
 			}
 		}
 
-		public Player Owner
+		public Owner Owner
 		{
 			get
 			{
@@ -61,7 +61,7 @@ namespace Models.Map
 			}
 			set
 			{
-				if (value == Player.Neutral)
+				if (value == Owner.Neutral)
 				{
 					Population = 0;
 				}
@@ -75,9 +75,9 @@ namespace Models.Map
 		#region Constructors
 		public Tile(): this(-1, -1) {}
 
-		public Tile(int xCoordinate, int yCoordinate): this(xCoordinate, yCoordinate, Player.Neutral, 0) {}
+		public Tile(int xCoordinate, int yCoordinate): this(xCoordinate, yCoordinate, Owner.Neutral, 0) {}
 
-		public Tile(int xCoordinate, int yCoordinate, Player owner, int population)
+		public Tile(int xCoordinate, int yCoordinate, Owner owner, int population)
 		{
 			this.xCoordinate = xCoordinate;
 			this.yCoordinate = yCoordinate;

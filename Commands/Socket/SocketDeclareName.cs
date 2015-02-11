@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
 
-namespace Models.Commands.Socket
+namespace Kate.Commands.Socket
 {
 	public class SocketDeclareName: ISocketCommand
 	{

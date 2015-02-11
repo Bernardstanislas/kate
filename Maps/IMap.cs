@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Models.Map
+namespace Kate.Maps
 {
 	public interface IMap
 	{
