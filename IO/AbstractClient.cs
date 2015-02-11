@@ -6,46 +6,46 @@ using Kate.Maps;
 
 namespace Kate.IO
 {
-	public abstract class AbstractClient: IClient
-	{
-		#region Events management
-		#region Fired events
-		// A client notifies its observers when a message is received from the engine server
-		public event MapSetEventHandler MapSet;
+    public abstract class AbstractClient: IClient
+    {
+        #region Events management
+        #region Fired events
+        // A client notifies its observers when a message is received from the engine server
+        public event MapSetEventHandler MapSet;
         public event MapInitEventHandler MapInit;
-		public event MapUpdateEventHandler MapUpdate;
+        public event MapUpdateEventHandler MapUpdate;
         public event EventHandler GameEnd;
-		public event EventHandler GameDisconnection;
-		#endregion
+        public event EventHandler GameDisconnection;
+        #endregion
 
-		#region Events launchers
-		// Fires a MapInitialization event when called
-		protected virtual void OnMapSet(MapSetEventArgs mapSetEventArgs)
-		{
-			if (MapSet != null)
-				MapSet(this, mapSetEventArgs);
-		}
+        #region Events launchers
+        // Fires a MapInitialization event when called
+        protected virtual void OnMapSet(MapSetEventArgs mapSetEventArgs)
+        {
+            if (MapSet != null)
+                MapSet(this, mapSetEventArgs);
+        }
 
-		// Fires a MapInit event when called
-		protected virtual void OnMapInit(MapUpdateEventArgs mapInitEventArgs)
-		{
-			if (MapInit != null)
-				MapInit(this, mapInitEventArgs);
-		}
+        // Fires a MapInit event when called
+        protected virtual void OnMapInit(MapUpdateEventArgs mapInitEventArgs)
+        {
+            if (MapInit != null)
+                MapInit(this, mapInitEventArgs);
+        }
 
-		// Fires a MapUpdate event when called
-		protected virtual void OnMapUpdate(MapUpdateEventArgs mapUpdateEventsArgs)
-		{
-			if (MapUpdate != null)
-				MapUpdate(this, mapUpdateEventsArgs);
-		}
+        // Fires a MapUpdate event when called
+        protected virtual void OnMapUpdate(MapUpdateEventArgs mapUpdateEventsArgs)
+        {
+            if (MapUpdate != null)
+                MapUpdate(this, mapUpdateEventsArgs);
+        }
 
-		// Fires a GameEnd event when called
-		protected virtual void OnGameEnd(EventArgs eventArgs)
-		{
-			if (GameEnd != null)
-				GameEnd(this, eventArgs);
-		}
+        // Fires a GameEnd event when called
+        protected virtual void OnGameEnd(EventArgs eventArgs)
+        {
+            if (GameEnd != null)
+                GameEnd(this, eventArgs);
+        }
 
         // Fires a GameDisconnection event when called
         protected virtual void OnGameDisconnection(EventArgs eventArgs)
@@ -53,52 +53,52 @@ namespace Kate.IO
             if (GameDisconnection != null)
                 GameDisconnection(this, eventArgs);
         }
-		#endregion
-		#endregion
+        #endregion
+        #endregion
 
-		// Opens the client connection to the engine server
-		public abstract void open();
+        // Opens the client connection to the engine server
+        public abstract void open();
 
-		// Closes the client connection to the engine server
-		public abstract void close();
+        // Closes the client connection to the engine server
+        public abstract void close();
 
-		// Declares the AI's name to the engine server
-		public abstract void declareName(DeclareName declareName);
+        // Declares the AI's name to the engine server
+        public abstract void declareName(DeclareName declareName);
 
-		// Executes the current turn's command (moves or attack)
-		public abstract void executeMoves(ICollection<Move> moves);
-	}
+        // Executes the current turn's command (moves or attack)
+        public abstract void executeMoves(ICollection<Move> moves);
+    }
 
-	#region Event handlers delegates
-	public delegate void MapSetEventHandler(object sender, MapSetEventArgs e);
-	public delegate void MapInitEventHandler(object sender, MapUpdateEventArgs e);
-	public delegate void MapUpdateEventHandler(object sender, MapUpdateEventArgs e);
+    #region Event handlers delegates
+    public delegate void MapSetEventHandler(object sender, MapSetEventArgs e);
+    public delegate void MapInitEventHandler(object sender, MapUpdateEventArgs e);
+    public delegate void MapUpdateEventHandler(object sender, MapUpdateEventArgs e);
     public delegate void GameEnd(object sender, EventArgs e);
     public delegate void GameDisconnectionEventHandler(object sender, EventArgs e);
-	#endregion
+    #endregion
 
-	#region Custom event args
-	// Custom EventArgs children made to pass data between the client and the bot
-	public class MapSetEventArgs: EventArgs
-	{
-		public int Width { get; private set; }
-		public int Height { get; private set; }
+    #region Custom event args
+    // Custom EventArgs children made to pass data between the client and the bot
+    public class MapSetEventArgs: EventArgs
+    {
+        public int Width { get; private set; }
+        public int Height { get; private set; }
 
         public MapSetEventArgs(int width, int height) : base()
         {
             Width = width;
             Height = height;
         }
-	}
+    }
 
-	public class MapUpdateEventArgs: EventArgs
-	{
+    public class MapUpdateEventArgs: EventArgs
+    {
         public ICollection<Tile> NewTiles { get; private set; }
-
-		public MapUpdateEventArgs(ICollection<Tile> newTiles)
-		{
+            
+        public MapUpdateEventArgs(ICollection<Tile> newTiles)
+        {
             NewTiles = newTiles;
-		}
-	}
-	#endregion
+        }
+    }
+    #endregion
 }

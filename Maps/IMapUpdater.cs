@@ -2,9 +2,9 @@
 
 namespace Kate.Maps
 {
-	public interface IMapUpdater
-	{
-		void execute(IMap target);
-	}
+    public interface IMapUpdater
+    {
+        void execute(IMap target);
+    }
 }
 
