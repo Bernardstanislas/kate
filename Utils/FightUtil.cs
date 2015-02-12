@@ -10,8 +10,8 @@ namespace Utils
     {
         public static Tuple <Tile, Tile> FightUtil(Tile sourceTile, Tile destTile)
         {
-            Tile newSource = new Tile();
-            Tile newDest = new Tile();
+            Tile newSource = sourceTile;
+            Tile newDest = destTile;
             Random rnd = new Random();
 
             //attacking humans
@@ -20,12 +20,10 @@ namespace Utils
                 if ( sourceTile.Population >= destTile.Population  )
                 {
                     // In this case, the fight is won. So the source Tile is now an empty neutral tile
-                    newSource = sourceTile;
                     newSource.Owner = Models.Player.Neutral;
                     newSource.Population = 0;
 
                     // The destination tile becomes the player property and the population of both tiles are added
-                    newDest = destTile;
                     newDest.Owner = Models.Player.Me;
                     newDest.Population = sourceTile.Population + destTile.Population;
 
@@ -54,12 +52,10 @@ namespace Utils
                             }
                         }
 
-                        newSource = sourceTile;
                         newSource.Owner = Models.Player.Neutral;
                         newSource.Population = 0;
 
                         // The destination tile becomes the player property and the population is the surviving one
-                        newDest = destTile;
                         newDest.Owner = Models.Player.Me;
                         newDest.Population = survivingPop;
 
@@ -71,7 +67,6 @@ namespace Utils
                     else
                     {
                         //source tile is now empty
-                        newSource = sourceTile;
                         newSource.Owner = Models.Player.Neutral;
                         newSource.Population = 0;
 
@@ -86,7 +81,6 @@ namespace Utils
                             }
                         }
 
-                        newDest = destTile;
                         newDest.Owner = Models.Player.Humans;
                         newDest.Population = survivingPop;
 
@@ -102,12 +96,10 @@ namespace Utils
                 if (sourceTile.Population >= destTile.Population*1.5 )
                 {
                     // In this case, the fight is won. So the source Tile is now an empty neutral tile
-                    newSource = sourceTile;
                     newSource.Owner = Models.Player.Neutral;
                     newSource.Population = 0;
 
                     // The destination tile becomes the player property and the population is hte source tile population
-                    newDest = destTile;
                     newDest.Owner = Models.Player.Me;
                     newDest.Population = sourceTile.Population;
 
@@ -118,12 +110,10 @@ namespace Utils
                 else if (sourceTile.Population <= destTile.Population * 1.5)
                 {
                     // In this case, the fight is lost. So the source Tile is now an empty neutral tile
-                    newSource = sourceTile;
                     newSource.Owner = Models.Player.Neutral;
                     newSource.Population = 0;
 
                     // The destination tile stays as the original destination tile
-                    newDest = destTile;
 
                     Tuple<Tile, Tile> res = new Tuple<Tile, Tile>(newSource, newDest);
                     return res;
@@ -149,12 +139,10 @@ namespace Utils
                             }
                         }
 
-                        newSource = sourceTile;
                         newSource.Owner = Models.Player.Neutral;
                         newSource.Population = 0;
 
                         // The destination tile becomes the player property and the population is the surviving one
-                        newDest = destTile;
                         newDest.Owner = Models.Player.Me;
                         newDest.Population = survivingPop;
 
@@ -166,7 +154,6 @@ namespace Utils
                     else
                     {
                         //source tile is now empty
-                        newSource = sourceTile;
                         newSource.Owner = Models.Player.Neutral;
                         newSource.Population = 0;
 
@@ -181,7 +168,6 @@ namespace Utils
                             }
                         }
 
-                        newDest = destTile;
                         newDest.Owner = Models.Player.Opponent;
                         newDest.Population = survivingPop;
 
@@ -195,11 +181,9 @@ namespace Utils
             else
             {
                 //nothing happens it's just a move!
-                newSource = sourceTile;
                 newSource.Owner = Models.Player.Neutral;
                 newSource.Population = 0;
 
-                newDest = destTile;
                 newDest.Owner = Models.Player.Me;
                 newDest.Population = sourceTile.Population;
 
