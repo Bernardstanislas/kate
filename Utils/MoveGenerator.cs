@@ -101,20 +101,19 @@ namespace Kate.Utils
 
             foreach (Tile tile in myTiles)
             {
-                int xPos1 = tile.X;
-                int yPos1 = tile.Y;
-                int xPos2 = tile.X;
-                int yPos2 = tile.Y;
-
                 List<Move> tileMoves = new List<Move>();
 
                 for (int i = 0; i <= 1; i++)
                 {
+                    int xPos1 = tile.X;
+                    int xPos2 = tile.X;
                     xPos1 += i;
                     xPos2 += -i;
 
                     for (int j = 0; j <= 1; j++)
                     {
+                        int yPos1 = tile.Y;
+                        int yPos2 = tile.Y;
                         yPos1 += j;
                         yPos2 += -j;
 
@@ -122,7 +121,7 @@ namespace Kate.Utils
                         if ((xPos1 <= gridDim[0] - 1) && (0 <= xPos2 ) && (yPos1 <= gridDim[1] - 1) && (0 <= yPos2 ))
                         {
                             // Never generate null moves
-                            if (!(xPos1 == 0 && yPos1 == 0) || !(xPos2 == 0 && yPos2 == 0)) 
+                            if (!(xPos1 == tile.X && yPos1 == tile.Y) || !(xPos2 == tile.X && yPos2 == tile.Y)) 
                             {
                                 Tile destTile1 = map.getTile (xPos1, yPos1);
                                 Tile destTile2 = map.getTile (xPos2, yPos2);
