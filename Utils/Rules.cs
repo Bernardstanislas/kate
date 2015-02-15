@@ -1,9 +1,8 @@
 using System;
-using Models.Map;
+using Kate.Maps;
 using System.Collections.Generic;
 using System.Linq;
-using Models.Commands;
-using Models;
+using Kate.Commands;
 
 namespace kate
 {
