@@ -22,18 +22,19 @@ namespace Kate.Utils
 
             foreach (Tile tile in myTiles)
             {
-                int xPos = tile.X;
-                int yPos = tile.Y;
+
                 List<Move> tileMoves = new List<Move>();
 
                 for (int i =-1; i <= 1; i++)
                 {
-                    if (0 < xPos && xPos < gridDim[0] - 1)
+                    int xPos = tile.X;
+
+                    if (0 < tile.X && tile.X < gridDim[0] - 1)
                     { 
                         xPos += i;
                     }
 
-                    else if (xPos == 0)
+                    else if (tile.X == 0)
                     {
                         if (i != -1)
                         {
@@ -41,7 +42,7 @@ namespace Kate.Utils
                         }
                     }
 
-                    else if (xPos == gridDim[0] - 1)
+                    else if (tile.X == gridDim[0] - 1)
                     {
                         if (i != 1)
                         {
@@ -51,12 +52,13 @@ namespace Kate.Utils
 
                     for (int j =-1; j <= 1; j++)
                     {
-                        if (0 < yPos && yPos< gridDim[1] - 1)
+                        int yPos = tile.Y;
+                        if (0 < tile.Y && tile.Y< gridDim[1] - 1)
                         {
                             yPos += j;
                         }
 
-                        else if (yPos == 0)
+                        else if (tile.Y == 0)
                         {
                             if (j != -1)
                             {
@@ -64,16 +66,16 @@ namespace Kate.Utils
                             }
                         }
 
-                        else if (yPos == gridDim[1] - 1)
+                        else if (tile.Y == gridDim[1] - 1)
                         {
                             if (j != 1)
                             {
-                                yPos += i;
+                                yPos += j;
                             }
                         }
 
                         // The null move is not generated
-                        if (!(xPos == 0 && yPos == 0)) 
+                        if (!(xPos == tile.X && yPos == tile.Y)) 
                         {
                             Tile destTile = map.getTile (xPos, yPos);
                             Move move = new Move (tile, destTile, tile.Population);
@@ -127,7 +129,7 @@ namespace Kate.Utils
 
                                 // Split units in two groups equivalent in number
                                 int pop1 = (int)(tile.Population / 2);
-                                int pop2 = 1 - pop1;
+                                int pop2 = tile.Population - pop1;
 
                                 // Create two moves with half of the initial population
                                 Move move1 = new Move (tile, destTile1, pop1);
@@ -152,20 +154,12 @@ namespace Kate.Utils
             List<List<Move>> splitForce = getAllSplitMoves (map);
             List<List<Move>> possibleMoves = new List<List<Move>> ();
 
-            foreach (List<Move> ffMoveList in fullForce)
+            for (int i = 0; i < fullForce.Count; i++)
             {
-                List<Move> bufferMove = new List<Move> ();
-                foreach (List<Move> splitMoveList in splitForce)
-                {
-                    if (ffMoveList [0].Origin == splitMoveList [0].Origin)
-                    {
-                        bufferMove.Concat(ffMoveList).Concat(splitMoveList);
-                    }
-                }
-                possibleMoves.Add(bufferMove);
+                possibleMoves.Add (fullForce [i]);
+                possibleMoves[i].Concat (splitForce [i]);
             }
-
-            return Combinations(possibleMoves);
+            return splitForce;
         }
         #endregion
 
