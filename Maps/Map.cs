@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Kate.Types;
 
 namespace Kate.Maps
 {
@@ -26,7 +27,7 @@ namespace Kate.Maps
         {
 			foreach (Tile tile in grid)
 			{
-				if (tile.Owner.Equals (Models.Player.Me))
+				if (tile.Owner.Equals (Owner.Me))
 				{
 					yield return tile;
 				}
