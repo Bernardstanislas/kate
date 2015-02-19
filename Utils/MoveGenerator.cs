@@ -149,16 +149,22 @@ namespace Kate.Utils
         {
             // Create a list of move list
             // Each sub-list is a list of move from one tile
-            List<List<Move>> fullForce = getAllFullForceMoves (map);
-            List<List<Move>> splitForce = getAllSplitMoves (map);
-            List<List<Move>> possibleMoves = new List<List<Move>> ();
+            List<List<Move>> fullForceListList = getAllFullForceMoves (map);
+            List<List<Move>> splitListList = getAllSplitMoves (map);
 
-            for (int i = 0; i < fullForce.Count; i++)
+            var possibleMoves = fullForceListList;
+
+            foreach (var splitList in splitListList)
             {
-                possibleMoves.Add (fullForce [i]);
-                possibleMoves[i].Concat (splitForce [i]);
+                for (int i = 0; i < fullForceListList.Count; i++) {
+                    if (splitList [0].Origin.X == fullForceListList[i][0].Origin.X && splitList [0].Origin.Y == fullForceListList[i][0].Origin.Y) 
+                    {
+                        possibleMoves[i].AddRange(splitList);
+                    }
+                }
+
             }
-            return splitForce;
+            return possibleMoves;
         }
         #endregion
 
@@ -188,21 +194,22 @@ namespace Kate.Utils
             }
 
             var moves = new List<List<Move>>();
+            var firstElement = moveListList [0];
             moveListList.RemoveAt (0);
 
             foreach (List<Move> moveList in Combinations(moveListList))
             {
-                foreach( Move move in (moveListList[0]))
+                foreach( Move move in (firstElement))
                 {
                     var localList = new List<Move>();
                     localList.Add(move);
-                    localList.Concat (moveList);
+                    localList.AddRange (moveList);
                     moves.Add(localList);
-                    moves.Add(moveList);
+
                 }
+                moves.Add(moveList);
             }
             return moves;
-
         }
     }
 }
