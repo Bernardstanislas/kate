@@ -22,7 +22,7 @@ namespace Kate.Maps
             if (hash == 0) ComputeHash();
                 return hash;
         }
-        private abstract void UpdateHash(IMapUpdater mapUpdater);
+        public abstract void UpdateHash(IMapUpdater mapUpdater);
 
         public virtual void updateMap(IMapUpdater mapUpdater)
         {

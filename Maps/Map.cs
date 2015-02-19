@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using Kate.Types;
 
@@ -74,7 +73,7 @@ namespace Kate.Maps
             return hashArray;
         }
 
-        private override void computeHash()
+        public override void ComputeHash()
         {
             int hash = 0;
 
@@ -85,6 +84,11 @@ namespace Kate.Maps
                     if (tile.Owner != Owner.Neutral)
                         hash ^= hashArray[x, y, (int)tile.Owner];
                 }
+        }
+
+        public override void UpdateHash(IMapUpdater mapUpdater)
+        {
+            throw new NotImplementedException();
         }
     }
 }
