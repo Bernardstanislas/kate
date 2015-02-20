@@ -26,7 +26,7 @@ namespace kate
 
             Console.WriteLine("Connecting to " + ipAddress + " on port " + port.ToString());
             var socket = new SocketClient(ipAddress, port);
-            new DumbBot(socket, "KATE");
+            new RandomBot(socket, "KATE");
             Console.WriteLine("KATE has started");
             Console.ReadKey(true);
         }

@@ -2,6 +2,7 @@
 *.sln
 *.userprefs
 *.suo
+*.user
 
 # Compilation related files
 bin/
