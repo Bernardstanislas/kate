@@ -1,13 +1,9 @@
-# Node
-api/node_modules
-api/.tmp
-
 # C# IDE related files
 *.sln
 *.userprefs
+*.suo
 
 # Compilation related files
 bin/
 obj/
-*.suo
-App.config
+*.bat
