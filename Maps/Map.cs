@@ -26,12 +26,8 @@ namespace Kate.Maps
 		public override IEnumerable<Tile> getMyTiles()
         {
 			foreach (Tile tile in grid)
-			{
-				if (tile.Owner.Equals (Owner.Me))
-				{
+				if (tile.Owner.Equals(Owner.Me))
 					yield return tile;
-				}
-			}
         }
 
         public override int[] getMapDimension()

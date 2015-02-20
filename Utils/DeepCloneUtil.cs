@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
-namespace Utils
+namespace Kate.Utils
 {
 	public static class DeepCloneUtil
 	{
