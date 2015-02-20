@@ -25,7 +25,7 @@ namespace Kate.Bots.Utils
                 throw new ArgumentException("Trying to move more people than there are on the origin Tile");
         }
 
-        public IEnumerable<Move> getMoves()
+        public IEnumerable<Move> GetMoves()
         {
             foreach(var dest in Dests)
                 yield return new Move(Origin, dest.Key, dest.Value);
