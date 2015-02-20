@@ -9,10 +9,9 @@ namespace Kate.Utils
 {
     public static class MoveGenerator
     {
-        #region generateMoves
         // Return all possible moves where all the units from a tile move toward an other tile
         //
-        public static List<List<Move>> getAllFullForceMoves(Map map)
+        public static List<List<Move>> GetAllFullForceMoves(Map map)
         {
             List<Tile> myTiles = new List<Tile>();
             myTiles = map.getMyTiles().ToList(); // Get all the tiles with my units
@@ -89,9 +88,10 @@ namespace Kate.Utils
             return possibleMoves;
         }
 
+
         // Return all possible moves where the units from a tile split in two equal groups in two opposite directions
         //
-        public static List<List<Move>> getAllSplitMoves(Map map)
+        public static List<List<Move>> GetAllSplitMoves(Map map)
         {
             List<Tile> myTiles = new List<Tile>();
             myTiles = map.getMyTiles().ToList(); // Get all the tiles with my units
@@ -145,31 +145,31 @@ namespace Kate.Utils
             return possibleMoves;
         }
 
-        public static List<List<Move>> generateMoves(Map map)
+        public static List<List<Move>> GenerateMoves(Map map)
         {
             // Create a list of move list
             // Each sub-list is a list of move from one tile
-            List<List<Move>> fullForceListList = getAllFullForceMoves (map);
-            List<List<Move>> splitListList = getAllSplitMoves (map);
+            List<List<Move>> fullForceListList = GetAllFullForceMoves (map);
+            List<List<Move>> splitListList = GetAllSplitMoves (map);
 
-            var possibleMoves = fullForceListList;
+            var possibleMoves = GetAllFullForceMoves (map);
 
             foreach (var splitList in splitListList)
             {
-                for (int i = 0; i < fullForceListList.Count; i++) {
+                for (int i = 0; i < fullForceListList.Count; i++)
+                {
                     if (splitList [0].Origin.X == fullForceListList[i][0].Origin.X && splitList [0].Origin.Y == fullForceListList[i][0].Origin.Y) 
                     {
                         possibleMoves[i].AddRange(splitList);
                     }
                 }
-
             }
             return possibleMoves;
         }
-        #endregion
+
 
         // Return true is a move is compatible with an other move
-        public static bool isCompatibleMove(Move move, Move otherMove)
+        public static bool IsCompatibleMove(Move move, Move otherMove)
         {
             if (move.Dest == otherMove.Origin || move.Origin == otherMove.Dest || move.Equals(otherMove))
             {
@@ -210,6 +210,51 @@ namespace Kate.Utils
                 moves.Add(moveList);
             }
             return moves;
+        }
+
+        public static void PrintMove(List<List<Move>> moveListList)
+        {
+            foreach (List<Move> moveList in moveListList)
+            {
+                foreach (Move element in moveList) {
+                    Console.WriteLine ("Or: " + element.Origin.X + element.Origin.Y + " pop :" + element.PopToMove + " Dest: " + element.Dest.X + element.Dest.Y);
+                }
+                Console.WriteLine ("*******************************");
+            }
+        }
+
+
+        public static void PrintListStats(List<List<Move>> moveListList)
+        {
+            var count1 = 0;
+            var count2 = 0;
+            var count3 = 0;
+            var countElse = 0;
+
+            foreach (List<Move> moveList in moveListList) {
+                foreach (Move element in moveList) {
+                    if (moveList.Count == 1) 
+                    {
+                        count1++;
+                    }
+
+                    if (moveList.Count == 2) 
+                    {
+                        count2++;
+                    }
+
+                    if (moveList.Count == 3) 
+                    {
+                        count3++;
+                    }
+
+                    if (moveList.Count > 3) 
+                    {
+                        countElse++;
+                    }
+                }
+            }
+            Console.WriteLine ("Nombre de moves : unique : "+ count1 + " double : " + count2 + " triple : " + count3 + " et plus : " + countElse);
         }
     }
 }
