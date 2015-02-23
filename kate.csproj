@@ -46,7 +46,7 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Bots\AbstractBot.cs" />
-    <Compile Include="Bots\DumbBot.cs" />
+    <Compile Include="Bots\RandomBot.cs" />
     <Compile Include="Bots\IBot.cs" />
     <Compile Include="IO\AbstractClient.cs" />
     <Compile Include="IO\IClient.cs" />

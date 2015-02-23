@@ -158,13 +158,12 @@ namespace Kate.Utils
 
             foreach (List<Move> moveList in Combinations(moveListList))
             {
-                foreach( Move move in (firstElement))
+                foreach(Move move in firstElement)
                 {
                     var localList = new List<Move>();
                     localList.Add(move);
-                    localList.AddRange (moveList);
+                    localList.AddRange(moveList);
                     moves.Add(localList);
-
                 }
                 moves.Add(moveList);
             }
