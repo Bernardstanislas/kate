@@ -11,7 +11,7 @@ namespace Kate.Utils
     {
         // Return all possible moves where all the units from a tile move towards an other tile
         //
-        public static List<List<Move>> GetAllFullForceMoves(Map map)
+        public static List<List<Move>> GetAllFullForceMoves(IMap map)
         {
             List<Tile> myTiles = new List<Tile>();
             myTiles = map.getMyTiles().ToList(); // Get all the tiles with my units
@@ -32,24 +32,28 @@ namespace Kate.Utils
                         || tile.X == 0 && i != -1               // Tile on left edge
                         || tile.X == gridDim[0] - 1 && i != 1   // Tile on right edge
                     )
+                    {
                         xPos += i;
 
-                    for (int j = -1; j <= 1; j++)
-                    {
-                        int yPos = tile.Y;
-                        if (
-                            0 < tile.Y && tile.Y< gridDim[1] - 1
-                            || tile.Y == 0 && j != -1               // Tile on top edge
-                            || tile.Y == gridDim[1] - 1 && j != 1   // Tile on bottom edge
-                        )
-                            yPos += j;                       
-
-                        // The null move is not generated
-                        if (!(xPos == tile.X && yPos == tile.Y)) 
+                        for (int j = -1; j <= 1; j++)
                         {
-                            Tile destTile = map.getTile(xPos, yPos);
-                            Move move = new Move(tile, destTile, tile.Population);
-                            tileMoves.Add(move);
+                            int yPos = tile.Y;
+                            if (
+                                0 < tile.Y && tile.Y < gridDim[1] - 1
+                                || tile.Y == 0 && j != -1              // Tile on top edge
+                                || tile.Y == gridDim[1] - 1 && j != 1  // Tile on bottom edge
+                            )
+                            {
+                                yPos += j;
+
+                                // The null move is not generated
+                                if (!(xPos == tile.X && yPos == tile.Y))
+                                {
+                                    Tile destTile = map.getTile(xPos, yPos);
+                                    Move move = new Move(tile, destTile, tile.Population);
+                                    tileMoves.Add(move);
+                                }
+                            }
                         }
                     }
                 }
@@ -60,7 +64,7 @@ namespace Kate.Utils
 
         // Return all possible moves where the units from a tile split in two equal groups in two opposite directions
         //
-        public static List<List<Move>> GetAllSplitMoves(Map map)
+        public static List<List<Move>> GetAllSplitMoves(IMap map)
         {
             List<Tile> myTiles = new List<Tile>();
             myTiles = map.getMyTiles().ToList(); // Get all the tiles with our units
@@ -106,23 +110,23 @@ namespace Kate.Utils
                             }
                     }
                 }
-                possibleMoves.Add(tileMoves);
+                if (tileMoves.Count != 0)
+                    possibleMoves.Add(tileMoves);
             }
             return possibleMoves;
         }
 
-        public static List<List<Move>> GenerateMoves(Map map)
+        public static List<List<Move>> GenerateMoves(IMap map)
         {
             // Create a list of move list
             // Each sub-list is a list of move from one tile
-            List<List<Move>> fullForceListList = GetAllFullForceMoves(map);
             List<List<Move>> splitListList = GetAllSplitMoves(map);
 
             var possibleMoves = GetAllFullForceMoves(map);
 
             foreach (var splitList in splitListList)
-                for (int i = 0; i < fullForceListList.Count; i++)
-                    if (splitList[0].Origin.X == fullForceListList[i][0].Origin.X && splitList[0].Origin.Y == fullForceListList[i][0].Origin.Y) 
+                for (int i = 0; i < possibleMoves.Count; i++)
+                    if (splitList[0].Origin.X == possibleMoves[i][0].Origin.X && splitList[0].Origin.Y == possibleMoves[i][0].Origin.Y) 
                         possibleMoves[i].AddRange(splitList);
 
             return possibleMoves;
