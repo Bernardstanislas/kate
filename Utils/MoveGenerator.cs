@@ -4,24 +4,89 @@ using System.Linq;
 
 using Kate.Commands;
 using Kate.Maps;
+using Kate.Types;
 
 namespace Kate.Utils
 {
     public static class MoveGenerator
     {
+        // Get all possible Move sequences for a player on a given map
+        public static List<List<Move>> GenerateMoves(IMap map, Owner owner)
+        {
+            var multipleMoveListList = GetCombinations(GenerateMoveLists(map, owner));
+
+            var output = new List<List<Move>>();
+            foreach (var multipleMoveList in multipleMoveListList)
+            {
+                var moveList = new List<Move>();
+                foreach (var multipleMove in multipleMoveList)
+                    foreach (var move in multipleMove.GetMoves())
+                        moveList.Add(move);
+
+                output.Add(moveList);
+            }
+            return output;
+        }
+
+        // Generate all possible MultipleMove sequences from all MultipleMove lists from each Tile
+        private static List<List<MultipleMove>> GetCombinations(List<List<MultipleMove>> moveListList)
+        {
+            if (moveListList.Count == 1)
+            {
+                var result = new List<List<MultipleMove>>();
+                foreach (var element in moveListList[0])
+                    result.Add(new List<MultipleMove>() { element });
+
+                result.Add(new List<MultipleMove>());
+                return result;
+            }
+
+            var moves = new List<List<MultipleMove>>();
+            var firstElement = moveListList[0];
+            moveListList.RemoveAt(0);
+
+            foreach (var moveList in GetCombinations(moveListList))
+            {
+                foreach (var move in firstElement)
+                {
+                    var localList = new List<MultipleMove>();
+                    localList.Add(move);
+                    localList.AddRange(moveList);
+                    if (IsLegalMoveList(localList))
+                        moves.Add(localList);
+                }
+                moves.Add(moveList);
+            }
+            return moves;
+        }
+
+        private static List<List<MultipleMove>> GenerateMoveLists(IMap map, Owner owner)
+        {
+            // Create a list of move list
+            // Each sub-list is a list of move from one tile
+            var splitListList = GetAllSplitMoves(map, owner);
+            var possibleMoves = GetAllFullForceMoves(map, owner);
+
+            foreach (var splitList in splitListList)
+                for (int i = 0; i < possibleMoves.Count; i++)
+                    if (splitList[0].Origin.X == possibleMoves[i][0].Origin.X && splitList[0].Origin.Y == possibleMoves[i][0].Origin.Y) 
+                        possibleMoves[i].AddRange(splitList);
+
+            return possibleMoves;
+        }
+
         // Return all possible moves where all the units from a tile move towards an other tile
-        //
-        public static List<List<Move>> GetAllFullForceMoves(IMap map)
+        private static List<List<MultipleMove>> GetAllFullForceMoves(IMap map, Owner owner)
         {
             List<Tile> myTiles = new List<Tile>();
-            myTiles = map.getMyTiles().ToList(); // Get all the tiles with my units
+            myTiles = map.getPlayerTiles(owner).ToList(); // Get all the tiles with my units
             int[] gridDim = map.getMapDimension();
 
-            var possibleMoves = new List<List<Move>>();
+            var possibleMoves = new List<List<MultipleMove>>();
 
             foreach (Tile tile in myTiles)
             {
-                List<Move> tileMoves = new List<Move>();
+                var tileMoves = new List<MultipleMove>();
 
                 for (int i = -1; i <= 1; i++)
                 {
@@ -50,7 +115,7 @@ namespace Kate.Utils
                                 if (!(xPos == tile.X && yPos == tile.Y))
                                 {
                                     Tile destTile = map.getTile(xPos, yPos);
-                                    Move move = new Move(tile, destTile, tile.Population);
+                                    var move = new MultipleMove(tile, new Dictionary<Tile, int>() { { destTile, tile.Population } });
                                     tileMoves.Add(move);
                                 }
                             }
@@ -63,18 +128,17 @@ namespace Kate.Utils
         }
 
         // Return all possible moves where the units from a tile split in two equal groups in two opposite directions
-        //
-        public static List<List<Move>> GetAllSplitMoves(IMap map)
+        private static List<List<MultipleMove>> GetAllSplitMoves(IMap map, Owner owner)
         {
-            List<Tile> myTiles = new List<Tile>();
-            myTiles = map.getMyTiles().ToList(); // Get all the tiles with our units
+            var myTiles = new List<Tile>();
+            myTiles = map.getPlayerTiles(owner).ToList(); // Get all the tiles with our units
             int[] gridDim = map.getMapDimension();
 
-            List<List<Move>> possibleMoves = new List<List<Move>>();
+            var possibleMoves = new List<List<MultipleMove>>();
 
             foreach (Tile tile in myTiles)
             {
-                List<Move> tileMoves = new List<Move>();
+                var tileMoves = new List<MultipleMove>();
 
                 for (int i = 0; i <= 1; i++)
                 {
@@ -93,7 +157,7 @@ namespace Kate.Utils
                         // Generate moves that fits the grid, necessary for the sides of the grid
                         if ((xPos1 <= gridDim[0] - 1) && (0 <= xPos2) && (yPos1 <= gridDim[1] - 1) && (0 <= yPos2))
                             // Never generate null moves
-                            if (!(xPos1 == tile.X && yPos1 == tile.Y) || !(xPos2 == tile.X && yPos2 == tile.Y)) 
+                            if (!(xPos1 == tile.X && yPos1 == tile.Y) || !(xPos2 == tile.X && yPos2 == tile.Y))
                             {
                                 Tile destTile1 = map.getTile(xPos1, yPos1);
                                 Tile destTile2 = map.getTile(xPos2, yPos2);
@@ -103,10 +167,7 @@ namespace Kate.Utils
                                 int pop2 = tile.Population - pop1;
 
                                 // Create two moves with half of the initial population
-                                Move move1 = new Move(tile, destTile1, pop1);
-                                Move move2 = new Move(tile, destTile2, pop2);
-                                tileMoves.Add(move1);
-                                tileMoves.Add(move2);
+                                tileMoves.Add(new MultipleMove(tile, new Dictionary<Tile, int>() { { destTile1, pop1 }, { destTile2, pop2 } }));
                             }
                     }
                 }
@@ -116,72 +177,24 @@ namespace Kate.Utils
             return possibleMoves;
         }
 
-        public static List<List<Move>> GenerateMoves(IMap map)
+        // Return true is a list of move is legal (each move is compatible with every other move)
+        private static bool IsLegalMoveList(List<MultipleMove> moveList)
         {
-            // Create a list of move list
-            // Each sub-list is a list of move from one tile
-            List<List<Move>> splitListList = GetAllSplitMoves(map);
-
-            var possibleMoves = GetAllFullForceMoves(map);
-
-            foreach (var splitList in splitListList)
-                for (int i = 0; i < possibleMoves.Count; i++)
-                    if (splitList[0].Origin.X == possibleMoves[i][0].Origin.X && splitList[0].Origin.Y == possibleMoves[i][0].Origin.Y) 
-                        possibleMoves[i].AddRange(splitList);
-
-            return possibleMoves;
+            foreach (var move in moveList)
+                foreach (var otherMove in moveList)
+                    if (!IsCompatibleMove(move, otherMove))
+                        return false;
+            return true;
         }
 
         // Return true is a move is compatible with an other move
-        public static bool IsCompatibleMove(Move move, Move otherMove)
+        private static bool IsCompatibleMove(MultipleMove move, MultipleMove otherMove)
         {
-            if (move.Dest == otherMove.Origin || move.Origin == otherMove.Dest)
-                return false;
-            return true;
-        }
-
-        // Return true is a list of move is legal (each move is compatible with every other move)
-        public static bool IsLegalMoveList(List<Move> moveList)
-        {
-            foreach (var move in moveList)
-            {
-                foreach (var otherMove in moveList) {
-                    if (!IsCompatibleMove (move, otherMove))
+            foreach (var dest in move.Dests)
+                foreach (var otherDest in otherMove.Dests)
+                    if (dest.Key == otherMove.Origin || move.Origin == otherDest.Key)
                         return false;
-                }
-            }
             return true;
-        }
-
-        public static List<List<Move>> Combinations(List<List<Move>> moveListList)
-        {
-            if (moveListList.Count == 1)
-            {
-                var result = new List<List<Move>>();
-                foreach (var element in moveListList[0])
-                    result.Add(new List<Move>(){ element });
-
-                result.Add(new List<Move>());
-                return result;
-            }
-
-            var moves = new List<List<Move>>();
-            var firstElement = moveListList[0];
-            moveListList.RemoveAt(0);
-
-            foreach (List<Move> moveList in Combinations(moveListList))
-            {
-                foreach(Move move in firstElement)
-                {
-                    var localList = new List<Move>();
-                    localList.Add(move);
-                    localList.AddRange(moveList);
-                    if (IsLegalMoveList(localList))
-                        moves.Add(localList);
-                }
-                moves.Add(moveList);
-            }
-            return moves;
         }
 
         public static void PrintMove(List<List<Move>> moveListList)
