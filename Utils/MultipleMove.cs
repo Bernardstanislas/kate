@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Kate.Commands;
 using Kate.Maps;
 
-namespace Kate.Bots.Utils
+namespace Kate.Utils
 {
     class MultipleMove
     {
