@@ -135,8 +135,21 @@ namespace Kate.Utils
         // Return true is a move is compatible with an other move
         public static bool IsCompatibleMove(Move move, Move otherMove)
         {
-            if (move.Dest == otherMove.Origin || move.Origin == otherMove.Dest || move.Equals(otherMove))
+            if (move.Dest == otherMove.Origin || move.Origin == otherMove.Dest)
                 return false;
+            return true;
+        }
+
+        // Return true is a list of move is legal (each move is compatible with every other move)
+        public static bool IsLegalMoveList(List<Move> moveList)
+        {
+            foreach (var move in moveList)
+            {
+                foreach (var otherMove in moveList) {
+                    if (!IsCompatibleMove (move, otherMove))
+                        return false;
+                }
+            }
             return true;
         }
 
@@ -163,7 +176,8 @@ namespace Kate.Utils
                     var localList = new List<Move>();
                     localList.Add(move);
                     localList.AddRange(moveList);
-                    moves.Add(localList);
+                    if (IsLegalMoveList(localList))
+                        moves.Add(localList);
                 }
                 moves.Add(moveList);
             }
