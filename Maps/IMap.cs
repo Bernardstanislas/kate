@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Kate.Types;
+
 namespace Kate.Maps
 {
     public interface IMap
@@ -8,7 +10,7 @@ namespace Kate.Maps
         IEnumerable<Tile> getGrid();
         int[] getMapDimension();
         Tile getTile (int xCoordinate, int yCoordinate);
-		IEnumerable<Tile> getMyTiles();
+		IEnumerable<Tile> getPlayerTiles(Owner owner);
         void setTile (Tile newTile);
         void updateMap(IMapUpdater mapUpdater);
     }
