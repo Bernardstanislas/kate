@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using Kate.Types;
 
 namespace Kate.Maps
@@ -23,10 +24,10 @@ namespace Kate.Maps
 				yield return tile;
 		}
 
-		public override IEnumerable<Tile> getMyTiles()
+		public override IEnumerable<Tile> getPlayerTiles(Owner owner)
         {
 			foreach (Tile tile in grid)
-				if (tile.Owner.Equals(Owner.Me))
+				if (tile.Owner.Equals(owner))
 					yield return tile;
         }
 

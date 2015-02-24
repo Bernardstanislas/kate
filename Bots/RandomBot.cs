@@ -18,7 +18,7 @@ namespace Kate.Bots
         {
             Random rnd = new Random();
 
-            var possibleMoves = MoveGenerator.Combinations(MoveGenerator.GenerateMoves(map));
+            var possibleMoves = MoveGenerator.GenerateMoves(map, Owner.Me);
             possibleMoves.RemoveAt(possibleMoves.Count - 1); // Last move is empty
             Thread.Sleep(500); // Let us see what's happening on the game
 
