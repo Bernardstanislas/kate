@@ -15,9 +15,9 @@ namespace Kate.Heuristic
             this.weightedRules = weightedRules;
         }
 
-        public decimal getScore(IMap map)
+        public float getScore(IMap map)
         {
-            decimal score = 0.0m;
+            float score = 0.0f;
             foreach (var weightedRule in weightedRules)
                 score += weightedRule.Key.evaluateScore(map) + weightedRule.Value;
 

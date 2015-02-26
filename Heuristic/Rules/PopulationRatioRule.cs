@@ -7,7 +7,7 @@ namespace Kate.Heuristic.Rules
 {
     public class PopulationRatioRule : IScoringRule
     {
-        public decimal evaluateScore(IMap map)
+        public float evaluateScore(IMap map)
         {
             int myPopulation = 0;
             int enemyPopulation = 0;
@@ -24,7 +24,7 @@ namespace Kate.Heuristic.Rules
                 }
             }
 
-            return Decimal.Divide(myPopulation, enemyPopulation);
+            return (float) myPopulation / (float) enemyPopulation;
         }
     }
 }

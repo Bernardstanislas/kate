@@ -7,7 +7,7 @@ namespace Kate.Heuristic.Rules
 {
     public class TotalPopulationRule : IScoringRule
     {
-        public decimal evaluateScore (IMap map)
+        public float evaluateScore (IMap map)
         {
             int myPopulation = 0;
             int totalPopulation = 0;
@@ -18,7 +18,7 @@ namespace Kate.Heuristic.Rules
 
                 totalPopulation += tile.Population;
             }
-            return Decimal.Divide (myPopulation, totalPopulation);
+            return (float) myPopulation / (float) totalPopulation;
         }
     }
 }
