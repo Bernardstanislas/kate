@@ -10,7 +10,7 @@ namespace Kate.Bots.Workers
         public IMap Map { get; protected set; }
         public Owner Turn { get; protected set; }
         public int NodeHash { get; protected set; }
-        public event WorkerEndEvent WorkerEnd;
+        public event WorkerEndEventHandler WorkerEnd;
 
         protected virtual void OnWorkerEnd(WorkerEndEventArgs args)
         {

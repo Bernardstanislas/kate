@@ -11,10 +11,10 @@ namespace Kate.Bots.Workers
         IMap Map { get; }
         Owner Turn { get; }
         int NodeHash { get; }
-        event WorkerEndEvent WorkerEnd;
+        event WorkerEndEventHandler WorkerEnd;
     }
 
-    public delegate void WorkerEndEvent(object sender, WorkerEndEventArgs e);
+    public delegate void WorkerEndEventHandler(object sender, WorkerEndEventArgs e);
 
     public class WorkerEndEventArgs : EventArgs
     {
