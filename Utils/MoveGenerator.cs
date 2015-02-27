@@ -213,6 +213,7 @@ namespace Kate.Utils
             var count1 = 0;
             var count2 = 0;
             var count3 = 0;
+            var count4 = 0;
             var countElse = 0;
 
             foreach (List<Move> moveList in moveListList)
@@ -227,11 +228,14 @@ namespace Kate.Utils
                     if (moveList.Count == 3)
                         count3++;
 
-                    if (moveList.Count > 3)
+                    if (moveList.Count == 4)
+                        count4++;
+
+                    if (moveList.Count > 4)
                         countElse++;
                 }
 
-            Console.WriteLine("Nombre de moves : unique : "+ count1 + " double : " + count2 + " triple : " + count3 + " et plus : " + countElse);
+            Console.WriteLine("Nombre de moves : unique : "+ count1 + " double : " + count2 + " triple : " + count3 + " quad : " + count4 + " et plus : " + countElse);
         }
     }
 }
