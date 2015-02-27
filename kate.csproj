@@ -43,12 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bots\Algorithms\StateNode.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Bots\AbstractBot.cs" />
-    <Compile Include="Bots\RandomBot.cs" />
+    <Compile Include="Bots\Algorithms\StateNode.cs" />
     <Compile Include="Bots\IBot.cs" />
+    <Compile Include="Bots\RandomBot.cs" />
     <Compile Include="IO\AbstractClient.cs" />
     <Compile Include="IO\IClient.cs" />
     <Compile Include="IO\SocketClient.cs" />
@@ -59,34 +57,34 @@
     <Compile Include="Commands\Socket\SocketCommandFactory.cs" />
     <Compile Include="Commands\Socket\SocketDeclareName.cs" />
     <Compile Include="Commands\Socket\SocketMove.cs" />
+    <Compile Include="Heuristic\HeuristicManager.cs" />
+    <Compile Include="Heuristic\Rules\IScoringRule.cs" />
+    <Compile Include="Heuristic\Rules\PopulationRatioRule.cs" />
+    <Compile Include="Heuristic\Rules\TotalPopulationRule.cs" />
     <Compile Include="Maps\AbstractMap.cs" />
     <Compile Include="Maps\IMap.cs" />
     <Compile Include="Maps\IMapUpdater.cs" />
     <Compile Include="Maps\Map.cs" />
     <Compile Include="Maps\MapUpdater.cs" />
     <Compile Include="Maps\Tile.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Types\Owner.cs" />
     <Compile Include="Types\Side.cs" />
-    <Compile Include="Utils\DeepCloneUtil.cs" />
     <Compile Include="Utils\MoveGenerator.cs" />
-    <Compile Include="Heuristic\HeuristicManager.cs" />
-    <Compile Include="Heuristic\Rules\IScoringRule.cs" />
-    <Compile Include="Heuristic\Rules\PopulationRatioRule.cs" />
-    <Compile Include="Heuristic\Rules\TotalPopulationRule.cs" />
     <Compile Include="Utils\MultipleMove.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
   <ItemGroup>
+  	<Folder Include="Bots\" />
+  	<Folder Include="Bots\Algorithms\" />
+    <Folder Include="IO\" />
+    <Folder Include="Commands\" />
+    <Folder Include="Commands\Socket\" />
     <Folder Include="Heuristic\" />
     <Folder Include="Heuristic\Rules\" />
-    <Folder Include="Bots\Utils\" />
+    <Folder Include="Maps\" />
+    <Folder Include="Types\" />
     <Folder Include="Utils\" />
   </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
