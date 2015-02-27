@@ -1,4 +1,5 @@
 ﻿using System;
+using Math;
 using System.Collections.Generic;
 using Kate.Maps;
 using Kate.Types;
@@ -9,170 +10,104 @@ namespace Kate.Utils
 {
     public static class FightUtil
     {
-        public static List<MapUpdater> FightUtil(List<Move> moves)
+        //simple method. Please note oriPop is the ATTACKING pop, destPop is the DEFENDING one.
+        public static Boolean IsWon(int oriPop, Owner oriOwner, int destPop, Owner destOwner)
         {
-            List<MapUpdater> output = new List<MapUpdater>();
-            int popToMove = 0;
-            Tile destTile = new Tile(moves[0].Dest);
-            //We just set up this tile as a way to get the original ownership
-            Tile originOwnership = new Tile(moves[0].Origin);
-
-        
-
-            //attacking humans
-            if ( destTile.Owner.Equals(Owner.Humans) )
+            Boolean res = false;
+            int victoryProba = oriPop / (oriPop + destPop);
+            switch (destOwner)
             {
-                if ( sourceTile.Population >= destTile.Population  )
-                {
-                    // In this case, the fight is won. So the source Tile is now an empty neutral tile
-                    output.Item1.Owner = Owner.Neutral;
-                    output.Item1.Population = 0;
+                case Owner.Humans:
+                    if (oriPop >= destPop || victoryProba > 0.5)
+                    { res = true; }
+                    break;
 
-                    // The destination tile becomes the player property and the population of both tiles are added
-                    output.Item2.Owner = Owner.Me;
-                    output.Item2.Population = sourceTile.Population + destTile.Population;
-                }
+                case Owner.Me:
+                    if (oriOwner.Equals(Owner.Me) || (oriOwner.Equals(Owner.Opponent) && ((oriPop > 1.5*destPop)||victoryProba> 0.5)))
+                    { res = true; }
+                    break;
 
-                else
-                {
-                    //Here we enter a random battle
-                    int victoryProba = (sourceTile.Population / (sourceTile.Population + destTile.Population));
-                    int fightProba = rnd.Next(1, 101);
-
-                    //first case is a victorious one
-                    if (fightProba >= victoryProba*100)
-                    {
-                        //we check the surviving population
-                        int totalPop = sourceTile.Population + destTile.Population;
-                        int survivingPop = 0;
-                        for (int i = 0; i < totalPop; i++ )
-                        {
-                            int surviveProba = rnd.Next(1, 101);
-                            if (surviveProba >= victoryProba*100)
-                            {
-                                survivingPop++;
-                            }
-                        }
-
-                        output.Item1.Owner = Owner.Neutral;
-                        output.Item1.Population = 0;
-
-                        // The destination tile becomes the player property and the population is the surviving one
-                        output.Item2.Owner = Owner.Me;
-                        output.Item2.Population = survivingPop;
-                    }
-
-                    //lost case
-                    else
-                    {
-                        //source tile is now empty
-                        output.Item1.Owner = Owner.Neutral;
-                        output.Item1.Population = 0;
-
-                        //We check the remaining human population
-                        int survivingPop = 0;
-                        for (int i = 0; i < destTile.Population; i++)
-                        {
-                            int surviveProba = rnd.Next(1, 101);
-                            if (surviveProba >= victoryProba * 100)
-                            {
-                                survivingPop++;
-                            }
-                        }
-
-                        output.Item2.Owner = Owner.Humans;
-                        output.Item2.Population = survivingPop;
-                    }
-                }
+                case Owner.Opponent:
+                    if (oriOwner.Equals(Owner.Opponent) || (oriOwner.Equals(Owner.Me) && ((oriPop > 1.5*destPop)||victoryProba> 0.5)))
+                    { res = true; }
+                    break;
             }
-
-            //attacking opponents
-            else if ( destTile.Owner.Equals(Owner.Opponent) )
-            {
-                if (sourceTile.Population >= destTile.Population*1.5 )
-                {
-                    // In this case, the fight is won. So the source Tile is now an empty neutral tile
-                    output.Item1.Owner = Owner.Neutral;
-                    output.Item1.Population = 0;
-
-                    // The destination tile becomes the player property and the population is hte source tile population
-                    output.Item2.Owner = Owner.Me;
-                    output.Item2.Population = sourceTile.Population;
-                }
-
-                else if (sourceTile.Population <= destTile.Population * 1.5)
-                {
-                    // In this case, the fight is lost. So the source Tile is now an empty neutral tile
-                    output.Item1.Owner = Owner.Neutral;
-                    output.Item1.Population = 0;
-
-                    // The destination tile stays as the original destination tile
-                }
-
-                else
-                {
-                    //Here we enter a random battle
-                    int victoryProba = (sourceTile.Population / (sourceTile.Population + destTile.Population));
-                    int fightProba = rnd.Next(1, 101);
-
-                    //first case is a victorious one
-                    if (fightProba >= victoryProba * 100)
-                    {
-                        //we check the surviving population
-                        int survivingPop = 0;
-                        for (int i = 0; i < sourceTile.Population; i++)
-                        {
-                            int surviveProba = rnd.Next(1, 101);
-                            if (surviveProba >= victoryProba * 100)
-                            {
-                                survivingPop++;
-                            }
-                        }
-
-                        output.Item1.Owner = Owner.Neutral;
-                        output.Item1.Population = 0;
-
-                        // The destination tile becomes the player property and the population is the surviving one
-                        output.Item2.Owner = Owner.Me;
-                        output.Item2.Population = survivingPop;
-                    }
-
-                    //lost case
-                    else
-                    {
-                        //source tile is now empty
-                        output.Item1.Owner = Owner.Neutral;
-                        output.Item1.Population = 0;
-
-                        //We check the remaining human population
-                        int survivingPop = 0;
-                        for (int i = 0; i < destTile.Population; i++)
-                        {
-                            int surviveProba = rnd.Next(1, 101);
-                            if (surviveProba >= victoryProba * 100)
-                            {
-                                survivingPop++;
-                            }
-                        }
-
-                        output.Item2.Owner = Owner.Opponent;
-                        output.Item2.Population = survivingPop;
-                    }
-
-                }
-            }
-
-            else
-            {
-                //nothing happens it's just a move!
-                output.Item1.Owner = Owner.Neutral;
-                output.Item1.Population = 0;
-
-                output.Item2.Owner = Owner.Me;
-                output.Item2.Population = sourceTile.Population;
-            }
-
-            return output;
+            return res;
         }
+
+
+        public static Tile FightResult(Owner oriOwner, int attackingPop, int destPop, Owner destOwner)
+        {
+            double victoryProba = attackingPop / (attackingPop + destPop);
+            Tile result = new Tile();
+
+            switch (destOwner)
+            {
+                case Owner.Humans:
+                    //Victory is possible only if attacking pop > human pop
+                    if (attackingPop >= destPop)
+                    {
+                        result.Owner = oriOwner;
+                        result.Population = destPop + attackingPop;
+                    }
+                    //Defeat case, defending human pop is partly defeated.
+                    else
+                    {
+                        int finalPop = (int)(destPop*(1 - victoryProba));
+
+                        result.Owner = Owner.Humans;
+                        result.Population = finalPop;
+                    }
+                    break;
+
+                case Owner.Me:
+                    //We only treat attacks. So it is assumed the oriOwner is Opponent.
+                    if (attackingPop >= destPop*1.5)
+                    {
+                        result.Owner = oriOwner;
+                        result.Population = attackingPop;
+                    }
+                    //Random battle attackers victory
+                    else if (victoryProba > 0.5)
+                    {
+                        int finalPop = (int)(attackingPop * victoryProba);
+                        result.Owner = Owner.Opponent;
+                        result.Population = finalPop;
+                    }
+                    //Random Battle defenders victory
+                    else
+                    {
+                        int finalPop = (int)(destPop * (1-victoryProba));
+                        result.Owner = Owner.Me;
+                        result.Population = finalPop;
+                    }
+                    break;
+
+                case Owner.Opponent:
+                    //We only treat attacks. So it is assumed the oriOwner is Me.
+                    if (attackingPop >= destPop * 1.5)
+                    {
+                        result.Owner = oriOwner;
+                        result.Population = attackingPop;
+                    }
+                    //Random battle attackers victory (Me)
+                    else if (victoryProba > 0.5)
+                    {
+                        int finalPop = (int)(attackingPop * victoryProba);
+                        result.Owner = oriOwner;
+                        result.Population = finalPop;
+                    }
+                    //Random Battle defenders victory
+                    else
+                    {
+                        int finalPop = (int)(destPop * (1 - victoryProba));
+                        result.Owner = Owner.Opponent;
+                        result.Population = finalPop;
+                    }
+                    break;
+            }
+
+            return result;
+        }    
     }
 }
