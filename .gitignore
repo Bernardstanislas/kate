@@ -3,6 +3,7 @@
 *.userprefs
 *.suo
 *.user
+App.config
 
 # Compilation related files
 bin/
