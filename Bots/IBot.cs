@@ -19,4 +19,3 @@ namespace Kate.Bots
         ICollection<Move> playTurn();
     }
 }
-

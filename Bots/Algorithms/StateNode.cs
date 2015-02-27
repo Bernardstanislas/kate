@@ -7,9 +7,9 @@ namespace Kate.Bots.Algorithms
         private readonly IMap map;
         public IMap Map;
 
-		public StateNode(IMap map)
-		{
-			this.map = map;
-		}
+        public StateNode(IMap map)
+        {
+            this.map = map;
+        }
     }
 }

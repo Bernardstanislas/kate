@@ -9,4 +9,3 @@ namespace Kate.Heuristic.Rules
         float evaluateScore(IMap map);
     }
 }
-

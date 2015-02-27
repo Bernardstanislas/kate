@@ -245,4 +245,3 @@ namespace Kate.IO
         }
     }
 }
-

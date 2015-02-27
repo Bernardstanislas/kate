@@ -19,4 +19,3 @@ namespace Kate.IO
         void close();
     }
 }
-

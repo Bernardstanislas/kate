@@ -8,30 +8,30 @@ namespace Kate.Maps
     [Serializable()]
     public abstract class AbstractMap: IMap
     {
-		#region implemented
+        #region implemented
         protected int hash = 0;
-		public override int GetHashCode()
-		{
-			return hash;
-		}
-		public virtual void updateMap(IMapUpdater mapUpdater)
-		{
-			mapUpdater.execute(this);
-		}
-		public void setTile(Tile newTile)
-		{
-			updateTile(newTile);
-			updateHash(newTile);
-		}
-		#endregion
+        public override int GetHashCode()
+        {
+            return hash;
+        }
+        public virtual void updateMap(IMapUpdater mapUpdater)
+        {
+            mapUpdater.execute(this);
+        }
+        public void setTile(Tile newTile)
+        {
+            updateTile(newTile);
+            updateHash(newTile);
+        }
+        #endregion
 
-		#region abstract
-		protected abstract void updateTile(Tile newTile);
-		protected abstract void updateHash(Tile newTile);
+        #region abstract
+        protected abstract void updateTile(Tile newTile);
+        protected abstract void updateHash(Tile newTile);
         public abstract IEnumerable<Tile> getGrid();
         public abstract Tile getTile (int xCoordinate, int yCoordinate);
-		public abstract IEnumerable<Tile> getPlayerTiles(Owner owner);
+        public abstract IEnumerable<Tile> getPlayerTiles(Owner owner);
         public abstract int[] getMapDimension();
-		#endregion
+        #endregion
     }
 }
