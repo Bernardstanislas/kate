@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,8 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-  	<Compile Include="Bots\Algorithms\StateNode.cs" />
-    <Compile Include="Bots\Utils\MultipleMove.cs" />
+    <Compile Include="Bots\Algorithms\StateNode.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Bots\AbstractBot.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Heuristic\Rules\IScoringRule.cs" />
     <Compile Include="Heuristic\Rules\PopulationRatioRule.cs" />
     <Compile Include="Heuristic\Rules\TotalPopulationRule.cs" />
+    <Compile Include="Utils\MultipleMove.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -84,5 +86,7 @@
   <ItemGroup>
     <Folder Include="Heuristic\" />
     <Folder Include="Heuristic\Rules\" />
+    <Folder Include="Bots\Utils\" />
+    <Folder Include="Utils\" />
   </ItemGroup>
 </Project>
