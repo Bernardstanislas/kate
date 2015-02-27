@@ -8,17 +8,22 @@ namespace Kate.Maps
     public class Map : AbstractMap
     {
         private Tile[,] grid;
-        private int[, ,] hashArray;
+        private int[, , ,] hashArray;
+		private bool isHashArrayGenerated = false;
 
         public Map (int xSize, int ySize)
         {
-            grid = new Tile[xSize, ySize];
+			generateHashArray(xSize, ySize);
 
-            for (int i = 0; i < xSize; i++)
-                for (int j = 0; j < ySize; j++)
-                    grid[i, j] = new Tile(i, j);
+			grid = new Tile[xSize, ySize];
+			for (int i = 0; i < grid.GetLength (0); i++)
+				for (int j = 0; j < grid.GetLength (1); j++) {
+					grid [i, j] = new Tile (i, j);
+					hash ^= hashArray [i, j, (int)Owner.Neutral, 0];
+				}
         }
 
+		#region Grid
 		public override IEnumerable<Tile> getGrid()
 		{
 			foreach (Tile tile in grid)
@@ -34,10 +39,10 @@ namespace Kate.Maps
 
         public override int[] getMapDimension()
         {
-            return new int[2] { grid.GetLength(0), grid.GetLength(1) };
+            return new int[2] {grid.GetLength(0), grid.GetLength(1)};
         }
 
-        public override void setTile(Tile newTile) 
+        protected override void updateTile(Tile newTile) 
         {
             grid[newTile.X, newTile.Y] = newTile;
         }
@@ -46,50 +51,29 @@ namespace Kate.Maps
         {
             return grid[xCoordinate, yCoordinate];
         }
+		#endregion
 
-        public override int GetHashCode()
-        {
-            var hashArray = new int[grid.GetLength(0),grid.GetLength(1)];
-
-            for (int x = 0; x < grid.GetLength(0); x++)
-                for (int y = 0; y < grid.GetLength(1); y++)
-                    if (grid[x, y].Owner != Owner.Neutral)
-                        hashArray[x, y] = grid[x, y].Population;
-
-            return 0;
-        }
-
-        private int[, ,] generateHashArray()
+		#region Hash
+		private void generateHashArray(int xSize, int ySize)
         {
             Random random = new Random();
+			hashArray = new int[xSize, ySize, Enum.GetNames(typeof(Owner)).Length, 256];
 
-            var hashArray = new int[grid.GetLength(0), grid.GetLength(1), 3];
-
-            for (int player = 0; player < (int)Owner.Neutral; player++)
-                for (int x = 0; x < grid.GetLength(0); x++)
-                    for (int y = 0; y < grid.GetLength(1); y++)
-                        hashArray[x, y, player] = random.Next();
-
-            return hashArray;
+			for (int index0 = 0; index0 < hashArray.GetLength(0); index0++)
+				for (int index1 = 0; index0 < hashArray.GetLength(1); index1++)
+					for (int index2 = 0; index0 < hashArray.GetLength(2); index2++)
+						for (int index3 = 0; index0 < hashArray.GetLength(3); index3++)
+							hashArray[index0, index1, index2, index3] = random.Next();
         }
 
-        public override void ComputeHash()
-        {
-            int hash = 0;
-
-            for (int x = 0; x < grid.GetLength(0); x++)
-                for (int y = 0; y < grid.GetLength(1); y++)
-                {
-                    var tile = getTile(x, y);
-                    if (tile.Owner != Owner.Neutral)
-                        hash ^= hashArray[x, y, (int)tile.Owner];
-                }
-        }
-
-        public override void UpdateHash(IMapUpdater mapUpdater)
-        {
-            throw new NotImplementedException();
-        }
+		protected override void updateHash(Tile newTile)
+		{
+			var oldTile = getTile(newTile.X, newTile.Y);
+			hash = hash 
+				^ hashArray[oldTile.X, oldTile.Y, (int)oldTile.Owner, oldTile.Population] 
+				^ hashArray[newTile.X, newTile.Y, (int)newTile.Owner, newTile.Population];
+		}
+		#endregion
     }
 }
 
