@@ -8,19 +8,34 @@ namespace Kate.Maps
     public class Map : AbstractMap
     {
         private Tile[,] grid;
-        private int[, , ,] hashArray;
-        private bool isHashArrayGenerated = false;
+        public Tile[,] Grid { get { return grid; } }
 
-        public Map (int xSize, int ySize)
+        private int[, , ,] hashArray;
+        public int[, , ,] HashArray { get { return hashArray; } }
+
+        public Map(int xSize, int ySize)
         {
             generateHashArray(xSize, ySize);
 
             grid = new Tile[xSize, ySize];
             for (int i = 0; i < grid.GetLength (0); i++)
-                for (int j = 0; j < grid.GetLength (1); j++) {
+                for (int j = 0; j < grid.GetLength (1); j++) 
+                {
                     grid [i, j] = new Tile (i, j);
                     hash ^= hashArray [i, j, (int)Owner.Neutral, 0];
                 }
+        }
+
+        public Map(Map map)
+        {
+            var size = map.getMapDimension();
+            grid = new Tile[size[0], size[1]];
+            for (int i = 0; i < grid.GetLength(0); i++)
+                for (int j = 0; j < grid.GetLength(1); j++) 
+                    grid[i, j] = new Tile(map.Grid[i, j]);
+
+            hash = map.GetHashCode();
+            hashArray = map.HashArray;
         }
 
         #region Grid

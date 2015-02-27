@@ -10,14 +10,17 @@ namespace Kate.Maps
     {
         #region implemented
         protected int hash = 0;
+
         public override int GetHashCode()
         {
             return hash;
         }
+
         public virtual void updateMap(IMapUpdater mapUpdater)
         {
             mapUpdater.execute(this);
         }
+
         public void setTile(Tile newTile)
         {
             updateTile(newTile);
