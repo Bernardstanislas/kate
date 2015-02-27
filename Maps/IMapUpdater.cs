@@ -7,4 +7,3 @@ namespace Kate.Maps
         void execute(IMap target);
     }
 }
-

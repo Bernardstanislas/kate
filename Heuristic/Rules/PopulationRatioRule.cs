@@ -28,4 +28,3 @@ namespace Kate.Heuristic.Rules
         }
     }
 }
-

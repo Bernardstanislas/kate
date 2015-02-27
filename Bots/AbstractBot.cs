@@ -68,4 +68,3 @@ namespace Kate.Bots
         }
     }
 }
-
