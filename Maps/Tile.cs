@@ -10,8 +10,8 @@ namespace Kate.Maps
         #region Public attributes
         public int X { get; private set; }
         public int Y { get; private set; }
-        public Owner Owner { get; private set; }
-        public int Population { get; private set; }
+        public Owner Owner { get; set; }
+        public int Population { get; set; }
         #endregion
 
         #region Constructors
@@ -26,6 +26,9 @@ namespace Kate.Maps
             Owner = owner;
             Population = population;
         }
+
+        public Tile(Tile oT) : this(oT.X, oT.Y, oT.Owner,oT.Population) { }
+        
         #endregion
 
     }
