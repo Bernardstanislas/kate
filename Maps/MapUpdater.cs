@@ -53,6 +53,11 @@ namespace Kate.Maps
                 destTile.Owner = Owner.Me;
                 destTile.Population = myPop;
             }
+            else
+            {
+                destTile.Owner = Owner.Neutral;
+                destTile.Population = 0;
+            }
 
             //The destination Tile processed during the function is then set
             //in the map.

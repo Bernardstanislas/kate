@@ -1,31 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using Models.Map;
-using Models.Player;
+using Kate.Maps;
+using Kate.Types;
+using Kate.Commands;
 
 
-namespace Utils
+namespace Kate.Utils
 {
     public static class FightUtil
     {
-        public static Tuple <Tile, Tile> FightUtil(Tile sourceTile, Tile destTile)
+        public static List<MapUpdater> FightUtil(List<Move> moves)
         {
-            Tile newSource = sourceTile;
-            Tile newDest = destTile;
-            Random rnd = new Random();
-            Tuple<Tile, Tile> output = new Tuple<Tile, Tile>(newSource, newDest);
+            List<MapUpdater> output = new List<MapUpdater>();
+            int popToMove = 0;
+            Tile destTile = new Tile(moves[0].Dest);
+            //We just set up this tile as a way to get the original ownership
+            Tile originOwnership = new Tile(moves[0].Origin);
+
+        
 
             //attacking humans
-            if ( destTile.Owner.Equals(Models.Player.Humans) )
+            if ( destTile.Owner.Equals(Owner.Humans) )
             {
                 if ( sourceTile.Population >= destTile.Population  )
                 {
                     // In this case, the fight is won. So the source Tile is now an empty neutral tile
-                    output.Item1.Owner = Models.Player.Neutral;
+                    output.Item1.Owner = Owner.Neutral;
                     output.Item1.Population = 0;
 
                     // The destination tile becomes the player property and the population of both tiles are added
-                    output.Item2.Owner = Models.Player.Me;
+                    output.Item2.Owner = Owner.Me;
                     output.Item2.Population = sourceTile.Population + destTile.Population;
                 }
 
@@ -50,11 +54,11 @@ namespace Utils
                             }
                         }
 
-                        output.Item1.Owner = Models.Player.Neutral;
+                        output.Item1.Owner = Owner.Neutral;
                         output.Item1.Population = 0;
 
                         // The destination tile becomes the player property and the population is the surviving one
-                        output.Item2.Owner = Models.Player.Me;
+                        output.Item2.Owner = Owner.Me;
                         output.Item2.Population = survivingPop;
                     }
 
@@ -62,7 +66,7 @@ namespace Utils
                     else
                     {
                         //source tile is now empty
-                        output.Item1.Owner = Models.Player.Neutral;
+                        output.Item1.Owner = Owner.Neutral;
                         output.Item1.Population = 0;
 
                         //We check the remaining human population
@@ -76,30 +80,30 @@ namespace Utils
                             }
                         }
 
-                        output.Item2.Owner = Models.Player.Humans;
+                        output.Item2.Owner = Owner.Humans;
                         output.Item2.Population = survivingPop;
                     }
                 }
             }
 
             //attacking opponents
-            else if ( destTile.Owner.Equals(Models.Player.Opponent) )
+            else if ( destTile.Owner.Equals(Owner.Opponent) )
             {
                 if (sourceTile.Population >= destTile.Population*1.5 )
                 {
                     // In this case, the fight is won. So the source Tile is now an empty neutral tile
-                    output.Item1.Owner = Models.Player.Neutral;
+                    output.Item1.Owner = Owner.Neutral;
                     output.Item1.Population = 0;
 
                     // The destination tile becomes the player property and the population is hte source tile population
-                    output.Item2.Owner = Models.Player.Me;
+                    output.Item2.Owner = Owner.Me;
                     output.Item2.Population = sourceTile.Population;
                 }
 
                 else if (sourceTile.Population <= destTile.Population * 1.5)
                 {
                     // In this case, the fight is lost. So the source Tile is now an empty neutral tile
-                    output.Item1.Owner = Models.Player.Neutral;
+                    output.Item1.Owner = Owner.Neutral;
                     output.Item1.Population = 0;
 
                     // The destination tile stays as the original destination tile
@@ -125,11 +129,11 @@ namespace Utils
                             }
                         }
 
-                        output.Item1.Owner = Models.Player.Neutral;
+                        output.Item1.Owner = Owner.Neutral;
                         output.Item1.Population = 0;
 
                         // The destination tile becomes the player property and the population is the surviving one
-                        output.Item2.Owner = Models.Player.Me;
+                        output.Item2.Owner = Owner.Me;
                         output.Item2.Population = survivingPop;
                     }
 
@@ -137,7 +141,7 @@ namespace Utils
                     else
                     {
                         //source tile is now empty
-                        output.Item1.Owner = Models.Player.Neutral;
+                        output.Item1.Owner = Owner.Neutral;
                         output.Item1.Population = 0;
 
                         //We check the remaining human population
@@ -151,7 +155,7 @@ namespace Utils
                             }
                         }
 
-                        output.Item2.Owner = Models.Player.Opponent;
+                        output.Item2.Owner = Owner.Opponent;
                         output.Item2.Population = survivingPop;
                     }
 
@@ -161,10 +165,10 @@ namespace Utils
             else
             {
                 //nothing happens it's just a move!
-                output.Item1.Owner = Models.Player.Neutral;
+                output.Item1.Owner = Owner.Neutral;
                 output.Item1.Population = 0;
 
-                output.Item2.Owner = Models.Player.Me;
+                output.Item2.Owner = Owner.Me;
                 output.Item2.Population = sourceTile.Population;
             }
 
