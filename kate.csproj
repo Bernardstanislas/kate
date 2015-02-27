@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7FC887F7-D8D0-49D5-A1E6-51ADC71524CA}</ProjectGuid>
+    <ProjectGuid>{FF12D254-F222-4818-AC58-A34FBD802202}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>kate</RootNamespace>
@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Bots\AbstractBot.cs" />
     <Compile Include="Bots\Algorithms\StateNode.cs" />
     <Compile Include="Bots\IBot.cs" />
@@ -73,6 +75,7 @@
     <Compile Include="Types\Side.cs" />
     <Compile Include="Utils\MoveGenerator.cs" />
     <Compile Include="Utils\MultipleMove.cs" />
+    <Compile Include="Utils\FightUtil.cs" />
   </ItemGroup>
   <ItemGroup>
   	<Folder Include="Bots\" />
