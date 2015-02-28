@@ -17,22 +17,16 @@ namespace Kate.Maps
         private int myPop = 0;
         private int opponentPop = 0;
 
-        public void execute (IMap target)
+        public void execute(IMap target)
         {
             Tile destTile = new Tile(target.getTile(xCoord, yCoord));
             
-            if ( destTile.Owner.Equals(Owner.Me))
-            {
+            if (destTile.Owner.Equals(Owner.Me))
                 myPop = destTile.Population;
-            }
             else if (destTile.Owner.Equals(Owner.Humans))
-            {
                 humanPop = destTile.Population;
-            }
             else if (destTile.Owner.Equals(Owner.Opponent))
-            {
                 opponentPop = destTile.Population;
-            }
 
             humanPop += deltaHumans;
             myPop += deltaMe;
@@ -59,19 +53,17 @@ namespace Kate.Maps
                 destTile.Population = 0;
             }
 
-            //The destination Tile processed during the function is then set
-            //in the map.
+            // The destination Tile processed during the function is then set in the map.
             target.setTile(destTile);
         }
 
-        public MapUpdater (int x, int y, int deltaH = 0, int deltaM = 0, int deltaO = 0)
+        public MapUpdater(int x, int y, int deltaH = 0, int deltaM = 0, int deltaO = 0)
         {
             this.xCoord = x;
             this.yCoord = y;
             this.deltaHumans = deltaH;
             this.deltaMe = deltaM;
             this.deltaOpponent = deltaO;
-
         }   
     }
 }
