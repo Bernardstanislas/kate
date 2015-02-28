@@ -71,20 +71,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Types\Owner.cs" />
     <Compile Include="Types\Side.cs" />
+    <Compile Include="Utils\FightUtil.cs" />
+    <Compile Include="Utils\MapUpdaterApplier.cs" />
     <Compile Include="Utils\MoveGenerator.cs" />
     <Compile Include="Utils\MultipleMove.cs" />
   </ItemGroup>
-  <ItemGroup>
-  	<Folder Include="Bots\" />
-  	<Folder Include="Bots\Algorithms\" />
-    <Folder Include="IO\" />
-    <Folder Include="Commands\" />
-    <Folder Include="Commands\Socket\" />
-    <Folder Include="Heuristic\" />
-    <Folder Include="Heuristic\Rules\" />
-    <Folder Include="Maps\" />
-    <Folder Include="Types\" />
-    <Folder Include="Utils\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
