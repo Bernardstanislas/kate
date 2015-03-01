@@ -5,15 +5,14 @@ namespace Kate.Maps
 {
     public class MapUpdater: IMapUpdater
     {
-        //Map Updater properties to be used
+        // Map Updater properties to be used
         private int xCoord;
         private int yCoord;
         private int deltaHumans;
         private int deltaMe;
         private int deltaOpponent;
 
-
-        //Variables locales
+        // Local fields
         private int humanPop = 0;
         private int myPop = 0;
         private int opponentPop = 0;
@@ -21,8 +20,7 @@ namespace Kate.Maps
         public void execute(IMap target)
         {
             Tile destTile = new Tile(target.getTile(xCoord, yCoord));
-            
-
+      
             if (destTile.Owner.Equals(Owner.Me))
                 myPop = destTile.Population;
             else if (destTile.Owner.Equals(Owner.Humans))

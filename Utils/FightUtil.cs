@@ -34,7 +34,6 @@ namespace Kate.Utils
             return res;
         }
 
-
         public static Tile FightResult(Owner oriOwner, int attackingPop, Owner destOwner, int destPop)
         {
             double victoryProba = attackingPop / (attackingPop + destPop);
