@@ -10,9 +10,8 @@ namespace Kate.Maps
         IEnumerable<Tile> getGrid();
         int[] getMapDimension();
         Tile getTile (int xCoordinate, int yCoordinate);
-		IEnumerable<Tile> getPlayerTiles(Owner owner);
+        IEnumerable<Tile> getPlayerTiles(Owner owner);
         void setTile (Tile newTile);
         void updateMap(IMapUpdater mapUpdater);
     }
 }
-

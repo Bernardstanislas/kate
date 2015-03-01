@@ -1,27 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+
+using Kate.Commands;
 using Kate.Maps;
 using Kate.Types;
-using Kate.Commands;
-
 
 namespace Kate.Utils
 {
     public static class MapUpdaterApplier
     {
-        //This method will create MapUpdaters from a list of moves
+        // This method will create MapUpdaters from a list of moves
         public static List<MapUpdater> Apply(List<Move> moves)
         {
-            Dictionary<Tile, List<Move>> dict = new Dictionary<Tile, List<Move>>();
-            var output = new List<MapUpdater>();
+            var dict = new Dictionary<Tile, List<Move>>();
 
-            //The Moves list split in sub list, with the same destination tile. 
+            // The Moves list split in sub list, with the same destination tile. 
             foreach(Move move in moves)
             {
                 if(dict.ContainsKey(move.Dest))
-                {
                     dict[move.Dest].Add(move);
-                }
                 else
                 {
                     List<Move> list = new List<Move>();
