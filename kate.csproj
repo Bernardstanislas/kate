@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Utils\FightUtil.cs" />
+    <Compile Include="Utils\MapUpdaterApplier.cs" />
     <Compile Include="Utils\MultipleMove.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

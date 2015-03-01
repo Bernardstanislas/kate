@@ -48,18 +48,17 @@ namespace Kate.Utils
             List<MapUpdater> output = new List<MapUpdater>();
             int popToMove = 0;
             Tile destTile = new Tile(moves[0].Dest);
+            Owner originalOwner = moves[0].Origin.Owner;
             //We just set up this tile as a way to get the original ownership
-            Owner originOwnership = moves[0].Origin.Owner;
 
             // We process each move and create MapUpdaters for the origin tiles
             foreach (Move move in moves )
             {
                 Tile oriTile = new Tile(move.Origin);
-                //oriTile.Population -= move.PopToMove;
                 popToMove += move.PopToMove;
 
                 //Compute MapUpdaters for Original Tiles.
-                switch (originOwnership)
+                switch (oriTile.Owner)
                 {
                     case Owner.Me:
                         MapUpdater mUM = new MapUpdater(oriTile.X, oriTile.Y, 0, -move.PopToMove, 0);
@@ -79,10 +78,97 @@ namespace Kate.Utils
             }
 
             //We then need to return one map updater for the destination tile
+            switch (destTile.Owner)
+            {
+                case Owner.Me:
+                    if (originalOwner.Equals(Owner.Me))
+                    {
+                        MapUpdater mUM = new MapUpdater(destTile.X, destTile.Y, 0, popToMove, 0);
+                        output.Add(mUM);
+                    }
+                    else
+                    {
+                        Tile fightResult = new Tile(FightUtil.FightResult(originalOwner, popToMove, destTile.Population, destTile.Owner));
+                        if (fightResult.Owner.Equals(Owner.Me))
+                        {
+                            MapUpdater mUM = new MapUpdater(destTile.X, destTile.Y, 0, destTile.Population-fightResult.Population, 0);
+                            output.Add(mUM);
+                        }
+                        else
+                        {
+                            MapUpdater mUO = new MapUpdater(destTile.X, destTile.Y, 0, - destTile.Population, fightResult.Population);
+                            output.Add(mUO);
+                        }
+                    }
+                    break;
 
+                case Owner.Humans:
+                    if (originalOwner.Equals(Owner.Opponent))
+                    {
+                        Tile fightResult = new Tile(FightUtil.FightResult(originalOwner, popToMove, destTile.Population, destTile.Owner));
+                        if (fightResult.Owner.Equals(Owner.Opponent))
+                        {
+                            MapUpdater mUO = new MapUpdater(destTile.X, destTile.Y, -destTile.Population, 0, fightResult.Population);
+                            output.Add(mUO);
+                        }
+                        else
+                        {
+                            MapUpdater mUH = new MapUpdater(destTile.X, destTile.Y, destTile.Population-fightResult.Population, 0, 0);
+                            output.Add(mUH);
+                        }
+                    }
+                    else
+                    {
+                        Tile fightResult = new Tile(FightUtil.FightResult(originalOwner, popToMove, destTile.Population, destTile.Owner));
+                        if (fightResult.Owner.Equals(Owner.Me))
+                        {
+                            MapUpdater mUO = new MapUpdater(destTile.X, destTile.Y, -destTile.Population, fightResult.Population, 0);
+                            output.Add(mUO);
+                        }
+                        else
+                        {
+                            MapUpdater mUH = new MapUpdater(destTile.X, destTile.Y, destTile.Population - fightResult.Population, 0, 0);
+                            output.Add(mUH);
+                        }
+                    }
+                    break;
 
+                case Owner.Opponent:
+                    if (originalOwner.Equals(Owner.Opponent))
+                    {
+                        MapUpdater mUO = new MapUpdater(destTile.X, destTile.Y, 0, 0, popToMove);
+                        output.Add(mUO);   
+                    }
+                    else
+                    {
+                        Tile fightResult = new Tile(FightUtil.FightResult(originalOwner, popToMove, destTile.Population, destTile.Owner));
+                        if (fightResult.Owner.Equals(Owner.Opponent))
+                        {
+                            MapUpdater mUM = new MapUpdater(destTile.X, destTile.Y, 0, 0, destTile.Population - fightResult.Population);
+                            output.Add(mUM);
+                        }
+                        else
+                        {
+                            MapUpdater mUO = new MapUpdater(destTile.X, destTile.Y, 0, fightResult.Population, -destTile.Population);
+                            output.Add(mUO);
+                        }
+                    }
+                    break;
+
+                case Owner.Neutral:
+                    if (originalOwner.Equals(Owner.Opponent))
+                    {
+                        MapUpdater mUO = new MapUpdater(destTile.X, destTile.Y, 0, 0, popToMove);
+                        output.Add(mUO);
+                    }
+                    else
+                    {
+                        MapUpdater mUM = new MapUpdater(destTile.X, destTile.Y, 0, popToMove, 0);
+                        output.Add(mUM);
+                    }
+                    break;
+            }
             return output;
- 
         }
     }
 }
