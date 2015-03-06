@@ -11,13 +11,13 @@ namespace Kate.Bots.Workers
     {
         public DumbWorker(IMap map, Owner turn) : base(map, turn) { }
 
-        public override List<TreeNode<IMap>> ComputeNodeChildren()
+        public override List<TreeNode> ComputeNodeChildren()
         {
-            return new List<TreeNode<IMap>>()
+            return new List<TreeNode>()
             { 
-                new TreeNode<IMap>(Map, 0),
-                new TreeNode<IMap>(Map, 0),
-                new TreeNode<IMap>(Map, 0)
+                new TreeNode(Map, 0),
+                new TreeNode(Map, 0),
+                new TreeNode(Map, 0)
             };
         }
     }

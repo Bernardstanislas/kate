@@ -18,7 +18,7 @@ namespace Kate.Bots
         public int TreeTimeout { get; private set; }
         public int ChoiceTimeout { get; private set; }
         public Worker Worker { get; private set; }
-        public Dictionary<int, TreeNode<IMap>> Tree { get; set; }
+        public Dictionary<int, TreeNode> Tree { get; set; }
 
         public TurnByTurnBot(SocketClient socket, string name, Worker worker, int treeTimeout, int choiceTimeout) : base(socket, name) 
         {
@@ -33,13 +33,13 @@ namespace Kate.Bots
 
             var turn = Owner.Me;
 
-            Tree = new Dictionary<int, TreeNode<IMap>> 
+            Tree = new Dictionary<int, TreeNode> 
             { 
-                {map.GetHashCode(), new TreeNode<IMap>(map, 0)} 
+                {map.GetHashCode(), new TreeNode(map, 0)} 
             };
 
             // A List is better than an Array for creating the Task pool because it's not slower and easier to write
-            var taskPool = new List<Task<Tuple<List<TreeNode<IMap>>, int>>>
+            var taskPool = new List<Task<Tuple<List<TreeNode>, int>>>
             {
                 Task.Factory.StartNew(() => CreateWorker(map, turn))
             };
@@ -67,7 +67,7 @@ namespace Kate.Bots
                             Tree[parentHash].AddChildren(nodeArray[j].GetHashCode()); // Add new node to parent node children
 
                             // Start new Task for this new node
-                            taskPool.Add(Task.Factory.StartNew(() => CreateWorker(nodeArray[j].Value, turn)));
+                            taskPool.Add(Task.Factory.StartNew(() => CreateWorker(nodeArray[j].Map, turn)));
                         }
                     }
                 }
@@ -77,7 +77,7 @@ namespace Kate.Bots
             return GetReturnNode(ChoiceTimeout);
         }
 
-        private Tuple<List<TreeNode<IMap>>, int> CreateWorker(IMap map, Owner turn)
+        private Tuple<List<TreeNode>, int> CreateWorker(IMap map, Owner turn)
         {
             var worker = WorkerFactory.Build(Worker, map, turn);
             return Tuple.Create(worker.ComputeNodeChildren(), map.GetHashCode());
