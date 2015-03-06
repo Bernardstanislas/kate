@@ -80,7 +80,7 @@ namespace Kate.Bots
         private Tuple<List<TreeNode>, int> CreateWorker(IMap map, Owner turn)
         {
             var worker = WorkerFactory.Build(Worker, map, turn);
-			return Tuple.Create(worker.ComputeNodeChildren(), map.GetHashCode());
+            return Tuple.Create(worker.ComputeNodeChildren(), map.GetHashCode());
         }
 
         protected abstract ICollection<Move> GetReturnNode(int choiceTimeout);

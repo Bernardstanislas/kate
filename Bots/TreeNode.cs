@@ -13,8 +13,8 @@ namespace Kate.Bots
         public List<int> ChildrenHashes { get; private set; }
 
         public TreeNode(IMap value) : this(value, 0, new List<int>()) { }
-		public TreeNode(IMap value, float heurisitic) : this(value, heurisitic, new List<int>()) { }
-		public TreeNode(IMap value, float heuristic, List<int> children)
+        public TreeNode(IMap value, float heurisitic) : this(value, heurisitic, new List<int>()) { }
+        public TreeNode(IMap value, float heuristic, List<int> children)
         {
             Map = value;
             Heuristic = heuristic;
