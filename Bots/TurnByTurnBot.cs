@@ -25,16 +25,6 @@ namespace Kate.Bots
             Worker = worker;
             Timeout = timeout;
         }
-        
-        // Put the result of a Worker at its right place in the tree
-        public void AddWorkerResult(List<TreeNode<IMap>> nodes, int parentHash)
-        {
-            foreach (var node in nodes)
-            {
-                Tree.Add(node.GetHashCode(), node);
-                Tree[parentHash].AddChildren(node.GetHashCode());
-            }
-        }
 
         public override ICollection<Move> playTurn()
         {
@@ -47,6 +37,7 @@ namespace Kate.Bots
                 {map.GetHashCode(), new TreeNode<IMap>(map, 0)} 
             };
 
+            // A List is better than an Array for creating the Task pool because it's not slower and easier to write
             var taskPool = new List<Task<Tuple<List<TreeNode<IMap>>, int>>>
             {
                 Task.Factory.StartNew(() => CreateWorker(map, turn))
@@ -54,26 +45,29 @@ namespace Kate.Bots
 
             while (elapsedTime.ElapsedMilliseconds < Timeout) 
             {
-                if (Task.WaitAll(taskPool.ToArray(), Timeout - (int)elapsedTime.ElapsedMilliseconds))
+                // But an Array is needed for Task.WaitAll()
+                var taskPoolArray = taskPool.ToArray();
+
+                // And it allows us to clear the initial list right now to fill it again with the new Tasks.
+                taskPool.Clear();
+ 
+                if (Task.WaitAll(taskPoolArray, Timeout - (int)elapsedTime.ElapsedMilliseconds))
                 {
-                    var results = new List<Tuple<List<TreeNode<IMap>>, int>>();
-
-                    for (int i = 0; i < taskPool.Count; i++)
-                        results[i] = taskPool[i].Result;
-
-                    taskPool.Clear();
-
                     turn = turn == Owner.Me ? Owner.Opponent : Owner.Me;
 
-                    for (int i = 0; i < results.Count; i++)
+                    for (int i = 0; i < taskPoolArray.Length; i++)
                     {
-                        var nodeList = results[i].Item1;
-                        var parentHash = results[i].Item2;
+                        var nodeArray = taskPoolArray[i].Result.Item1.ToArray();
+                        var parentHash = taskPoolArray[i].Result.Item2;
 
-                        AddWorkerResult(nodeList, parentHash);
+                        for (int j = 0; j < nodeArray.Length; i++)
+                        {
+                            Tree.Add(nodeArray[j].GetHashCode(), nodeArray[j]); // Add new node to Tree
+                            Tree[parentHash].AddChildren(nodeArray[j].GetHashCode()); // Add new node to parent node children
 
-                        for (int j = 0; j < nodeList.Count; j++)
-                            taskPool.Add(Task.Factory.StartNew(() => CreateWorker(nodeList[j].Value, turn)));
+                            // Start new Task for this new node
+                            taskPool.Add(Task.Factory.StartNew(() => CreateWorker(nodeArray[j].Value, turn)));
+                        }
                     }
                 }
             }
