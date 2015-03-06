@@ -7,7 +7,7 @@
     <ProjectGuid>{7FC887F7-D8D0-49D5-A1E6-51ADC71524CA}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>kate</RootNamespace>
+    <RootNamespace>Kate</RootNamespace>
     <AssemblyName>kate</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -44,9 +44,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bots\AbstractBot.cs" />
-    <Compile Include="Bots\Algorithms\StateNode.cs" />
+    <Compile Include="Bots\TreeNode.cs" />
     <Compile Include="Bots\IBot.cs" />
     <Compile Include="Bots\RandomBot.cs" />
+    <Compile Include="Bots\TurnByTurnBot.cs" />
+    <Compile Include="Bots\Workers\AbstractWorker.cs" />
+    <Compile Include="Bots\Workers\DumbWorker.cs" />
+    <Compile Include="Bots\Workers\IWorker.cs" />
+    <Compile Include="Bots\Workers\WorkerFactory.cs" />
     <Compile Include="IO\AbstractClient.cs" />
     <Compile Include="IO\IClient.cs" />
     <Compile Include="IO\SocketClient.cs" />
@@ -76,14 +81,5 @@
     <Compile Include="Utils\MoveGenerator.cs" />
     <Compile Include="Utils\MultipleMove.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
-  <ItemGroup />
 </Project>
