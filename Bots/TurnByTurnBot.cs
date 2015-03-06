@@ -88,7 +88,7 @@ namespace Kate.Bots
         private Tuple<List<TreeNode<IMap>>, int[]> CreateWorker(IMap map, Owner turn, int[] position)
         {
             var worker = WorkerFactory.Build(Worker, map, turn);
-            return Tuple.Create(worker.ComputeNodeChildren(), position);
+            return Tuple.Create(worker.computeNodeChildren(), position);
         }
 
         protected abstract ICollection<Move> GetReturnNode();
