@@ -82,7 +82,7 @@ namespace Kate.Utils
                     Tile fightResult = new Tile(FightUtil.FightResult(originalOwner, popToMove, destTile.Owner, destTile.Population));
                     if (fightResult.Owner.Equals(Owner.Me))
                     {
-                        MapUpdater mUM = new MapUpdater(destTile.X, destTile.Y, 0, destTile.Population - fightResult.Population, 0);
+                        MapUpdater mUM = new MapUpdater(destTile.X, destTile.Y, 0, fightResult.Population - destTile.Population, 0);
                         output.Add(mUM);
                     }
                     else
@@ -104,7 +104,7 @@ namespace Kate.Utils
                     }
                     else
                     {
-                        MapUpdater mUH = new MapUpdater(destTile.X, destTile.Y, destTile.Population-fightResult.Population, 0, 0);
+                        MapUpdater mUH = new MapUpdater(destTile.X, destTile.Y,fightResult.Population - destTile.Population, 0, 0);
                         output.Add(mUH);
                     }
                 }
@@ -113,12 +113,12 @@ namespace Kate.Utils
                     Tile fightResult = new Tile(FightUtil.FightResult(originalOwner, popToMove, destTile.Owner, destTile.Population));
                     if (fightResult.Owner.Equals(Owner.Me))
                     {
-                        MapUpdater mUO = new MapUpdater(destTile.X, destTile.Y, -destTile.Population, fightResult.Population, 0);
-                        output.Add(mUO);
+                        MapUpdater mUM = new MapUpdater(destTile.X, destTile.Y, -destTile.Population, fightResult.Population, 0);
+                        output.Add(mUM);
                     }
                     else
                     {
-                        MapUpdater mUH = new MapUpdater(destTile.X, destTile.Y, destTile.Population - fightResult.Population, 0, 0);
+                        MapUpdater mUH = new MapUpdater(destTile.X, destTile.Y, fightResult.Population - destTile.Population, 0, 0);
                         output.Add(mUH);
                     }
                 }
@@ -135,7 +135,7 @@ namespace Kate.Utils
                     Tile fightResult = new Tile(FightUtil.FightResult(originalOwner, popToMove, destTile.Owner, destTile.Population));
                     if (fightResult.Owner.Equals(Owner.Opponent))
                     {
-                        MapUpdater mUM = new MapUpdater(destTile.X, destTile.Y, 0, 0, destTile.Population - fightResult.Population);
+                        MapUpdater mUM = new MapUpdater(destTile.X, destTile.Y, 0, 0, fightResult.Population - destTile.Population);
                         output.Add(mUM);
                     }
                     else
