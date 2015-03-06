@@ -11,7 +11,7 @@ namespace Kate.Bots.Workers
     {
         public DumbWorker(IMap map, Owner turn) : base(map, turn) { }
 
-        public override List<TreeNode> computeNodeChildren()
+        public override List<TreeNode> ComputeNodeChildren()
         {
             return new List<TreeNode>()
             { 

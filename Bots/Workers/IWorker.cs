@@ -11,6 +11,6 @@ namespace Kate.Bots.Workers
         IMap Map { get; }
         Owner Turn { get; }
 
-        List<TreeNode> computeNodeChildren();
+        List<TreeNode> ComputeNodeChildren();
     }
 }
