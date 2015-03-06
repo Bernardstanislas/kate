@@ -47,7 +47,6 @@
     <Compile Include="Bots\RandomBot.cs" />
     <Compile Include="Bots\TurnByTurnBot.cs" />
     <Compile Include="Bots\Workers\AbstractWorker.cs" />
-    <Compile Include="Bots\Workers\DumbWorker.cs" />
     <Compile Include="Bots\Workers\IWorker.cs" />
     <Compile Include="Bots\Workers\WorkerFactory.cs" />
     <Compile Include="IO\AbstractClient.cs" />
@@ -79,7 +78,6 @@
     <Compile Include="Utils\MoveGenerator.cs" />
     <Compile Include="Utils\MultipleMove.cs" />
     <Compile Include="Bots\Workers\DefaultWorker.cs" />
-    <Compile Include="Utils\DeepCloneUtil.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
