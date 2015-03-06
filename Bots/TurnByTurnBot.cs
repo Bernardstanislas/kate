@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 
 using Kate.Bots.Workers;
@@ -16,81 +15,74 @@ namespace Kate.Bots
     {
         protected Stopwatch elapsedTime;
 
-        public int Timeout { get; private set; }
+        public int TreeTimeout { get; private set; }
+        public int ChoiceTimeout { get; private set; }
         public Worker Worker { get; private set; }
-        public TreeNode<IMap> Tree { get; set; }
+        public Dictionary<int, TreeNode> Tree { get; set; }
 
-        public TurnByTurnBot(SocketClient socket, string name, Worker worker, int timeout) : base(socket, name) 
+        public TurnByTurnBot(SocketClient socket, string name, Worker worker, int treeTimeout, int choiceTimeout) : base(socket, name) 
         {
             Worker = worker;
-            Timeout = timeout;
-        }
-        
-        // Put the result of a Worker at its right place in the tree
-        public void AddWorkerResult(List<TreeNode<IMap>> nodes, int[] position)
-        {
-            var currentNode = Tree;
-
-            if (position[0] != -1)
-                foreach (int depth in position)
-                    currentNode = currentNode.Children[depth];
-
-            currentNode.Children = nodes;
+            TreeTimeout = treeTimeout;
+            ChoiceTimeout = choiceTimeout;
         }
 
         public override ICollection<Move> playTurn()
         {
             elapsedTime.Start();
 
-            Tree = new TreeNode<IMap>(map);
+            var turn = Owner.Me;
 
-            var taskPool = new List<Task<Tuple<List<TreeNode<IMap>>, int[]>>>
-            {
-                Task.Factory.StartNew(() => CreateWorker(Tree.Value, Owner.Me, new int[1] { -1 }))
+            Tree = new Dictionary<int, TreeNode> 
+            { 
+                {map.GetHashCode(), new TreeNode(map, 0)} 
             };
 
-            while (elapsedTime.ElapsedMilliseconds < Timeout) 
+            // A List is better than an Array for creating the Task pool because it's not slower and easier to write
+            var taskPool = new List<Task<Tuple<List<TreeNode>, int>>>
             {
-                if (Task.WaitAll(taskPool.ToArray(), Timeout - (int)elapsedTime.ElapsedMilliseconds))
+                Task.Factory.StartNew(() => CreateWorker(map, turn))
+            };
+
+            while (elapsedTime.ElapsedMilliseconds < TreeTimeout) 
+            {
+                // But an Array is needed for Task.WaitAll()
+                var taskPoolArray = taskPool.ToArray();
+
+                // And it allows us to clear the initial list right now to fill it again with the new Tasks.
+                taskPool.Clear();
+ 
+                if (Task.WaitAll(taskPoolArray, TreeTimeout - (int)elapsedTime.ElapsedMilliseconds))
                 {
-                    var turn = taskPool[0].Result.Item2.Length % 2 == 0 ? Owner.Opponent : Owner.Me;
+                    turn = turn == Owner.Me ? Owner.Opponent : Owner.Me;
 
-                    var results = new List<Tuple<List<TreeNode<IMap>>, int[]>>();
-
-                    for (int i = 0; i < taskPool.Count; i++)
-                        results[i] = taskPool[i].Result;
-
-                    taskPool.Clear();
-
-                    for (int i = 0; i < results.Count; i++)
+                    for (int i = 0; i < taskPoolArray.Length; i++)
                     {
-                        var nodeList = results[i].Item1;
-                        var position = results[i].Item2;
+                        var nodeArray = taskPoolArray[i].Result.Item1.ToArray();
+                        var parentHash = taskPoolArray[i].Result.Item2;
 
-                        AddWorkerResult(nodeList, position);
-
-                        for (int j = 0; j < results[i].Item1.Count; j++)
+                        for (int j = 0; j < nodeArray.Length; i++)
                         {
-                            var newPosition = new int[position.Length + 1];
-                            position.CopyTo(newPosition, 0);
-                            newPosition[position.Length] = j;
-                            taskPool.Add(Task.Factory.StartNew(() => CreateWorker(nodeList[j].Value, turn, newPosition)));
+                            Tree.Add(nodeArray[j].GetHashCode(), nodeArray[j]); // Add new node to Tree
+                            Tree[parentHash].AddChildren(nodeArray[j].GetHashCode()); // Add new node to parent node children
+
+                            // Start new Task for this new node
+                            taskPool.Add(Task.Factory.StartNew(() => CreateWorker(nodeArray[j].Map, turn)));
                         }
                     }
                 }
             }
-
             elapsedTime.Stop();
 
-            return GetReturnNode();
+            return GetReturnNode(ChoiceTimeout);
         }
 
-        private Tuple<List<TreeNode<IMap>>, int[]> CreateWorker(IMap map, Owner turn, int[] position)
+        private Tuple<List<TreeNode>, int> CreateWorker(IMap map, Owner turn)
         {
             var worker = WorkerFactory.Build(Worker, map, turn);
-            return Tuple.Create(worker.computeNodeChildren(), position);
+			return Tuple.Create(worker.computeNodeChildren(), map.GetHashCode());
         }
 
-        protected abstract ICollection<Move> GetReturnNode();
+        protected abstract ICollection<Move> GetReturnNode(int choiceTimeout);
     }
 }

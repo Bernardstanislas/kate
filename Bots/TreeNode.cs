@@ -1,20 +1,34 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+
+using Kate.Maps;
 
 namespace Kate.Bots
 {
-    public class TreeNode<T>
+    [Serializable()]
+    public class TreeNode
     {
-        public T Value { get; private set; }
+        public IMap Map { get; private set; }
         public float Heuristic { get; private set; }
-        public List<TreeNode<T>> Children { get; set; }
+        public List<int> ChildrenHashes { get; private set; }
 
-        public TreeNode(T value) : this(value, 0f, new List<TreeNode<T>>()) { }
-		public TreeNode(T value, float heurisitic) : this(value, heurisitic, new List<TreeNode<T>>()) { }
-		public TreeNode(T value, float heuristic, List<TreeNode<T>> children)
+        public TreeNode(IMap value) : this(value, 0, new List<int>()) { }
+		public TreeNode(IMap value, float heurisitic) : this(value, heurisitic, new List<int>()) { }
+		public TreeNode(IMap value, float heuristic, List<int> children)
         {
-            Value = value;
+            Map = value;
             Heuristic = heuristic;
-            Children = children;
+            ChildrenHashes = children;
+        }
+
+        public override int GetHashCode()
+        {
+            return Map.GetHashCode();
+        }
+
+        public void AddChildren(int childrenHash)
+        {
+            ChildrenHashes.Add(childrenHash);
         }
     }
 }

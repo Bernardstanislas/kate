@@ -19,16 +19,16 @@ namespace Kate.Bots.Workers
 
 		public DefaultWorker (IMap map, Owner turn) : base (map, turn) {}
 
-		public override List<TreeNode<IMap>> computeNodeChildren()
+		public override List<TreeNode> computeNodeChildren()
 		{
 			List<IMap> mapPerNode = generateMapPerNode ();
-			var treeNodes = new ConcurrentBag<TreeNode<IMap>> ();
+			var treeNodes = new ConcurrentBag<TreeNode> ();
 
 			Parallel.ForEach (mapPerNode, item => {
-				treeNodes.Add (new TreeNode<IMap> (item, heuristicManager.getScore (item)));
+				treeNodes.Add (new TreeNode (item, heuristicManager.getScore (item)));
 			});
 
-			return new List<TreeNode<IMap>> (treeNodes);
+			return new List<TreeNode> (treeNodes);
 		}
 	}
 }
