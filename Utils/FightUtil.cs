@@ -36,10 +36,10 @@ namespace Kate.Utils
 
         public static Tile FightResult(Owner oriOwner, int attackingPop, Owner destOwner, int destPop)
         {
-            double victoryProba = attackingPop / (attackingPop + destPop);
+            float victoryProba = (float)attackingPop / (float)(attackingPop + destPop);
             Tile result = new Tile();
 
-            switch (destOwner)
+            switch (destOwner) 
             {
             case Owner.Humans:
                 // Victory is possible only if attacking pop > human pop
@@ -51,7 +51,9 @@ namespace Kate.Utils
                 // Defeat case, defending human pop is partly killed.
                 else
                 {
+                    //Console.WriteLine("topkek");
                     int finalPop = (int)(destPop*(1 - victoryProba));
+                    //Console.WriteLine(destPop + " <- Pop destination .. Proba de victoire ->"+victoryProba+ "lel jabba le zgeg " + finalPop);
 
                     result.Owner = Owner.Humans;
                     result.Population = finalPop;
