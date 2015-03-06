@@ -75,9 +75,9 @@ namespace Kate.Maps
             hashArray = new int[xSize, ySize, Enum.GetNames(typeof(Owner)).Length, 256];
 
             for (int index0 = 0; index0 < hashArray.GetLength(0); index0++)
-                for (int index1 = 0; index0 < hashArray.GetLength(1); index1++)
-                    for (int index2 = 0; index0 < hashArray.GetLength(2); index2++)
-                        for (int index3 = 0; index0 < hashArray.GetLength(3); index3++)
+                for (int index1 = 0; index1 < hashArray.GetLength(1); index1++)
+                    for (int index2 = 0; index2 < hashArray.GetLength(2); index2++)
+                        for (int index3 = 0; index3 < hashArray.GetLength(3); index3++)
                             hashArray[index0, index1, index2, index3] = random.Next();
         }
 
