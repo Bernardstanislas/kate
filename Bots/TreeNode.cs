@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Kate.Bots.Algorithms
+namespace Kate.Bots
 {
     public class TreeNode<T>
     {

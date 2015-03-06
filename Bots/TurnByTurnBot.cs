@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Kate.Bots.Algorithms;
 using Kate.Bots.Workers;
 using Kate.Commands;
 using Kate.IO;
@@ -89,7 +88,7 @@ namespace Kate.Bots
         private Tuple<List<TreeNode<IMap>>, int[]> CreateWorker(IMap map, Owner turn, int[] position)
         {
             var worker = WorkerFactory.Build(Worker, map, turn);
-            return Tuple.Create(worker.ComputeNode(), position);
+            return Tuple.Create(worker.ComputeNodeChildren(), position);
         }
 
         protected abstract ICollection<Move> GetReturnNode();

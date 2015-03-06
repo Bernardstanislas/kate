@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Kate.Bots.Algorithms;
 using Kate.Maps;
 using Kate.Types;
 using Kate.Utils;
@@ -12,7 +11,7 @@ namespace Kate.Bots.Workers
     {
         public DumbWorker(IMap map, Owner turn) : base(map, turn) { }
 
-        public override List<TreeNode<IMap>> ComputeNode()
+        public override List<TreeNode<IMap>> ComputeNodeChildren()
         {
             return new List<TreeNode<IMap>>()
             { 

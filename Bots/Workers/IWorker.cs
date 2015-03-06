@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Kate.Bots.Algorithms;
 using Kate.Maps;
 using Kate.Types;
 
@@ -12,6 +11,6 @@ namespace Kate.Bots.Workers
         IMap Map { get; }
         Owner Turn { get; }
 
-        List<TreeNode<IMap>> ComputeNode();
+        List<TreeNode<IMap>> ComputeNodeChildren();
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Kate.Bots.Algorithms;
 using Kate.Maps;
 using Kate.Types;
 
@@ -18,6 +17,6 @@ namespace Kate.Bots.Workers
             Turn = turn;
         }
 
-        public abstract List<TreeNode<IMap>> ComputeNode();
+        public abstract List<TreeNode<IMap>> ComputeNodeChildren();
     }
 }
