@@ -18,7 +18,7 @@ namespace Kate.Bots
 
         public int Timeout { get; private set; }
         public Worker Worker { get; private set; }
-        public TreeNode<IMap> Tree { get; set; }
+        public Dictionary<int, TreeNode<IMap>> Tree { get; set; }
 
         public TurnByTurnBot(SocketClient socket, string name, Worker worker, int timeout) : base(socket, name) 
         {
@@ -27,68 +27,65 @@ namespace Kate.Bots
         }
         
         // Put the result of a Worker at its right place in the tree
-        public void AddWorkerResult(List<TreeNode<IMap>> nodes, int[] position)
+        public void AddWorkerResult(List<TreeNode<IMap>> nodes, int parentHash)
         {
-            var currentNode = Tree;
-
-            if (position[0] != -1)
-                foreach (int depth in position)
-                    currentNode = currentNode.Children[depth];
-
-            currentNode.Children = nodes;
+            foreach (var node in nodes)
+            {
+                Tree.Add(node.GetHashCode(), node);
+                Tree[parentHash].AddChildren(node.GetHashCode());
+            }
         }
 
         public override ICollection<Move> playTurn()
         {
             elapsedTime.Start();
 
-            Tree = new TreeNode<IMap>(map);
+            var turn = Owner.Me;
 
-            var taskPool = new List<Task<Tuple<List<TreeNode<IMap>>, int[]>>>
+            Tree = new Dictionary<int, TreeNode<IMap>> 
+            { 
+                {map.GetHashCode(), new TreeNode<IMap>(map, 0)} 
+            };
+
+            var taskPool = new List<Task<Tuple<List<TreeNode<IMap>>, int>>>
             {
-                Task.Factory.StartNew(() => CreateWorker(Tree.Value, Owner.Me, new int[1] { -1 }))
+                Task.Factory.StartNew(() => CreateWorker(map, turn))
             };
 
             while (elapsedTime.ElapsedMilliseconds < Timeout) 
             {
                 if (Task.WaitAll(taskPool.ToArray(), Timeout - (int)elapsedTime.ElapsedMilliseconds))
                 {
-                    var turn = taskPool[0].Result.Item2.Length % 2 == 0 ? Owner.Opponent : Owner.Me;
-
-                    var results = new List<Tuple<List<TreeNode<IMap>>, int[]>>();
+                    var results = new List<Tuple<List<TreeNode<IMap>>, int>>();
 
                     for (int i = 0; i < taskPool.Count; i++)
                         results[i] = taskPool[i].Result;
 
                     taskPool.Clear();
 
+                    turn = turn == Owner.Me ? Owner.Opponent : Owner.Me;
+
                     for (int i = 0; i < results.Count; i++)
                     {
                         var nodeList = results[i].Item1;
-                        var position = results[i].Item2;
+                        var parentHash = results[i].Item2;
 
-                        AddWorkerResult(nodeList, position);
+                        AddWorkerResult(nodeList, parentHash);
 
-                        for (int j = 0; j < results[i].Item1.Count; j++)
-                        {
-                            var newPosition = new int[position.Length + 1];
-                            position.CopyTo(newPosition, 0);
-                            newPosition[position.Length] = j;
-                            taskPool.Add(Task.Factory.StartNew(() => CreateWorker(nodeList[j].Value, turn, newPosition)));
-                        }
+                        for (int j = 0; j < nodeList.Count; j++)
+                            taskPool.Add(Task.Factory.StartNew(() => CreateWorker(nodeList[j].Value, turn)));
                     }
                 }
             }
-
             elapsedTime.Stop();
 
             return GetReturnNode();
         }
 
-        private Tuple<List<TreeNode<IMap>>, int[]> CreateWorker(IMap map, Owner turn, int[] position)
+        private Tuple<List<TreeNode<IMap>>, int> CreateWorker(IMap map, Owner turn)
         {
             var worker = WorkerFactory.Build(Worker, map, turn);
-            return Tuple.Create(worker.ComputeNodeChildren(), position);
+            return Tuple.Create(worker.ComputeNodeChildren(), map.GetHashCode());
         }
 
         protected abstract ICollection<Move> GetReturnNode();
