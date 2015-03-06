@@ -9,12 +9,12 @@ namespace Kate.Bots
     public class TreeNode
     {
         public IMap Map { get; private set; }
-        public int Heuristic { get; private set; }
+        public float Heuristic { get; private set; }
         public List<int> ChildrenHashes { get; private set; }
 
         public TreeNode(IMap value) : this(value, 0, new List<int>()) { }
-        public TreeNode(IMap value, int heurisitic) : this(value, heurisitic, new List<int>()) { }
-        public TreeNode(IMap value, int heuristic, List<int> children)
+        public TreeNode(IMap value, float heurisitic) : this(value, heurisitic, new List<int>()) { }
+        public TreeNode(IMap value, float heuristic, List<int> children)
         {
             Map = value;
             Heuristic = heuristic;

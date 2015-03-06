@@ -12,8 +12,6 @@
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -49,7 +47,6 @@
     <Compile Include="Bots\RandomBot.cs" />
     <Compile Include="Bots\TurnByTurnBot.cs" />
     <Compile Include="Bots\Workers\AbstractWorker.cs" />
-    <Compile Include="Bots\Workers\DumbWorker.cs" />
     <Compile Include="Bots\Workers\IWorker.cs" />
     <Compile Include="Bots\Workers\WorkerFactory.cs" />
     <Compile Include="IO\AbstractClient.cs" />
@@ -80,6 +77,7 @@
     <Compile Include="Utils\MapUpdaterFactory.cs" />
     <Compile Include="Utils\MoveGenerator.cs" />
     <Compile Include="Utils\MultipleMove.cs" />
+    <Compile Include="Bots\Workers\DefaultWorker.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
