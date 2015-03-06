@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 
 using Kate.Bots.Workers;
@@ -16,14 +15,16 @@ namespace Kate.Bots
     {
         protected Stopwatch elapsedTime;
 
-        public int Timeout { get; private set; }
+        public int TreeTimeout { get; private set; }
+        public int ChoiceTimeout { get; private set; }
         public Worker Worker { get; private set; }
         public Dictionary<int, TreeNode<IMap>> Tree { get; set; }
 
-        public TurnByTurnBot(SocketClient socket, string name, Worker worker, int timeout) : base(socket, name) 
+        public TurnByTurnBot(SocketClient socket, string name, Worker worker, int treeTimeout, int choiceTimeout) : base(socket, name) 
         {
             Worker = worker;
-            Timeout = timeout;
+            TreeTimeout = treeTimeout;
+            ChoiceTimeout = choiceTimeout;
         }
 
         public override ICollection<Move> playTurn()
@@ -43,7 +44,7 @@ namespace Kate.Bots
                 Task.Factory.StartNew(() => CreateWorker(map, turn))
             };
 
-            while (elapsedTime.ElapsedMilliseconds < Timeout) 
+            while (elapsedTime.ElapsedMilliseconds < TreeTimeout) 
             {
                 // But an Array is needed for Task.WaitAll()
                 var taskPoolArray = taskPool.ToArray();
@@ -51,7 +52,7 @@ namespace Kate.Bots
                 // And it allows us to clear the initial list right now to fill it again with the new Tasks.
                 taskPool.Clear();
  
-                if (Task.WaitAll(taskPoolArray, Timeout - (int)elapsedTime.ElapsedMilliseconds))
+                if (Task.WaitAll(taskPoolArray, TreeTimeout - (int)elapsedTime.ElapsedMilliseconds))
                 {
                     turn = turn == Owner.Me ? Owner.Opponent : Owner.Me;
 
@@ -73,7 +74,7 @@ namespace Kate.Bots
             }
             elapsedTime.Stop();
 
-            return GetReturnNode();
+            return GetReturnNode(ChoiceTimeout);
         }
 
         private Tuple<List<TreeNode<IMap>>, int> CreateWorker(IMap map, Owner turn)
@@ -82,6 +83,6 @@ namespace Kate.Bots
             return Tuple.Create(worker.ComputeNodeChildren(), map.GetHashCode());
         }
 
-        protected abstract ICollection<Move> GetReturnNode();
+        protected abstract ICollection<Move> GetReturnNode(int choiceTimeout);
     }
 }
