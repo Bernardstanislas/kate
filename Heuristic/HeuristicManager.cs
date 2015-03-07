@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using Kate.Heuristic.Rules;
 using Kate.Maps;
+using Kate.Types;
 
 namespace Kate.Heuristic
 {
@@ -15,14 +16,19 @@ namespace Kate.Heuristic
             this.weightedRules = weightedRules;
         }
 
-        public float getScore(IMap map)
+        public float[] getScore(IMap map)
         {
-            float score = 0.0f;
+            float myScore = 0.0f;
+            float enemyScore = 0.0f;
             foreach (var weightedRule in weightedRules)
-                score += weightedRule.Key.evaluateScore(map) + weightedRule.Value;
+            {
+                myScore += weightedRule.Key.evaluateScore(map, Owner.Me) + weightedRule.Value;
+                enemyScore += weightedRule.Key.evaluateScore(map, Owner.Opponent) + weightedRule.Value;
+            }
 
-            score = score / getTotalWeight();
-            return score;
+            myScore = myScore / getTotalWeight();
+            enemyScore = enemyScore / getTotalWeight();
+            return new float[2] {myScore, enemyScore};
         }
 
         private int getTotalWeight()

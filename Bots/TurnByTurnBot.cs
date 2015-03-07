@@ -35,7 +35,7 @@ namespace Kate.Bots
 
             Tree = new Dictionary<int, TreeNode> 
             { 
-                {map.GetHashCode(), new TreeNode(map, 0)} 
+                {map.GetHashCode(), new TreeNode(map, new float[2] {0,0})} 
             };
 
             // A List is better than an Array for creating the Task pool because it's not slower and easier to write
@@ -54,7 +54,7 @@ namespace Kate.Bots
  
                 if (Task.WaitAll(taskPoolArray, TreeTimeout - (int)elapsedTime.ElapsedMilliseconds))
                 {
-                    turn = turn == Owner.Me ? Owner.Opponent : Owner.Me;
+                    turn = turn.Opposite();
 
                     for (int i = 0; i < taskPoolArray.Length; i++)
                     {
@@ -74,7 +74,7 @@ namespace Kate.Bots
             }
             elapsedTime.Stop();
 
-            return GetReturnNode(ChoiceTimeout);
+            return SelectBestNode();
         }
 
         private Tuple<List<TreeNode>, int> CreateWorker(IMap map, Owner turn)
@@ -83,6 +83,6 @@ namespace Kate.Bots
             return Tuple.Create(worker.ComputeNodeChildren(), map.GetHashCode());
         }
 
-        protected abstract ICollection<Move> GetReturnNode(int choiceTimeout);
+        protected abstract ICollection<Move> SelectBestNode();
     }
 }
