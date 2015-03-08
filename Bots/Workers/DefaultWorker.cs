@@ -22,7 +22,7 @@ namespace Kate.Bots.Workers
 
         public override List<TreeNode> ComputeNodeChildren()
         {
-            var mapPerNode = GenerateMapPerNode();
+            var mapPerNode = generateMapPerNode();
             var treeNodes = new ConcurrentBag<TreeNode>();
 
             Parallel.ForEach(mapPerNode, item =>
