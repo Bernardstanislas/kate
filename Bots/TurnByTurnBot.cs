@@ -13,8 +13,6 @@ namespace Kate.Bots
 {
     public abstract class TurnByTurnBot : AbstractBot
     {
-        protected Stopwatch elapsedTime;
-
         public int TreeTimeout { get; private set; }
         public int ChoiceTimeout { get; private set; }
         public Worker Worker { get; private set; }
@@ -29,21 +27,23 @@ namespace Kate.Bots
 
         public override ICollection<Move> playTurn()
         {
+            var elapsedTime = new Stopwatch();
             elapsedTime.Start();
 
             var turn = Owner.Me;
 
             Tree = new Dictionary<int, TreeNode> 
             { 
-                {map.GetHashCode(), new TreeNode(map, new float[2] {0,0})} 
+                {map.GetHashCode(), new TreeNode(map)} 
             };
 
             // A List is better than an Array for creating the Task pool because it's not slower and easier to write
             var taskPool = new List<Task<Tuple<List<TreeNode>, int>>>
             {
-                Task.Factory.StartNew(() => CreateWorker(map, turn))
+                Task.Factory.StartNew(() => createWorker(map, turn))
             };
 
+            int depth = 0;
             while (elapsedTime.ElapsedMilliseconds < TreeTimeout) 
             {
                 // But an Array is needed for Task.WaitAll()
@@ -54,6 +54,7 @@ namespace Kate.Bots
  
                 if (Task.WaitAll(taskPoolArray, TreeTimeout - (int)elapsedTime.ElapsedMilliseconds))
                 {
+                    depth++;
                     turn = turn.Opposite();
 
                     for (int i = 0; i < taskPoolArray.Length; i++)
@@ -67,22 +68,22 @@ namespace Kate.Bots
                             Tree[parentHash].AddChildren(nodeArray[j].GetHashCode()); // Add new node to parent node children
 
                             // Start new Task for this new node
-                            taskPool.Add(Task.Factory.StartNew(() => CreateWorker(nodeArray[j].Map, turn)));
+                            taskPool.Add(Task.Factory.StartNew(() => createWorker(nodeArray[j].Map, turn)));
                         }
                     }
                 }
             }
             elapsedTime.Stop();
 
-            return SelectBestNode();
+            return selectBestNode(depth);
         }
 
-        private Tuple<List<TreeNode>, int> CreateWorker(IMap map, Owner turn)
+        private Tuple<List<TreeNode>, int> createWorker(IMap map, Owner turn)
         {
             var worker = WorkerFactory.Build(Worker, map, turn);
             return Tuple.Create(worker.ComputeNodeChildren(), map.GetHashCode());
         }
 
-        protected abstract ICollection<Move> SelectBestNode();
+        protected abstract ICollection<Move> selectBestNode(int depth);
     }
 }

@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bots\AbstractBot.cs" />
+    <Compile Include="Bots\AlphaBetaBot.cs" />
     <Compile Include="Bots\TreeNode.cs" />
     <Compile Include="Bots\IBot.cs" />
     <Compile Include="Bots\RandomBot.cs" />
