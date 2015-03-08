@@ -50,15 +50,12 @@
     <Compile Include="Bots\Workers\IWorker.cs" />
     <Compile Include="Bots\Workers\WorkerFactory.cs" />
     <Compile Include="IO\AbstractClient.cs" />
+    <Compile Include="IO\CommandExtensions.cs" />
     <Compile Include="IO\IClient.cs" />
     <Compile Include="IO\SocketClient.cs" />
     <Compile Include="Commands\DeclareName.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\Move.cs" />
-    <Compile Include="Commands\Socket\ISocketCommand.cs" />
-    <Compile Include="Commands\Socket\SocketCommandFactory.cs" />
-    <Compile Include="Commands\Socket\SocketDeclareName.cs" />
-    <Compile Include="Commands\Socket\SocketMove.cs" />
     <Compile Include="Heuristic\HeuristicManager.cs" />
     <Compile Include="Heuristic\Rules\IScoringRule.cs" />
     <Compile Include="Heuristic\Rules\PopulationRatioRule.cs" />

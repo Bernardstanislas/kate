@@ -24,7 +24,7 @@ namespace Kate.Bots
             client.GameDisconnection += new EventHandler(this.onGameDisconnection);
             #endregion
 
-            client.declareName(new DeclareName(name));
+            client.DeclareName(new DeclareName(name));
         }
 
         protected abstract ICollection<Move> playTurn();
@@ -47,7 +47,7 @@ namespace Kate.Bots
             applyMapModifications(mapUpdateEventArgs);
             Console.WriteLine("Bot: Update processed");
 
-            client.executeMoves(playTurn());
+            client.ExecuteMoves(playTurn());
         }
 
         private void onGameEnd(object sender, EventArgs eventArgs)
