@@ -10,11 +10,11 @@ using Kate.Utils;
 
 namespace Kate.Bots
 {
-    public class RandomBot : AbstractBot
+    public class RandomBot : Bot
     {
         public RandomBot(SocketClient socket, string name) : base(socket, name) { }
         
-        public override ICollection<Move> playTurn()
+        protected override ICollection<Move> playTurn()
         {
             Random rnd = new Random();
 

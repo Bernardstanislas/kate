@@ -41,10 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bots\AbstractBot.cs" />
+    <Compile Include="Bots\Bot.cs" />
     <Compile Include="Bots\AlphaBetaBot.cs" />
     <Compile Include="Bots\TreeNode.cs" />
-    <Compile Include="Bots\IBot.cs" />
     <Compile Include="Bots\RandomBot.cs" />
     <Compile Include="Bots\TurnByTurnBot.cs" />
     <Compile Include="Bots\Workers\AbstractWorker.cs" />

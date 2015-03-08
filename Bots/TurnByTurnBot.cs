@@ -11,7 +11,7 @@ using Kate.Types;
 
 namespace Kate.Bots
 {
-    public abstract class TurnByTurnBot : AbstractBot
+    public abstract class TurnByTurnBot : Bot
     {
         public int TreeTimeout { get; private set; }
         public int ChoiceTimeout { get; private set; }
@@ -25,7 +25,10 @@ namespace Kate.Bots
             ChoiceTimeout = choiceTimeout;
         }
 
-        public override ICollection<Move> playTurn()
+        protected abstract ICollection<Move> selectBestNode(int depth);
+
+        #region playTurn implementation
+        protected override ICollection<Move> playTurn()
         {
             var elapsedTime = new Stopwatch();
             elapsedTime.Start();
@@ -83,7 +86,6 @@ namespace Kate.Bots
             var worker = WorkerFactory.Build(Worker, map, turn);
             return Tuple.Create(worker.ComputeNodeChildren(), map.GetHashCode());
         }
-
-        protected abstract ICollection<Move> selectBestNode(int depth);
+        #endregion
     }
 }

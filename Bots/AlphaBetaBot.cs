@@ -10,7 +10,8 @@ namespace Kate.Bots
 {
     class AlphaBetaBot : TurnByTurnBot
     {
-        public AlphaBetaBot(SocketClient socket, string name, int treeTimeout, int choiceTimeout) : base(socket, name, Worker.DefaultWorker, treeTimeout, choiceTimeout) { }
+        public AlphaBetaBot(SocketClient socket, string name, int treeTimeout, int choiceTimeout) 
+            : base(socket, name, Worker.DefaultWorker, treeTimeout, choiceTimeout) { }
         
         protected override ICollection<Move> selectBestNode(int depth)
         {
