@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using Kate.Commands;
 using Kate.Maps;
 using Kate.Types;
 
@@ -10,16 +11,21 @@ namespace Kate.Bots
     public class TreeNode
     {
         public IMap Map { get; private set; }
+        public List<Move> MoveList { get; private set; }
         public Dictionary<Owner, float> Heuristics { get; private set; }
         public List<int> ChildrenHashes { get; private set; }
 
-        public TreeNode(IMap value) : this(value, new float[2] {0,0}, new List<int>()) { }
-        public TreeNode(IMap value, float[] heuristics) : this(value, heuristics, new List<int>()) { }
-        public TreeNode(IMap value, float[] heuristics, List<int> children)
+        public TreeNode(IMap value) : this(value, new List<Move>(), new float[2] {0,0}) { }
+        public TreeNode(IMap value, List<Move> moveList, float[] heuristics)
         {
             Map = value;
-            Heuristics = new Dictionary<Owner, float> { { Owner.Me, heuristics[0] }, { Owner.Opponent, heuristics[1] } };
-            ChildrenHashes = children;
+            MoveList = moveList;
+            Heuristics = new Dictionary<Owner, float> 
+            { 
+                { Owner.Me, heuristics[0] }, 
+                { Owner.Opponent, heuristics[1] } 
+            };
+            ChildrenHashes = new List<int>();
         }
 
         public override int GetHashCode()

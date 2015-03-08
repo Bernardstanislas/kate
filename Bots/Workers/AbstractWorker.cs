@@ -21,29 +21,24 @@ namespace Kate.Bots.Workers
 
         public abstract List<TreeNode> ComputeNodeChildren();
 
-        protected virtual List<IMap> GenerateMapPerNode()
+        protected virtual IEnumerable<Tuple<IMap, List<Move>>> GenerateMapPerNode()
         {
-            var mapPerNode = new List<IMap>();
             foreach (var mapUpdaters in GetMapUpdatersPerNode()) 
             {
-				var map = new Map((Map)Map);
-                foreach (var mapUpdater in mapUpdaters)
+				IMap map = new Map((Map)Map);
+                foreach (var mapUpdater in mapUpdaters.Item1)
                     map.updateMap(mapUpdater);
 
-                mapPerNode.Add(map);
+                yield return Tuple.Create(map, mapUpdaters.Item2);
             }
-            return mapPerNode;
         }
 
-        private List<List<MapUpdater>> GetMapUpdatersPerNode()
+        private IEnumerable<Tuple<List<MapUpdater>, List<Move>>> GetMapUpdatersPerNode()
         {
             var movesListsPerNode = MoveGenerator.GenerateMoves(Map, Turn);
 
-            var mapUpdatersPerNode = new List<List<MapUpdater>>();
             foreach (var moveList in movesListsPerNode)
-                mapUpdatersPerNode.Add(MapUpdaterFactory.Generate(moveList));
-            
-            return mapUpdatersPerNode;
+                yield return Tuple.Create(MapUpdaterFactory.Generate(moveList), moveList);
         }
     }
 }

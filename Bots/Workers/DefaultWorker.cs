@@ -22,11 +22,11 @@ namespace Kate.Bots.Workers
 
         public override List<TreeNode> ComputeNodeChildren()
         {
-            List<IMap> mapPerNode = GenerateMapPerNode();
+            var mapPerNode = GenerateMapPerNode();
             var treeNodes = new ConcurrentBag<TreeNode>();
 
             Parallel.ForEach(mapPerNode, item =>
-                treeNodes.Add(new TreeNode(item, heuristicManager.getScore(item)))
+                treeNodes.Add(new TreeNode(item.Item1, item.Item2, heuristicManager.GetScore(item.Item1)))
             );
 
             return new List<TreeNode>(treeNodes);

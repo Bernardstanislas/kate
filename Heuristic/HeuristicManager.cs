@@ -16,7 +16,7 @@ namespace Kate.Heuristic
             this.weightedRules = weightedRules;
         }
 
-        public float[] getScore(IMap map)
+        public float[] GetScore(IMap map)
         {
             float myScore = 0.0f;
             float enemyScore = 0.0f;
