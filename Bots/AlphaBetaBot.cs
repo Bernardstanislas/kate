@@ -35,7 +35,7 @@ namespace Kate.Bots
         private float iterate(TreeNode node, int depth, float alpha, float beta, Owner player)
         {
             if (depth == 1 || node.Map.HasPlayerWon(player))
-                return node.Heuristics[player];
+                return node.Heuristic(player);
 
             if (player == Owner.Me)
             {

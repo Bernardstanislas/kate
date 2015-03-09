@@ -26,7 +26,7 @@ namespace Kate.Bots.Workers
             var treeNodes = new ConcurrentBag<TreeNode>();
 
             Parallel.ForEach(mapPerNode, item =>
-                treeNodes.Add(new TreeNode(item.Item1, item.Item2, heuristicManager.GetScore(item.Item1)))
+                treeNodes.Add(new TreeNode(item.Item1, item.Item2, heuristicManager.GetScore))
             );
 
             return new List<TreeNode>(treeNodes);

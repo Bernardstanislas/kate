@@ -12,19 +12,15 @@ namespace Kate.Bots
     {
         public IMap Map { get; private set; }
         public List<Move> MoveList { get; private set; }
-        public Dictionary<Owner, float> Heuristics { get; private set; }
+        public Func<Owner, float> Heuristic { get; private set; }
         public List<int> ChildrenHashes { get; private set; }
 
-        public TreeNode(IMap value) : this(value, new List<Move>(), new float[2] {0,0}) { }
-        public TreeNode(IMap value, List<Move> moveList, float[] heuristics)
+        public TreeNode(IMap value) : this(value, new List<Move>(), null) { }
+        public TreeNode(IMap value, List<Move> moveList, Func<IMap, Owner, float> heuristic)
         {
             Map = value;
             MoveList = moveList;
-            Heuristics = new Dictionary<Owner, float> 
-            { 
-                { Owner.Me, heuristics[0] }, 
-                { Owner.Opponent, heuristics[1] } 
-            };
+            Heuristic = player => heuristic(Map, player); 
             ChildrenHashes = new List<int>();
         }
 
