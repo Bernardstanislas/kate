@@ -49,6 +49,7 @@
     <Compile Include="Bots\Workers\AbstractWorker.cs" />
     <Compile Include="Bots\Workers\IWorker.cs" />
     <Compile Include="Bots\Workers\WorkerFactory.cs" />
+    <Compile Include="Heuristic\AbstractHeuristicManager.cs" />
     <Compile Include="IO\AbstractClient.cs" />
     <Compile Include="IO\CommandExtensions.cs" />
     <Compile Include="IO\IClient.cs" />
