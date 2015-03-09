@@ -7,7 +7,7 @@ namespace Kate.Heuristic.Rules
 {
     public class TotalPopulationRule : IScoringRule
     {
-        public float evaluateScore(IMap map, Owner player)
+        public float EvaluateScore(IMap map, Owner player)
         {
             int myPopulation = 0;
             int totalPopulation = 0;

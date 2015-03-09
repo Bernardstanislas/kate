@@ -23,21 +23,27 @@ namespace Kate.Heuristic
         }
     }
 
-    public class HeuristicManager
+    public sealed class HeuristicManager
     {
+        public Func<IMap, Owner, float> GetScore { get; private set; }
+        
         private HeuristicDictionary weightedRules;
 
-        public Func<IMap, Owner, float> GetScore { get; private set; }
-
-        public HeuristicManager(Dictionary<IScoringRule, int> rules)
+        private static readonly Lazy<HeuristicManager> lazy = new Lazy<HeuristicManager>(() => new HeuristicManager());
+        public static HeuristicManager Instance { get { return lazy.Value; } }
+        private HeuristicManager()
         {
-            weightedRules = new HeuristicDictionary(rules);
+            weightedRules = new HeuristicDictionary(new Dictionary<IScoringRule, int> 
+            {
+                {new PopulationRatioRule(), 1},
+                {new TotalPopulationRule(), 1}
+            });
 
             GetScore = (IMap map, Owner player) =>
             {
                 float score = 0;
                 foreach (var weightedRule in weightedRules)
-                    score += weightedRule.Key.evaluateScore(map, player) + weightedRule.Value;
+                    score += weightedRule.Key.EvaluateScore(map, player) + weightedRule.Value;
                 return score / weightedRules.TotalWeight;
             };
             GetScore = GetScore.Memoize();

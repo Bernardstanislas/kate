@@ -12,12 +12,6 @@ namespace Kate.Bots.Workers
 {
     public class DefaultWorker : AbstractWorker
     {
-        private static readonly HeuristicManager heuristicManager = new HeuristicManager(new Dictionary<IScoringRule, int> 
-        {
-            {new PopulationRatioRule(), 1},
-            {new TotalPopulationRule(), 1}
-        });
-
         public DefaultWorker(IMap map, Owner turn) : base(map, turn) { }
 
         public override List<TreeNode> ComputeNodeChildren()
@@ -26,7 +20,7 @@ namespace Kate.Bots.Workers
             var treeNodes = new ConcurrentBag<TreeNode>();
 
             Parallel.ForEach(mapPerNode, item =>
-                treeNodes.Add(new TreeNode(item.Item1, item.Item2, heuristicManager.GetScore))
+                treeNodes.Add(new TreeNode(item.Item1, item.Item2, HeuristicManager.Instance.GetScore))
             );
 
             return new List<TreeNode>(treeNodes);
