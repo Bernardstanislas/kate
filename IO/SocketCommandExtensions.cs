@@ -8,7 +8,7 @@ using Kate.Commands;
 
 namespace Kate.IO
 {
-    public static class CommandExtensions
+    public static class SocketCommandExtensions
     {
         public static byte[] ToBytes(this ICommand command)
         {

@@ -12,7 +12,7 @@ namespace Kate.Bots
 {
     public class RandomBot : Bot
     {
-        public RandomBot(SocketClient socket, string name) : base(socket, name) { }
+        public RandomBot(IClient socket, string name) : base(socket, name) { }
         
         protected override ICollection<Move> playTurn()
         {

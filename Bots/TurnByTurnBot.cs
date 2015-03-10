@@ -18,7 +18,7 @@ namespace Kate.Bots
         public Worker Worker { get; private set; }
         public Dictionary<int, TreeNode> Tree { get; set; }
 
-        public TurnByTurnBot(SocketClient socket, string name, Worker worker, int treeTimeout, int choiceTimeout) : base(socket, name) 
+        public TurnByTurnBot(IClient socket, string name, Worker worker, int treeTimeout, int choiceTimeout) : base(socket, name) 
         {
             Worker = worker;
             TreeTimeout = treeTimeout;

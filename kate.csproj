@@ -51,7 +51,7 @@
     <Compile Include="Bots\Workers\WorkerFactory.cs" />
     <Compile Include="Heuristic\AbstractHeuristicManager.cs" />
     <Compile Include="IO\AbstractClient.cs" />
-    <Compile Include="IO\CommandExtensions.cs" />
+    <Compile Include="IO\SocketCommandExtensions.cs" />
     <Compile Include="IO\IClient.cs" />
     <Compile Include="IO\SocketClient.cs" />
     <Compile Include="Commands\DeclareName.cs" />
@@ -61,6 +61,7 @@
     <Compile Include="Heuristic\Rules\IScoringRule.cs" />
     <Compile Include="Heuristic\Rules\PopulationRatioRule.cs" />
     <Compile Include="Heuristic\Rules\TotalPopulationRule.cs" />
+    <Compile Include="IO\TestClient.cs" />
     <Compile Include="Maps\AbstractMap.cs" />
     <Compile Include="Maps\IMap.cs" />
     <Compile Include="Maps\IMapUpdater.cs" />
