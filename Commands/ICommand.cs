@@ -1,4 +1,4 @@
 ﻿namespace Kate.Commands
 {
-    public interface ICommand {}
+    public interface ICommand { }
 }

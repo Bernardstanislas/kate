@@ -7,21 +7,16 @@ namespace Kate.Heuristic.Rules
 {
     public class PopulationRatioRule : IScoringRule
     {
-        public float evaluateScore(IMap map)
+        public float EvaluateScore(IMap map, Owner player)
         {
             int myPopulation = 0;
             int enemyPopulation = 0;
             foreach (var tile in map.getGrid())
             {
-                switch (tile.Owner)
-                {
-                case Owner.Me:
+                if (tile.Owner == player)
                     myPopulation += tile.Population;
-                    break;
-                case Owner.Opponent:
+                else if (tile.Owner == player.Opposite())
                     enemyPopulation += tile.Population;
-                    break;
-                }
             }
 
             return (float) myPopulation / (float) enemyPopulation;

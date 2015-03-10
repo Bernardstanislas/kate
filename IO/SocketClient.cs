@@ -7,13 +7,12 @@ using System.Text;
 using System.Threading;
 
 using Kate.Commands;
-using Kate.Commands.Socket;
 using Kate.Maps;
 using Kate.Types;
 
 namespace Kate.IO
 {
-    public class SocketClient: AbstractClient
+    public class SocketClient : AbstractClient
     {
         private string serverIp;
         private int serverPort = 0;
@@ -29,13 +28,13 @@ namespace Kate.IO
             open();
         }
 
-        public override void declareName(DeclareName declareName)
+        public override void DeclareName(DeclareName declareName)
         {
             sendBytes(declareName);
             init();
         }
 
-        public override void executeMoves(ICollection<Move> moves)
+        public override void ExecuteMoves(ICollection<Move> moves)
         {
             Console.WriteLine("Client: Sending moves to the game server");
 
@@ -76,7 +75,7 @@ namespace Kate.IO
                 while (socket.Available < 2) { Thread.Sleep(10); }
                 socket.Receive(buffer, 2, SocketFlags.Partial);
 
-                OnMapSet(new MapSetEventArgs(buffer[1], buffer[0]));
+                onMapSet(new MapSetEventArgs(buffer[1], buffer[0]));
 
                 // Get Houses number
                 while (socket.Available < 4) { Thread.Sleep(10); }
@@ -95,7 +94,7 @@ namespace Kate.IO
                 for (int i = 0; i < humanNumber * 2; i += 2)
                     housesList.Add(new Tile(buffer[i], buffer[i + 1], Owner.Humans, 0));
 
-                OnMapInit(new MapUpdateEventArgs(housesList));
+                onMapInit(new MapUpdateEventArgs(housesList));
 
                 // Get Home position
                 while (socket.Available < 5) { Thread.Sleep(10); }
@@ -108,7 +107,7 @@ namespace Kate.IO
                 homeTile[1] = buffer[4];
                 home.Add(new Tile(buffer[3], buffer[4], Owner.Me, 0));
 
-                OnMapInit(new MapUpdateEventArgs(home));
+                onMapInit(new MapUpdateEventArgs(home));
 
                 // Get Map
                 while (socket.Available < 4) { Thread.Sleep(10); }
@@ -149,7 +148,7 @@ namespace Kate.IO
                     }
                     updateList.Add(new Tile(buffer[i], buffer[i + 1], owner, number));
                 }
-                OnMapInit(new MapUpdateEventArgs(updateList));
+                onMapInit(new MapUpdateEventArgs(updateList));
 
                 listenToServer();
             }
@@ -168,7 +167,7 @@ namespace Kate.IO
             var command = toString(buffer.Take(3));
             if (command == "END")
             {
-                OnGameEnd(new EventArgs());
+                onGameEnd(new EventArgs());
                 init(); // Getting ready for another game
             }
             else if (command != "UPD")
@@ -216,27 +215,27 @@ namespace Kate.IO
                         updateList.Add(new Tile(buffer[i], buffer[i + 1], owner, number));
                     }
                 }
-                OnMapUpdate(new MapUpdateEventArgs(updateList));
+                onMapUpdate(new MapUpdateEventArgs(updateList));
             }
         }
 
-        public override void open()
+        private void open()
         {
             Console.WriteLine("Client: Starting connection to the game server");
             socket.Connect(new IPEndPoint(IPAddress.Parse(serverIp), serverPort));
             Console.WriteLine("Client: Connected to game server");
         }
 
-        public override void close()
+        private void close()
         {
             socket.Close();
             socket.Dispose();
-            OnGameDisconnection(new EventArgs());
+            onGameDisconnection(new EventArgs());
         }
 
         private void sendBytes(ICommand commandToSend)
         {
-            socket.Send(SocketCommandFactory.buildSocketCommand(commandToSend).toBytes());
+            socket.Send(commandToSend.ToBytes());
         }
 
         private string toString(IEnumerable<byte> bytes)

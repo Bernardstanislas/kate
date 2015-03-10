@@ -1,11 +1,12 @@
 ﻿using System;
 
 using Kate.Maps;
+using Kate.Types;
 
 namespace Kate.Heuristic.Rules
 {
     public interface IScoringRule
     {
-        float evaluateScore(IMap map);
+        float EvaluateScore(IMap map, Owner player);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using Kate.Types;
@@ -36,6 +37,14 @@ namespace Kate.Maps
 
             hash = map.GetHashCode();
             hashArray = map.HashArray;
+        }
+
+        public override bool HasPlayerWon(Owner player)
+        {
+            foreach (var tile in grid)
+                if (tile.Owner == player.Opposite())
+                    return false;
+            return true;
         }
 
         #region Grid

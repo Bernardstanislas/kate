@@ -3,35 +3,24 @@ using System.Collections.Generic;
 
 using Kate.Heuristic.Rules;
 using Kate.Maps;
+using Kate.Types;
+using Kate.Utils;
 
 namespace Kate.Heuristic
 {
-    public class HeuristicManager
+    public sealed class HeuristicManager : AbstractHeuristicManager
     {
-        private Dictionary<IScoringRule, int> weightedRules;
-
-        public HeuristicManager(Dictionary<IScoringRule, int> weightedRules)
+        private static readonly Lazy<HeuristicManager> lazy = new Lazy<HeuristicManager>(() => new HeuristicManager());
+        public static HeuristicManager Instance { get { return lazy.Value; } }
+        private HeuristicManager()
         {
-            this.weightedRules = weightedRules;
-        }
+            weightedRules = new HeuristicDictionary(new Dictionary<IScoringRule, int> 
+            {
+                {new PopulationRatioRule(), 1},
+                {new TotalPopulationRule(), 1}
+            });
 
-        public float getScore(IMap map)
-        {
-            float score = 0.0f;
-            foreach (var weightedRule in weightedRules)
-                score += weightedRule.Key.evaluateScore(map) + weightedRule.Value;
-
-            score = score / getTotalWeight();
-            return score;
-        }
-
-        private int getTotalWeight()
-        {
-            int total = 0;
-            foreach (var weightedRule in weightedRules)
-                total += weightedRule.Value;
-
-            return total;
+            createGetScore();
         }
     }
 }
