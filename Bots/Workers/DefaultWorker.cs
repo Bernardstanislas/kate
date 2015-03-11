@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Concurrent;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 using Kate.Maps;
 using Kate.Types;
 using Kate.Heuristic;
-using Kate.Heuristic.Rules;
 
 namespace Kate.Bots.Workers
 {
@@ -14,16 +11,10 @@ namespace Kate.Bots.Workers
     {
         public DefaultWorker(IMap map, Owner turn) : base(map, turn) { }
 
-        public override List<TreeNode> ComputeNodeChildren()
+        public override IEnumerable<TreeNode> ComputeNodeChildren()
         {
-            var mapPerNode = generateMapPerNode();
-            var treeNodes = new ConcurrentBag<TreeNode>();
-
-            Parallel.ForEach(mapPerNode, item =>
-                treeNodes.Add(new TreeNode(item.Item1, item.Item2, HeuristicManager.Instance.GetScore))
-            );
-
-            return new List<TreeNode>(treeNodes);
+            var scoreFn = HeuristicManager.Instance.GetScore;
+            return generateMapPerNode().Select(map => new TreeNode(map.Item1, scoreFn, map.Item2));
         }
     }
 }

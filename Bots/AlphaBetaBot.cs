@@ -15,13 +15,13 @@ namespace Kate.Bots
         
         protected override ICollection<Move> selectBestNode(int depth)
         {
-            var nodeHashes = Tree[map.GetHashCode()].ChildrenHashes;
+            var nodeHashes = tree[map.GetHashCode()].ChildrenHashes;
             var bestNodeHash = nodeHashes[0];
             float bestHeuristic = 0;
 
             foreach (var nodeHash in nodeHashes)
             {
-                var node = Tree[nodeHash];
+                var node = tree[nodeHash];
                 var heuristic = iterate(node, depth, float.MinValue, float.MaxValue, Owner.Me);
                 if (heuristic > bestHeuristic)
                 {
@@ -29,7 +29,7 @@ namespace Kate.Bots
                     bestNodeHash = nodeHash;
                 }
             }
-            return Tree[bestNodeHash].MoveList;
+            return tree[bestNodeHash].MoveList;
         }
 
         private float iterate(TreeNode node, int depth, float alpha, float beta, Owner player)
@@ -41,7 +41,7 @@ namespace Kate.Bots
             {
                 foreach (var childHash in node.ChildrenHashes)
                 {
-                    var child = Tree[childHash];
+                    var child = tree[childHash];
 
                     alpha = Math.Max(alpha, iterate(child, depth - 1, alpha, beta, Owner.Opponent));
                     if (beta < alpha)
@@ -53,7 +53,7 @@ namespace Kate.Bots
             {
                 foreach (var childHash in node.ChildrenHashes)
                 {
-                    var child = Tree[childHash];
+                    var child = tree[childHash];
 
                     beta = Math.Min(beta, iterate(child, depth - 1, alpha, beta, Owner.Me));
                     if (beta < alpha)

@@ -19,7 +19,7 @@ namespace Kate.Bots.Workers
             Turn = turn;
         }
 
-        public abstract List<TreeNode> ComputeNodeChildren();
+        public abstract IEnumerable<TreeNode> ComputeNodeChildren();
 
         protected virtual IEnumerable<Tuple<IMap, List<Move>>> generateMapPerNode()
         {

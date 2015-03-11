@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Kate.Bots.Workers;
 using Kate.Commands;
+using Kate.Heuristic;
 using Kate.IO;
 using Kate.Maps;
 using Kate.Types;
@@ -13,16 +15,16 @@ namespace Kate.Bots
 {
     public abstract class TurnByTurnBot : Bot
     {
-        public int TreeTimeout { get; private set; }
-        public int ChoiceTimeout { get; private set; }
-        public Worker Worker { get; private set; }
-        public Dictionary<int, TreeNode> Tree { get; set; }
+        protected readonly int treeTimeout;
+        protected readonly int choiceTimeout;
+        protected readonly Worker worker;
+        protected Dictionary<int, TreeNode> tree;
 
         public TurnByTurnBot(IClient socket, string name, Worker worker, int treeTimeout, int choiceTimeout) : base(socket, name) 
         {
-            Worker = worker;
-            TreeTimeout = treeTimeout;
-            ChoiceTimeout = choiceTimeout;
+            this.worker = worker;
+            this.treeTimeout = treeTimeout;
+            this.choiceTimeout = choiceTimeout;
         }
 
         protected abstract ICollection<Move> selectBestNode(int depth);
@@ -35,27 +37,31 @@ namespace Kate.Bots
 
             var turn = Owner.Me;
 
-            Tree = new Dictionary<int, TreeNode> 
+            tree = new Dictionary<int, TreeNode> 
             { 
-                {map.GetHashCode(), new TreeNode(map)} 
+                {map.GetHashCode(), new TreeNode(map, HeuristicManager.Instance.GetScore)} 
             };
 
             // A List is better than an Array for creating the Task pool because it's not slower and easier to write
             var taskPool = new List<Task<Tuple<List<TreeNode>, int>>>
             {
-                Task.Factory.StartNew(() => createWorker(map, turn))
+                new Task<Tuple<List<TreeNode>, int>>(() => createWorker(map, turn))
             };
 
             int depth = 0;
-            while (elapsedTime.ElapsedMilliseconds < TreeTimeout) 
+
+            while (elapsedTime.ElapsedMilliseconds < treeTimeout) 
             {
                 // But an Array is needed for Task.WaitAll()
                 var taskPoolArray = taskPool.ToArray();
 
                 // And it allows us to clear the initial list right now to fill it again with the new Tasks.
                 taskPool.Clear();
- 
-                if (Task.WaitAll(taskPoolArray, TreeTimeout - (int)elapsedTime.ElapsedMilliseconds))
+
+                for (int i = 0; i < taskPoolArray.Length; i++)
+                    taskPoolArray[i].Start();
+
+                if (Task.WaitAll(taskPoolArray, Math.Max(0, treeTimeout - (int)elapsedTime.ElapsedMilliseconds)))
                 {
                     depth++;
                     turn = turn.Opposite();
@@ -65,13 +71,17 @@ namespace Kate.Bots
                         var nodeArray = taskPoolArray[i].Result.Item1.ToArray();
                         var parentHash = taskPoolArray[i].Result.Item2;
 
-                        for (int j = 0; j < nodeArray.Length; i++)
+                        for (int j = 0; j < nodeArray.Length; j++)
                         {
-                            Tree.Add(nodeArray[j].GetHashCode(), nodeArray[j]); // Add new node to Tree
-                            Tree[parentHash].AddChildren(nodeArray[j].GetHashCode()); // Add new node to parent node children
+                            var value = nodeArray[j];
+                            var key = value.GetHashCode();
+
+                            if (!tree.TryGetValue(key, out value))
+                                tree.Add(key, value); // Add new node to Tree
+                            tree[parentHash].AddChildren(key); // Add new node to parent node children
 
                             // Start new Task for this new node
-                            taskPool.Add(Task.Factory.StartNew(() => createWorker(nodeArray[j].Map, turn)));
+                            taskPool.Add(new Task<Tuple<List<TreeNode>, int>>(() => createWorker(value.Map, turn)));
                         }
                     }
                 }
@@ -83,8 +93,8 @@ namespace Kate.Bots
 
         private Tuple<List<TreeNode>, int> createWorker(IMap map, Owner turn)
         {
-            var worker = WorkerFactory.Build(Worker, map, turn);
-            return Tuple.Create(worker.ComputeNodeChildren(), map.GetHashCode());
+            var workerTask = WorkerFactory.Build(worker, map, turn);
+            return Tuple.Create(workerTask.ComputeNodeChildren().ToList(), map.GetHashCode());
         }
         #endregion
     }
