@@ -11,10 +11,12 @@ namespace Kate.Bots
     {
         protected readonly IClient client;
         protected IMap map;
+        protected readonly string name;
 
         public Bot(IClient client, string name)
         {
             this.client = client;
+            this.name = name;
 
             #region Event registration
             client.MapSet += new MapSetEventHandler(this.onMapSet);
@@ -23,7 +25,10 @@ namespace Kate.Bots
             client.GameEnd += new EventHandler(this.onGameEnd);
             client.GameDisconnection += new EventHandler(this.onGameDisconnection);
             #endregion
+        }
 
+        public void Start()
+        {
             client.DeclareName(new DeclareName(name));
         }
 

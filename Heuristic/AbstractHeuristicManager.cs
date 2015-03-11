@@ -28,7 +28,7 @@ namespace Kate.Heuristic
 
     public abstract class AbstractHeuristicManager
     {
-        public Func<IMap, Owner, float> GetScore { get; private set; }
+        public Func<IMap, Owner, float> GetScore { get; protected set; }
 
         protected HeuristicDictionary weightedRules;
 

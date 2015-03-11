@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Kate.Bots;
 using Kate.IO;
+using Kate.Maps;
+using Kate.Types;
 
 namespace kate
 {
@@ -21,14 +24,31 @@ namespace kate
                     port = Convert.ToInt32(content[1]);
             }
 
-            if (ipAddress == "" || port == 0)
-                throw new ArgumentException("Missing IP or port number");
+            IClient client;
 
-            Console.WriteLine("Connecting to " + ipAddress + " on port " + port.ToString());
-            var socket = new SocketClient(ipAddress, port);
+            if (ipAddress == "" || port == 0)
+            {
+                Console.WriteLine("Missing IP or port number: Starting test client");
+                var tiles = new List<Tile>()
+                {
+                    new Tile(1, 2, Owner.Me, 5),
+                    new Tile(3, 2, Owner.Opponent, 5),
+                    new Tile(2, 3, Owner.Humans, 2),
+                    new Tile(1, 1, Owner.Humans, 3),
+                    new Tile(2, 2, Owner.Humans, 1)
+                };
+                client = new TestClient(5, 5, tiles);
+            }
+            else
+            {
+                Console.WriteLine("Connecting to " + ipAddress + " on port " + port.ToString());
+                client = new SocketClient(ipAddress, port);
+            }
+
             Console.WriteLine("KATE has started");
-            new RandomBot(socket, "KATE");
-            Console.ReadKey(true);
+            var bot = new AlphaBetaBot(client, "KATE", 1000, 200);
+            bot.Start();
+            Console.ReadKey();
         }
     }
 }
