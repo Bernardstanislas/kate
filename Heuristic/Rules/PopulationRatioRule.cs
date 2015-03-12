@@ -19,7 +19,7 @@ namespace Kate.Heuristic.Rules
                     enemyPopulation += tile.Population;
             }
 
-            return (float) myPopulation / (float) enemyPopulation;
+            return (float) enemyPopulation / (float) myPopulation;
         }
     }
 }

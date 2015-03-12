@@ -41,7 +41,7 @@ namespace Kate.Heuristic
                     score += weightedRule.Key.EvaluateScore(map, player) + weightedRule.Value;
                 return score / weightedRules.TotalWeight;
             };
-            GetScore = GetScore.Memoize();
+            // GetScore = GetScore.Memoize();
         }
     }
 }

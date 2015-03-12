@@ -18,7 +18,7 @@ namespace Kate.Heuristic.Rules
 
                 totalPopulation += tile.Population;
             }
-            return (float) myPopulation / (float) totalPopulation;
+            return (float) totalPopulation / (float) myPopulation;
         }
     }
 }

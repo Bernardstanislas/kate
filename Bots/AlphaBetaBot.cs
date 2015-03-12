@@ -1,49 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 
 using Kate.Bots.Workers;
-using Kate.Commands;
 using Kate.IO;
 using Kate.Types;
 
 namespace Kate.Bots
 {
-    class AlphaBetaBot : TurnByTurnBot
+    class AlphaBetaBot : MinMaxBot
     {
-        public AlphaBetaBot(IClient socket, string name, int treeTimeout, int choiceTimeout) 
-            : base(socket, name, Worker.DefaultWorker, treeTimeout, choiceTimeout) { }
-        
-        protected override ICollection<Move> selectBestNode(int depth)
-        {
-            var nodeHashes = tree[map.GetHashCode()].ChildrenHashes;
-            var bestNodeHash = nodeHashes[0];
-            float bestHeuristic = 0;
+        public AlphaBetaBot(IClient socket, string name, int timeout)
+            : base(socket, name, Worker.DefaultWorker, timeout) { }
 
-            foreach (var nodeHash in nodeHashes)
-            {
-                var node = tree[nodeHash];
-                var heuristic = iterate(node, depth, float.MinValue, float.MaxValue, Owner.Me);
-                if (heuristic > bestHeuristic)
-                {
-                    bestHeuristic = heuristic;
-                    bestNodeHash = nodeHash;
-                }
-            }
-            return tree[bestNodeHash].MoveList;
-        }
-
-        private float iterate(TreeNode node, int depth, float alpha, float beta, Owner player)
+        protected override float browseTree(TreeNode node, int depth, float alpha, float beta, Owner player)
         {
-            if (depth == 1 || node.Map.HasPlayerWon(player))
+            if (depth == 0 || node.Map.HasPlayerWon(player))
                 return node.Heuristic(player);
 
             if (player == Owner.Me)
             {
-                foreach (var childHash in node.ChildrenHashes)
+                var childNodes = getChildNodes(node.Map, Owner.Me);
+                foreach (var child in childNodes)
                 {
-                    var child = tree[childHash];
-
-                    alpha = Math.Max(alpha, iterate(child, depth - 1, alpha, beta, Owner.Opponent));
+                    alpha = Math.Max(alpha, browseTree(child, depth - 1, alpha, beta, Owner.Opponent));
                     if (beta < alpha)
                         break;
                 }
@@ -51,11 +29,10 @@ namespace Kate.Bots
             }
             else
             {
-                foreach (var childHash in node.ChildrenHashes)
+                var childNodes = getChildNodes(node.Map, Owner.Opponent);
+                foreach (var child in childNodes)
                 {
-                    var child = tree[childHash];
-
-                    beta = Math.Min(beta, iterate(child, depth - 1, alpha, beta, Owner.Me));
+                    beta = Math.Min(beta, browseTree(child, depth - 1, alpha, beta, Owner.Me));
                     if (beta < alpha)
                         break;
                 }
