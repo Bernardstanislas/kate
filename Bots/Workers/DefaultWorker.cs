@@ -3,7 +3,7 @@ using System.Linq;
 
 using Kate.Maps;
 using Kate.Types;
-using Kate.Heuristic;
+using Kate.Heuristics;
 
 namespace Kate.Bots.Workers
 {

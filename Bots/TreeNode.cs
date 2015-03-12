@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 using Kate.Commands;
-using Kate.Heuristic;
+using Kate.Heuristics;
 using Kate.Maps;
 using Kate.Types;
 

@@ -3,7 +3,7 @@
 using Kate.Maps;
 using Kate.Types;
 
-namespace Kate.Heuristic.Rules
+namespace Kate.Heuristics.Rules
 {
     public class TotalPopulationRule : IScoringRule
     {

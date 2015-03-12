@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 using Kate.Bots.Workers;
 using Kate.Commands;
-using Kate.Heuristic;
+using Kate.Heuristics;
 using Kate.IO;
 using Kate.Maps;
 using Kate.Types;

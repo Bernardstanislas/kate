@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Kate.Heuristic.Rules;
+using Kate.Heuristics.Rules;
 using Kate.Maps;
 using Kate.Types;
 using Kate.Utils;
 
-namespace Kate.Heuristic
+namespace Kate.Heuristics
 {
     public class HeuristicDictionary : Dictionary<IScoringRule, int>
     {

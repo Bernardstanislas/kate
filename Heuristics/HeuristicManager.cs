@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Kate.Heuristic.Rules;
+using Kate.Heuristics.Rules;
 using Kate.Maps;
 using Kate.Types;
 using Kate.Utils;
 
-namespace Kate.Heuristic
+namespace Kate.Heuristics
 {
     public sealed class HeuristicManager : AbstractHeuristicManager
     {
