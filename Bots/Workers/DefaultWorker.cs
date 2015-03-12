@@ -13,8 +13,7 @@ namespace Kate.Bots.Workers
 
         public override IEnumerable<TreeNode> ComputeNodeChildren()
         {
-            var scoreFn = HeuristicManager.Instance.GetScore;
-            return generateMapPerNode().Select(map => new TreeNode(map.Item1, scoreFn, map.Item2));
+            return generateMapPerNode().Select(map => new TreeNode(map.Item1, map.Item2));
         }
     }
 }

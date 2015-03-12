@@ -33,7 +33,7 @@ namespace Kate.Bots
             var elapsedTime = new Stopwatch();
             elapsedTime.Start();
             tree = new ConcurrentDictionary<int, TreeNode>();
-            tree.GetOrAdd(map.GetHashCode(), new TreeNode(map, HeuristicManager.Instance.GetScore));
+            tree.GetOrAdd(map.GetHashCode(), new TreeNode(map));
 
             var childNodes = getChildNodes(map, Owner.Me);
 
@@ -62,6 +62,7 @@ namespace Kate.Bots
 
             Console.Write("Depth computed: ");
             Console.WriteLine(depth);
+
             elapsedTime.Stop();
 
             return bestNode.MoveList;
@@ -70,7 +71,7 @@ namespace Kate.Bots
         protected IEnumerable<TreeNode> getChildNodes(IMap map, Owner turn)
         {
             var parentHash = map.GetHashCode();
-            var parentChildrenHashes = tree[parentHash].ChildrenHashes;
+            var parentChildrenHashes = tree[parentHash].GetChildrenHashes(turn);
 
             if (parentChildrenHashes.ToList().Count > 0)
                 return parentChildrenHashes.Select(hash => tree[hash]);
@@ -85,7 +86,7 @@ namespace Kate.Bots
             var childNodeHashes = nodeChildren.Select(node => node.GetHashCode());
 
             var parentNode = tree[parentHash];
-            tree.TryUpdate(parentHash, new TreeNode(map, HeuristicManager.Instance.GetScore, parentNode.MoveList, childNodeHashes), parentNode);
+            tree.TryUpdate(parentHash, TreeNode.NewNodeWithChildren(parentNode, childNodeHashes, turn), parentNode);
             
             return nodeChildren;
         }
