@@ -18,7 +18,7 @@ namespace Kate.Bots
     {
         protected readonly int timeout;
         protected readonly Worker worker;
-        protected Dictionary<int, TreeNode> tree;
+        protected ConcurrentDictionary<int, TreeNode> tree;
 
         public MinMaxBot(IClient socket, string name, Worker worker, int timeout) : base(socket, name) 
         {
@@ -32,29 +32,36 @@ namespace Kate.Bots
         {
             var elapsedTime = new Stopwatch();
             elapsedTime.Start();
-
-            tree = new Dictionary<int, TreeNode> 
-            { 
-                {map.GetHashCode(), new TreeNode(map, HeuristicManager.Instance.GetScore)} 
-            };
+            tree = new ConcurrentDictionary<int, TreeNode>();
+            tree.GetOrAdd(map.GetHashCode(), new TreeNode(map, HeuristicManager.Instance.GetScore));
 
             var childNodes = getChildNodes(map, Owner.Me);
             
             float bestHeuristic = float.MaxValue;
             var bestNode = tree[map.GetHashCode()];
 
-            var nodes = new ConcurrentBag<TreeNode>(childNodes);
-            Parallel.ForEach(nodes, node =>
+            int depth = 0;
+            while(elapsedTime.ElapsedMilliseconds < timeout)
             {
-                var heuristic = browseTree(node, 2, float.MinValue, float.MaxValue, Owner.Opponent);
-                if (heuristic < bestHeuristic)
+                depth++;
+                var task = new Task(() =>
                 {
-                    bestHeuristic = heuristic;
-                    bestNode = node;
-                }
-            });
+                    Parallel.ForEach(childNodes, node =>
+                    {
+                        var heuristic = browseTree(node, depth, float.MinValue, float.MaxValue, Owner.Opponent);
+                        if (heuristic < bestHeuristic)
+                        {
+                            bestHeuristic = heuristic;
+                            bestNode = node;
+                        }
+                    });
+                });
+                task.Start();
+                task.Wait((int)Math.Max(0, timeout - elapsedTime.ElapsedMilliseconds));
+            }
 
-            Console.WriteLine(elapsedTime.ElapsedMilliseconds);
+            Console.Write("Depth computed: ");
+            Console.WriteLine(depth);
             elapsedTime.Stop();
 
             return bestNode.MoveList;
@@ -62,22 +69,27 @@ namespace Kate.Bots
 
         protected IEnumerable<TreeNode> getChildNodes(IMap map, Owner turn)
         {
-            var parentNode = tree[map.GetHashCode()];
+            var parentHash = map.GetHashCode();
+            var parentChildrenHashes = tree[parentHash].ChildrenHashes;
 
-            if (parentNode.ChildrenHashes.Count > 0)
-                return parentNode.ChildrenHashes.Select(hash => tree[hash]);
+            if (parentChildrenHashes.ToList().Count > 0)
+                return parentChildrenHashes.Select(hash => tree[hash]);
             
             var newWorker = WorkerFactory.Build(worker, map, turn);
-            return newWorker.ComputeNodeChildren().Select(childNode =>
+
+            var childNodes = newWorker.ComputeNodeChildren().Select(childNode =>
             {
                 var childKey = childNode.GetHashCode();
-                parentNode.AddChildren(childKey);
 
-                if (!tree.ContainsKey(childKey))
-                    tree.Add(childKey, childNode);
+                tree.GetOrAdd(childKey, childNode);
 
                 return childNode;
-            });
+            }).ToDictionary(node => node.GetHashCode());
+
+            var parentNode = tree[parentHash];
+            tree.TryUpdate(parentHash, new TreeNode(map, HeuristicManager.Instance.GetScore, parentNode.MoveList, childNodes.Keys), parentNode);
+            
+            return childNodes.Values;
         }
     }
 }
