@@ -38,7 +38,7 @@ namespace Kate.Heuristic
             {
                 float score = 0;
                 foreach (var weightedRule in weightedRules)
-                    score += weightedRule.Key.EvaluateScore(map, player) + weightedRule.Value;
+                    score += weightedRule.Key.EvaluateScore(map, player) * weightedRule.Value;
                 return score / weightedRules.TotalWeight;
             };
             // GetScore = GetScore.Memoize();

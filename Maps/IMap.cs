@@ -13,6 +13,6 @@ namespace Kate.Maps
         IEnumerable<Tile> getPlayerTiles(Owner owner);
         void setTile (Tile newTile);
         void updateMap(IMapUpdater mapUpdater);
-        bool HasPlayerWon(Owner player);
+        bool HasGameEnded();
     }
 }

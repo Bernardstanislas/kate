@@ -36,19 +36,19 @@ namespace Kate.Bots
             tree.GetOrAdd(map.GetHashCode(), new TreeNode(map, HeuristicManager.Instance.GetScore));
 
             var childNodes = getChildNodes(map, Owner.Me);
-            
+
             float bestHeuristic = float.MaxValue;
             var bestNode = tree[map.GetHashCode()];
 
             int depth = 0;
             while(elapsedTime.ElapsedMilliseconds < timeout)
             {
-                depth++;
+                depth += 2;
                 var task = new Task(() =>
                 {
                     Parallel.ForEach(childNodes, node =>
                     {
-                        var heuristic = browseTree(node, depth, float.MinValue, float.MaxValue, Owner.Opponent);
+                        var heuristic = browseTree(node, depth - 1, float.MinValue, float.MaxValue, Owner.Opponent);
                         if (heuristic < bestHeuristic)
                         {
                             bestHeuristic = heuristic;
@@ -65,7 +65,7 @@ namespace Kate.Bots
             elapsedTime.Stop();
 
             return bestNode.MoveList;
-        }        
+        }
 
         protected IEnumerable<TreeNode> getChildNodes(IMap map, Owner turn)
         {
@@ -77,19 +77,17 @@ namespace Kate.Bots
             
             var newWorker = WorkerFactory.Build(worker, map, turn);
 
-            var childNodes = newWorker.ComputeNodeChildren().Select(childNode =>
-            {
-                var childKey = childNode.GetHashCode();
+            var nodeChildren = newWorker.ComputeNodeChildren();
 
-                tree.GetOrAdd(childKey, childNode);
+            foreach (var childNode in nodeChildren)
+                tree.GetOrAdd(childNode.GetHashCode(), childNode);
 
-                return childNode;
-            }).ToDictionary(node => node.GetHashCode());
+            var childNodeHashes = nodeChildren.Select(node => node.GetHashCode());
 
             var parentNode = tree[parentHash];
-            tree.TryUpdate(parentHash, new TreeNode(map, HeuristicManager.Instance.GetScore, parentNode.MoveList, childNodes.Keys), parentNode);
+            tree.TryUpdate(parentHash, new TreeNode(map, HeuristicManager.Instance.GetScore, parentNode.MoveList, childNodeHashes), parentNode);
             
-            return childNodes.Values;
+            return nodeChildren;
         }
     }
 }

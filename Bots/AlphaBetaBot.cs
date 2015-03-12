@@ -13,7 +13,7 @@ namespace Kate.Bots
 
         protected override float browseTree(TreeNode node, int depth, float alpha, float beta, Owner player)
         {
-            if (depth == 0 || node.Map.HasPlayerWon(player))
+            if (depth == 0 || node.Map.HasGameEnded())
                 return node.Heuristic(player);
 
             if (player == Owner.Me)
