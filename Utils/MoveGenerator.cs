@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Collections;
 using Kate.Commands;
 using Kate.Maps;
 using Kate.Types;
@@ -52,7 +52,7 @@ namespace Kate.Utils
                     var localList = new List<MultipleMove>();
                     localList.Add(move);
                     localList.AddRange(moveList);
-                    if (IsLegalMoveList(localList))
+                    if (IsLegalMoveList(localList) && localList.Count < 4)
                         moves.Add(localList);
                 }
                 moves.Add(moveList);
@@ -65,7 +65,7 @@ namespace Kate.Utils
             // Create a list of move list
             // Each sub-list is a list of move from one tile
             var splitListList = GetAllSplitMoves(map, owner);
-            var possibleMoves = GetAllFullForceMoves(map, owner);
+            var possibleMoves = GetAllFullForceMissionMoves(map, owner);
 
             foreach (var splitList in splitListList)
                 for (int i = 0; i < possibleMoves.Count; i++)
@@ -82,43 +82,66 @@ namespace Kate.Utils
             myTiles = map.GetPlayerTiles(owner).ToList(); // Get all the tiles with my units
             int[] gridDim = map.GetMapDimension();
 
+
             var possibleMoves = new List<List<MultipleMove>>();
 
             foreach (Tile tile in myTiles)
             {
                 var tileMoves = new List<MultipleMove>();
+                var surroundinTiles = map.getSurroundingTiles (tile);
 
-                for (int i = -1; i <= 1; i++)
+                foreach (var surroundingTile in surroundinTiles)
                 {
-                    int xPos = tile.X;
+                    Tile destTile = surroundingTile;
+                    var move = new MultipleMove(tile, new Dictionary<Tile, int>() { { destTile, tile.Population } });
+                    tileMoves.Add(move);
+                }
+                possibleMoves.Add(tileMoves);
+            }
+            return possibleMoves;
+        }
 
-                    if (
-                        0 < tile.X && tile.X < gridDim[0] - 1
-                        || tile.X == 0 && i != -1               // Tile on left edge
-                        || tile.X == gridDim[0] - 1 && i != 1   // Tile on right edge
-                    )
+
+        // Return all possible moves where all the units from a tile move towards an other tile
+        private static List<List<MultipleMove>> GetAllFullForceMissionMoves(IMap map, Owner owner)
+        {
+            var myTiles = new List<Tile>();
+            myTiles = map.getPlayerTiles(owner).ToList(); // Get all the tiles with my units
+            var opponentTiles = new List<Tile>();
+            Owner opponent = new Owner();
+            opponent = owner.Opposite();
+            opponentTiles = map.getPlayerTiles(opponent).ToList();
+            var humanTiles = new List<Tile>();
+            humanTiles = map.getPlayerTiles(Kate.Types.Owner.Humans).ToList();
+
+            var possibleMoves = new List<List<MultipleMove>>();
+
+            foreach (Tile tile in myTiles)
+            {
+                var tileMoves = new List<MultipleMove>();
+                var targetDirections = new List<List<int>> ();
+
+                foreach (var opponentTile in opponentTiles)
+                {
+                    targetDirections.Add (getMissionDirection (tile, opponentTile));
+                    targetDirections.Add (getMissionOppositeDirection (tile, opponentTile));
+                }
+                foreach (var humanTile in humanTiles)
+                {
+                    targetDirections.Add (getMissionDirection (tile, humanTile));
+                }
+
+                var surroundinTiles = map.getSurroundingTiles (tile);
+
+                foreach (var surroundingTile in surroundinTiles)
+                {
+                    for (int i = 0; i < targetDirections.Count ; i++) 
                     {
-                        xPos += i;
-
-                        for (int j = -1; j <= 1; j++)
-                        {
-                            int yPos = tile.Y;
-                            if (
-                                0 < tile.Y && tile.Y < gridDim[1] - 1
-                                || tile.Y == 0 && j != -1              // Tile on top edge
-                                || tile.Y == gridDim[1] - 1 && j != 1  // Tile on bottom edge
-                            )
-                            {
-                                yPos += j;
-
-                                // The null move is not generated
-                                if (!(xPos == tile.X && yPos == tile.Y))
-                                {
-                                    Tile destTile = map.GetTile(xPos, yPos);
-                                    var move = new MultipleMove(tile, new Dictionary<Tile, int>() { { destTile, tile.Population } });
-                                    tileMoves.Add(move);
-                                }
-                            }
+                        if (surroundingTile.X == targetDirections[i][0] && surroundingTile.Y == targetDirections[i][1]) {
+                            Tile destTile = surroundingTile;
+                            var move = new MultipleMove (tile, new Dictionary<Tile, int> () { { destTile, tile.Population } });
+                            tileMoves.Add (move);
+                            break;
                         }
                     }
                 }
@@ -177,6 +200,56 @@ namespace Kate.Utils
             return possibleMoves;
         }
 
+
+        // Generate split moves in only North-South and Est-West direction for each tile
+        private static List<List<MultipleMove>> GetHumanTargetedSplitMoves(IMap map, Owner owner)
+        {
+            List<Tile> myTiles = new List<Tile>();
+            myTiles = map.getPlayerTiles(owner).ToList(); // Get all the tiles with my units
+            var humanTiles = new List<Tile>();
+            humanTiles = map.getPlayerTiles(Kate.Types.Owner.Humans).ToList();
+
+
+            var possibleMoves = new List<List<MultipleMove>>();
+
+            foreach (Tile tile in myTiles)
+            {
+                var targetDirections = new List<List<int>> ();
+
+                foreach (var humanTile in humanTiles)
+                {
+                    targetDirections.Add (getMissionDirection (tile, humanTile));
+                }
+
+                var tileMoves = new List<MultipleMove>();
+                var surroundinTiles = map.getSurroundingTiles (tile);
+                var destTiles = new List<Tile>();
+                foreach (var surroundingTile in surroundinTiles)
+                {
+                    for (int i = 0; i < targetDirections.Count; i++)
+                    {
+                        if (surroundingTile.X == targetDirections [i] [0] && surroundingTile.Y == targetDirections [i] [1]) {
+
+                            destTiles.Add (surroundingTile);
+                            break;
+                        }
+                    }
+                
+                int totalPop = tile.Population;
+                int pop = (int)(Math.Floor((double)(tile.Population / destTiles.Count)));
+                var dictDestTile = new Dictionary<Tile, int> ();
+                foreach (var destTile in destTiles)
+                    {
+                        dictDestTile.Add(destTile, pop);
+                    }
+                tileMoves.Add(new MultipleMove(tile, dictDestTile));
+                }
+                possibleMoves.Add(tileMoves);
+            }
+            return possibleMoves;
+        }
+
+
         // Return true is a list of move is legal (each move is compatible with every other move)
         private static bool IsLegalMoveList(List<MultipleMove> moveList)
         {
@@ -196,6 +269,58 @@ namespace Kate.Utils
                         return false;
             return true;
         }
+
+
+        // Compute a squared distance
+        public static double squaredDistance(Tile tile1, Tile tile2)
+        {
+
+            return Math.Pow(tile1.X - tile2.X, 2) + Math.Pow(tile1.Y - tile2.Y, 2);
+        }
+
+        // Return a list with the coordinates of the surrounding tile of the origin tile that is in the direction of targetTile
+        public static List<int> getMissionDirection(Tile originTile, Tile targetTile)
+        {
+            int xPos = 0;
+            int yPos = 0;
+            if (targetTile.X > originTile.X) {
+                xPos = originTile.X + 1;
+            }
+            else if (targetTile.X < originTile.X) {
+                xPos = originTile.X - 1;
+            }
+
+            if (targetTile.Y > originTile.Y) {
+                yPos = originTile.Y + 1;
+            }
+            else if (targetTile.Y < originTile.Y) {
+                yPos = originTile.Y - 1;
+            }
+            var direction = new List<int>(){xPos, yPos};
+            return direction;
+        }
+
+        public static List<int> getMissionOppositeDirection(Tile originTile, Tile targetTile)
+        {
+            var direction = getMissionDirection (originTile, targetTile);
+            var oppositeDirection = new List<int>(){ - direction[0], - direction[0]};
+            return oppositeDirection;
+        }
+
+        //Check if a tile is in the direction of an other tile, according to the surrounding origin tile
+        // Used to rush in a direction
+        public static bool inDirection()
+        {
+            return true;
+        }
+
+
+        // Used to split in a direction
+        public static bool inDirectionSplit()
+        {
+            return true;
+        }
+
 
         public static void PrintMove(List<List<Move>> moveListList)
         {
