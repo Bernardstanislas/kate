@@ -84,6 +84,48 @@ namespace Kate.Maps
         {
             return grid[xCoordinate, yCoordinate];
         }
+
+
+        public override IEnumerable<Tile> GetSurroundingTiles(Tile tile)
+        {
+            int[] gridDim = this.getMapDimension();
+            var surroundingTiles = new List<Tile> ();
+
+            for (int i = -1; i <= 1; i++)
+            {
+                int xPos = tile.X;
+
+                if (
+                    0 < tile.X && tile.X < gridDim[0] - 1
+                    || tile.X == 0 && i != -1               // Tile on left edge
+                    || tile.X == gridDim[0] - 1 && i != 1   // Tile on right edge
+                    )
+                {
+                    xPos += i;
+
+                    for (int j = -1; j <= 1; j++)
+                    {
+                        int yPos = tile.Y;
+                        if (
+                            0 < tile.Y && tile.Y < gridDim[1] - 1
+                            || tile.Y == 0 && j != -1              // Tile on top edge
+                            || tile.Y == gridDim[1] - 1 && j != 1  // Tile on bottom edge
+                            )
+                        {
+                            yPos += j;
+
+                            // The null move is not generated
+                            if (!(xPos == tile.X && yPos == tile.Y))
+                            {
+                                Tile destTile = this.getTile(xPos, yPos);
+                                surroundingTiles.Add(destTile);
+                            }
+                        }
+                    }
+                }
+            }
+            return surroundingTiles;
+        }
         #endregion
 
         #region Hash

@@ -14,6 +14,7 @@ namespace Kate.Maps
         IEnumerable<Tile> GetPlayerTiles(Owner owner);
         void SetTile (Tile newTile);
         void UpdateMap(IMapUpdater mapUpdater);
+        IEnumerable<Tile> GetSurroundingTiles(Tile tile);
         bool HasGameEnded();
         List<Move[]> GenerateMovesLists(Owner owner);
     }
