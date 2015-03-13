@@ -39,12 +39,21 @@ namespace Kate.Maps
             hashArray = map.HashArray;
         }
 
-        public override bool HasPlayerWon(Owner player)
+        public override bool HasGameEnded()
         {
+            int meCount = 0;
+            int opCount = 0;
             foreach (var tile in grid)
-                if (tile.Owner == player.Opposite())
-                    return false;
-            return true;
+            {
+                if (tile.Owner == Owner.Me)
+                    meCount++;
+                else if (tile.Owner == Owner.Opponent)
+                    opCount++; 
+            }
+            if (meCount == 0 || opCount == 0)
+                return true;
+            else
+                return false;
         }
 
         #region Grid

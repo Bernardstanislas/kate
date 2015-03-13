@@ -3,23 +3,23 @@
 using Kate.Maps;
 using Kate.Types;
 
-namespace Kate.Heuristic.Rules
+namespace Kate.Heuristics.Rules
 {
-    public class PopulationRatioRule : IScoringRule
+    public class PopulationDifferenceRule : IScoringRule
     {
-        public float EvaluateScore(IMap map, Owner player)
+        public float EvaluateScore(IMap map)
         {
             int myPopulation = 0;
             int enemyPopulation = 0;
             foreach (var tile in map.getGrid())
             {
-                if (tile.Owner == player)
+                if (tile.Owner == Owner.Me)
                     myPopulation += tile.Population;
-                else if (tile.Owner == player.Opposite())
+                else if (tile.Owner == Owner.Opponent)
                     enemyPopulation += tile.Population;
             }
 
-            return (float) myPopulation / (float) enemyPopulation;
+            return (float)(myPopulation - enemyPopulation);
         }
     }
 }

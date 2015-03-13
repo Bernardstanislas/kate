@@ -31,13 +31,12 @@ namespace kate
                 Console.WriteLine("Missing IP or port number: Starting test client");
                 var tiles = new List<Tile>()
                 {
-                    new Tile(1, 2, Owner.Me, 5),
-                    new Tile(3, 2, Owner.Opponent, 5),
-                    new Tile(2, 3, Owner.Humans, 2),
-                    new Tile(1, 1, Owner.Humans, 3),
-                    new Tile(2, 2, Owner.Humans, 1)
+                    new Tile(5, 4, Owner.Me, 3),
+                    new Tile(2, 3, Owner.Opponent, 3),
+                    new Tile(2, 2, Owner.Humans, 1),
+                    new Tile(4, 4, Owner.Humans, 1)
                 };
-                client = new TestClient(5, 5, tiles);
+                client = new TestClient(6, 5, tiles);
             }
             else
             {
@@ -46,7 +45,7 @@ namespace kate
             }
 
             Console.WriteLine("KATE has started");
-            var bot = new AlphaBetaBot(client, "KATE", 1000, 200);
+            var bot = new AlphaBetaBot(client, "KATE", 1950);
             bot.Start();
             Console.ReadKey();
         }

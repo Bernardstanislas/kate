@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Kate.Heuristic.Rules;
+using Kate.Heuristics.Rules;
 using Kate.Maps;
 using Kate.Types;
 using Kate.Utils;
 
-namespace Kate.Heuristic
+namespace Kate.Heuristics
 {
     public sealed class HeuristicManager : AbstractHeuristicManager
     {
@@ -16,8 +16,7 @@ namespace Kate.Heuristic
         {
             weightedRules = new HeuristicDictionary(new Dictionary<IScoringRule, int> 
             {
-                {new PopulationRatioRule(), 1},
-                {new TotalPopulationRule(), 1}
+                {new PopulationDifferenceRule(), 1}
             });
 
             createGetScore();

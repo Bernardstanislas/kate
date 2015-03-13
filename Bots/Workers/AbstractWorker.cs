@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Kate.Commands;
 using Kate.Maps;
@@ -23,22 +24,21 @@ namespace Kate.Bots.Workers
 
         protected virtual IEnumerable<Tuple<IMap, List<Move>>> generateMapPerNode()
         {
-            foreach (var mapUpdaters in getMapUpdatersPerNode()) 
+            return getMapUpdatersPerNode().Select(mapUpdaters =>
             {
-				IMap map = new Map((Map)Map);
+                IMap map = new Map((Map)Map);
                 foreach (var mapUpdater in mapUpdaters.Item1)
                     map.updateMap(mapUpdater);
 
-                yield return Tuple.Create(map, mapUpdaters.Item2);
-            }
+                return Tuple.Create(map, mapUpdaters.Item2);
+            });
         }
 
         private IEnumerable<Tuple<List<MapUpdater>, List<Move>>> getMapUpdatersPerNode()
         {
             var movesListsPerNode = MoveGenerator.GenerateMoves(Map, Turn);
-
-            foreach (var moveList in movesListsPerNode)
-                yield return Tuple.Create(MapUpdaterFactory.Generate(moveList), moveList);
+            movesListsPerNode.RemoveAt(movesListsPerNode.Count - 1); // Last move is empty
+            return movesListsPerNode.Select(moveList => Tuple.Create(MapUpdaterFactory.Generate(moveList), moveList));
         }
     }
 }
