@@ -59,8 +59,7 @@
     <Compile Include="Commands\Move.cs" />
     <Compile Include="Heuristics\HeuristicManager.cs" />
     <Compile Include="Heuristics\Rules\IScoringRule.cs" />
-    <Compile Include="Heuristics\Rules\PopulationRatioRule.cs" />
-    <Compile Include="Heuristics\Rules\TotalPopulationRule.cs" />
+    <Compile Include="Heuristics\Rules\PopulationDifferenceRule.cs" />
     <Compile Include="IO\TestClient.cs" />
     <Compile Include="Maps\AbstractMap.cs" />
     <Compile Include="Maps\IMap.cs" />

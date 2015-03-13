@@ -18,19 +18,5 @@ namespace Kate.Utils
                 return value;
             };
         }
-
-        public static Func<A, B, R> Memoize<A, B, R>(this Func<A, B, R> f)
-        {
-            var map = new Dictionary<Tuple<A, B>, R>();
-            return (a, b) =>
-            {
-                R value;
-                if (map.TryGetValue(Tuple.Create(a, b), out value))
-                    return value;
-                value = f(a, b);
-                map.Add(Tuple.Create(a, b), value);
-                return value;
-            };
-        }
     }
 }

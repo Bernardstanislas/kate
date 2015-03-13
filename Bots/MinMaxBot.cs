@@ -37,7 +37,7 @@ namespace Kate.Bots
 
             var childNodes = getChildNodes(map, Owner.Me);
 
-            float bestHeuristic = float.MaxValue;
+            float bestHeuristic = float.MinValue;
             var bestNode = tree[map.GetHashCode()];
 
             int depth = 0;
@@ -49,7 +49,7 @@ namespace Kate.Bots
                     Parallel.ForEach(childNodes, node =>
                     {
                         var heuristic = browseTree(node, depth - 1, float.MinValue, float.MaxValue, Owner.Opponent);
-                        if (heuristic < bestHeuristic)
+                        if (heuristic > bestHeuristic)
                         {
                             bestHeuristic = heuristic;
                             bestNode = node;

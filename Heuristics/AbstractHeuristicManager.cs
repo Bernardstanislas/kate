@@ -28,20 +28,20 @@ namespace Kate.Heuristics
 
     public abstract class AbstractHeuristicManager
     {
-        public Func<IMap, Owner, float> GetScore { get; protected set; }
+        public Func<IMap, float> GetScore { get; protected set; }
 
         protected HeuristicDictionary weightedRules;
 
         protected void createGetScore()
         {
-            GetScore = (IMap map, Owner player) =>
+            GetScore = (IMap map) =>
             {
                 float score = 0;
                 foreach (var weightedRule in weightedRules)
-                    score += weightedRule.Key.EvaluateScore(map, player) * weightedRule.Value;
+                    score += weightedRule.Key.EvaluateScore(map) * weightedRule.Value;
                 return score / weightedRules.TotalWeight;
             };
-            // GetScore = GetScore.Memoize();
+            //GetScore = GetScore.Memoize();
         }
     }
 }

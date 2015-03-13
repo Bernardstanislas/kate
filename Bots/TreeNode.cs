@@ -13,7 +13,7 @@ namespace Kate.Bots
     {
         public IMap Map { get; private set; }
         public List<Move> MoveList { get; private set; }
-        public Func<Owner, float> Heuristic { get; private set; }
+        public float Heuristic { get; private set; }
         public IEnumerable<int> MyChildrenHashes { get; private set; }
         public IEnumerable<int> EnemyChildrenHashes { get; private set; }
 
@@ -22,7 +22,7 @@ namespace Kate.Bots
         public TreeNode(IMap value, List<Move> moveList, IEnumerable<int> myChildrenHashes, IEnumerable<int> enemyChildrenHashes)
         {
             Map = value;
-            Heuristic = player => HeuristicManager.Instance.GetScore(Map, player);
+            Heuristic = HeuristicManager.Instance.GetScore(Map);
             MoveList = moveList;
             MyChildrenHashes = myChildrenHashes;
             EnemyChildrenHashes = enemyChildrenHashes;
