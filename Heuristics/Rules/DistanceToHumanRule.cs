@@ -18,7 +18,7 @@ namespace Kate.Heuristics.Rules
                         minDistance = distance;
                 }
             }
-            int maxPossibleDistance = map.getMapDimension [0] + map.getMapDimension [1];
+            int maxPossibleDistance = map.getMapDimension()[0] + map.getMapDimension()[1];
             return ((float)minDistance) / ((float)maxPossibleDistance);
         }
 
