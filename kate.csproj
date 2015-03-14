@@ -77,9 +77,10 @@
     <Compile Include="Utils\MoveGenerator.cs" />
     <Compile Include="Utils\MultipleMove.cs" />
     <Compile Include="Bots\Workers\DefaultWorker.cs" />
-	<Compile Include="Heuristics\Rules\GroupsDifferenceRule.cs" />
     <Compile Include="Maps\AbstractMapMoves.cs" />
     <Compile Include="Maps\AbstractMapCommon.cs" />
+    <Compile Include="Heuristics\Rules\GroupsDifferenceRule.cs" />
+    <Compile Include="Heuristics\Rules\DistanceToHumanRule.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
