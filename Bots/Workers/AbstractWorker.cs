@@ -28,7 +28,7 @@ namespace Kate.Bots.Workers
             {
                 IMap map = new Map((Map)Map);
                 foreach (var mapUpdater in mapUpdaters.Item1)
-                    map.updateMap(mapUpdater);
+                    map.UpdateMap(mapUpdater);
 
                 return Tuple.Create(map, mapUpdaters.Item2);
             });

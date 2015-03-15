@@ -29,7 +29,7 @@ namespace Kate.Maps
 
         public Map(Map map)
         {
-            var size = map.getMapDimension();
+            var size = map.GetMapDimension();
             grid = new Tile[size[0], size[1]];
             for (int i = 0; i < grid.GetLength(0); i++)
                 for (int j = 0; j < grid.GetLength(1); j++) 
@@ -57,30 +57,30 @@ namespace Kate.Maps
         }
 
         #region Grid
-        public override IEnumerable<Tile> getGrid()
+        public override IEnumerable<Tile> GetGrid()
         {
             foreach (Tile tile in grid)
                 yield return tile;
         }
 
-        public override IEnumerable<Tile> getPlayerTiles(Owner owner)
+        public override IEnumerable<Tile> GetPlayerTiles(Owner owner)
         {
             foreach (Tile tile in grid)
                 if (tile.Owner.Equals(owner))
                     yield return tile;
         }
 
-        public override int[] getMapDimension()
+        public override int[] GetMapDimension()
         {
             return new int[2] {grid.GetLength(0), grid.GetLength(1)};
         }
 
-        protected override void updateTile(Tile newTile) 
+        protected override void UpdateTile(Tile newTile) 
         {
             grid[newTile.X, newTile.Y] = newTile;
         }
 
-        public override Tile getTile(int xCoordinate, int yCoordinate) 
+        public override Tile GetTile(int xCoordinate, int yCoordinate) 
         {
             return grid[xCoordinate, yCoordinate];
         }
@@ -99,9 +99,9 @@ namespace Kate.Maps
                             hashArray[index0, index1, index2, index3] = random.Next();
         }
 
-        protected override void updateHash(Tile newTile)
+        protected override void UpdateHash(Tile newTile)
         {
-            var oldTile = getTile(newTile.X, newTile.Y);
+            var oldTile = GetTile(newTile.X, newTile.Y);
             hash = hash 
                 ^ hashArray[oldTile.X, oldTile.Y, (int)oldTile.Owner, oldTile.Population] 
                 ^ hashArray[newTile.X, newTile.Y, (int)newTile.Owner, newTile.Population];
