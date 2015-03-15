@@ -66,86 +66,52 @@ namespace Kate.Utils
             // Each sub-list is a list of move from one tile
             var splitListList = GetAllSplitMoves(map, owner);
             var possibleMoves = GetAllFullForceMissionMoves(map, owner);
-
+            /*
             foreach (var splitList in splitListList)
                 for (int i = 0; i < possibleMoves.Count; i++)
                     if (splitList[0].Origin.X == possibleMoves[i][0].Origin.X && splitList[0].Origin.Y == possibleMoves[i][0].Origin.Y) 
-                        possibleMoves[i].AddRange(splitList);
+                        possibleMoves[i].AddRange(splitList);*/
 
-            return possibleMoves;
-        }
-
-        // Return all possible moves where all the units from a tile move towards an other tile
-        private static List<List<MultipleMove>> GetAllFullForceMoves(IMap map, Owner owner)
-        {
-            List<Tile> myTiles = new List<Tile>();
-            myTiles = map.GetPlayerTiles(owner).ToList(); // Get all the tiles with my units
-            int[] gridDim = map.GetMapDimension();
-
-
-            var possibleMoves = new List<List<MultipleMove>>();
-
-            foreach (Tile tile in myTiles)
-            {
-                var tileMoves = new List<MultipleMove>();
-                var surroundinTiles = map.getSurroundingTiles (tile);
-
-                foreach (var surroundingTile in surroundinTiles)
-                {
-                    Tile destTile = surroundingTile;
-                    var move = new MultipleMove(tile, new Dictionary<Tile, int>() { { destTile, tile.Population } });
-                    tileMoves.Add(move);
-                }
-                possibleMoves.Add(tileMoves);
-            }
             return possibleMoves;
         }
 
 
         // Return all possible moves where all the units from a tile move towards an other tile
-        private static List<List<MultipleMove>> GetAllFullForceMissionMoves(IMap map, Owner owner)
+        private static List<List<Move>> GetAllFullForceMissionMoves(Tile tile)
         {
-            var myTiles = new List<Tile>();
-            myTiles = map.getPlayerTiles(owner).ToList(); // Get all the tiles with my units
             var opponentTiles = new List<Tile>();
-            Owner opponent = new Owner();
-            opponent = owner.Opposite();
-            opponentTiles = map.getPlayerTiles(opponent).ToList();
+            Owner opponent = tile.Owner.Opposite();
+
+            opponentTiles = getPlayerTiles(opponent).ToList();
+
             var humanTiles = new List<Tile>();
-            humanTiles = map.getPlayerTiles(Kate.Types.Owner.Humans).ToList();
+            humanTiles = getPlayerTiles(Kate.Types.Owner.Humans).ToList();
 
-            var possibleMoves = new List<List<MultipleMove>>();
+            var possibleMoves = new List<List<Move>>();
 
-            foreach (Tile tile in myTiles)
+            var tileMoves = new List<Move>();
+            var targetDirections = new HashSet<Direction>();
+
+            foreach (var opponentTile in opponentTiles)
             {
-                var tileMoves = new List<MultipleMove>();
-                var targetDirections = new List<List<int>> ();
+                targetDirections.Add (getMissionDirection (tile, opponentTile));
+                targetDirections.Add (getMissionOppositeDirection (tile, opponentTile));
+            }
+            foreach (var humanTile in humanTiles)
+            {
+                targetDirections.Add (getMissionDirection (tile, humanTile));
+            }
 
-                foreach (var opponentTile in opponentTiles)
-                {
-                    targetDirections.Add (getMissionDirection (tile, opponentTile));
-                    targetDirections.Add (getMissionOppositeDirection (tile, opponentTile));
-                }
-                foreach (var humanTile in humanTiles)
-                {
-                    targetDirections.Add (getMissionDirection (tile, humanTile));
-                }
+            var surroundinTiles = getSurroundingTiles (tile);
 
-                var surroundinTiles = map.getSurroundingTiles (tile);
+            foreach (var surroundingTile in surroundinTiles)
+            {
+                var currentDirection = getMissionDirection(tile, surroundingTile);
 
-                foreach (var surroundingTile in surroundinTiles)
-                {
-                    for (int i = 0; i < targetDirections.Count ; i++) 
-                    {
-                        if (surroundingTile.X == targetDirections[i][0] && surroundingTile.Y == targetDirections[i][1]) {
-                            Tile destTile = surroundingTile;
-                            var move = new MultipleMove (tile, new Dictionary<Tile, int> () { { destTile, tile.Population } });
-                            tileMoves.Add (move);
-                            break;
-                        }
-                    }
-                }
-                possibleMoves.Add(tileMoves);
+                if (targetDirections.Contains(targetDirections))
+                    tileMoves.Add (new Move{tile, surroundingTile, tile.Population});
+
+            possibleMoves.Add(tileMoves);
             }
             return possibleMoves;
         }
@@ -279,32 +245,30 @@ namespace Kate.Utils
         }
 
         // Return a list with the coordinates of the surrounding tile of the origin tile that is in the direction of targetTile
-        public static List<int> getMissionDirection(Tile originTile, Tile targetTile)
+        public static Direction getMissionDirection(Tile originTile, Tile targetTile)
         {
+            Direction direction = new Direction ();
             int xPos = 0;
             int yPos = 0;
             if (targetTile.X > originTile.X) {
-                xPos = originTile.X + 1;
+                xPos = 1;
             }
             else if (targetTile.X < originTile.X) {
-                xPos = originTile.X - 1;
+                xPos = - 1;
             }
 
             if (targetTile.Y > originTile.Y) {
-                yPos = originTile.Y + 1;
+                yPos = 1;
             }
             else if (targetTile.Y < originTile.Y) {
-                yPos = originTile.Y - 1;
+                yPos = - 1;
             }
-            var direction = new List<int>(){xPos, yPos};
-            return direction;
+            return DirectionExt.getDirection(xPos, yPos);
         }
 
-        public static List<int> getMissionOppositeDirection(Tile originTile, Tile targetTile)
+        public static Direction getMissionOppositeDirection(Tile originTile, Tile targetTile)
         {
-            var direction = getMissionDirection (originTile, targetTile);
-            var oppositeDirection = new List<int>(){ - direction[0], - direction[0]};
-            return oppositeDirection;
+            return DirectionExt.getOppositeDirection(originTile, targetTile);
         }
 
         //Check if a tile is in the direction of an other tile, according to the surrounding origin tile
