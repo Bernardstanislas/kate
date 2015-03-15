@@ -16,8 +16,10 @@ namespace Kate.Heuristics
         {
             weightedRules = new HeuristicDictionary(new Dictionary<IScoringRule, int> 
             {
+                {new DistanceToEnemiesRule(), 1},
+                {new DistanceToHumansRule(), 1},
+                {new GroupsDifferenceRule(), 1},
                 {new PopulationDifferenceRule(), 1},
-                {new GroupsDifferenceRule(), 1}
             });
 
             createGetScore();

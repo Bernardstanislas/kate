@@ -10,7 +10,7 @@ namespace Kate.Heuristics.Rules
         {
             int myGroups = 0;
             int enemyGroups = 0;
-            foreach (var tile in map.getGrid())
+            foreach (var tile in map.GetGrid())
             {
                 if (tile.Owner == Owner.Me)
                     myGroups += 1;

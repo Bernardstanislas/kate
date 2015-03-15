@@ -4,12 +4,12 @@ using Kate.Types;
 
 namespace Kate.Heuristics.Rules
 {
-    public class DistanceToHumanRule : IScoringRule
+    public class DistanceToHumansRule : IScoringRule
     {
         public float EvaluateScore (IMap map)
         {
             int minDistance = int.MaxValue;
-            foreach (var tile in map.getGrid())
+            foreach (var tile in map.GetGrid())
             {
                 if (tile.Owner.Equals(Owner.Me))
                 {
@@ -18,14 +18,15 @@ namespace Kate.Heuristics.Rules
                         minDistance = distance;
                 }
             }
-            int maxPossibleDistance = map.getMapDimension()[0] + map.getMapDimension()[1];
+            var mapDimension = map.GetMapDimension(); 
+            int maxPossibleDistance = mapDimension[0] + mapDimension[1];
             return 1 - 2 * ((float)minDistance) / ((float)maxPossibleDistance);
         }
 
         private static int getClosestHumanDistance(IMap map, Tile tile)
         {
             int minDistance = int.MaxValue;
-            foreach (var candidate in map.getGrid())
+            foreach (var candidate in map.GetGrid())
             {
                 if (candidate.Owner.Equals(Owner.Humans))
                 {
