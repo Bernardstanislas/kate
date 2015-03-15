@@ -19,7 +19,7 @@ namespace Kate.Heuristics.Rules
                 }
             }
             int maxPossibleDistance = map.getMapDimension()[0] + map.getMapDimension()[1];
-            return ((float)minDistance) / ((float)maxPossibleDistance);
+            return 1 - 2 * ((float)minDistance) / ((float)maxPossibleDistance);
         }
 
         private static int getClosestHumanDistance(IMap map, Tile tile)

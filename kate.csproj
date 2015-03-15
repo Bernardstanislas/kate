@@ -81,6 +81,7 @@
     <Compile Include="Maps\AbstractMapCommon.cs" />
     <Compile Include="Heuristics\Rules\GroupsDifferenceRule.cs" />
     <Compile Include="Heuristics\Rules\DistanceToHumanRule.cs" />
+    <Compile Include="Heuristics\Rules\VictoriesRule.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
