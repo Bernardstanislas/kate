@@ -13,7 +13,17 @@ namespace Kate.Utils
         public static bool IsWon(int oriPop, Owner oriOwner, int destPop, Owner destOwner)
         {
             bool res = false;
-            int victoryProba = oriPop / (oriPop + destPop);
+
+            double victoryProba;
+
+            if (oriPop == destPop)
+                {victoryProba = 0.5;}
+            else if (oriPop<destPop)
+                {victoryProba = (double)oriPop / (2.0 * (double)destPop);}
+            else
+                {victoryProba = (double)oriPop / (double)destPop - 0.5;}
+
+            
             switch (destOwner)
             {
             case Owner.Humans:
@@ -36,7 +46,16 @@ namespace Kate.Utils
 
         public static Tile FightResult(Owner oriOwner, int attackingPop, Owner destOwner, int destPop)
         {
-            float victoryProba = (float)attackingPop / (float)(attackingPop + destPop);
+
+            float victoryProba;
+
+            if (attackingPop == destPop)
+            { victoryProba = 0.5F; }
+            else if (attackingPop < destPop)
+            { victoryProba = (float)attackingPop / (2.0F * (float)destPop); }
+            else
+            { victoryProba = (float)attackingPop / (float)destPop - 0.5F; }
+
             Tile result = new Tile();
 
             switch (destOwner) 
@@ -51,7 +70,7 @@ namespace Kate.Utils
                 // Defeat case, defending human pop is partly killed.
                 else
                 {
-                    int finalPop = (int)(destPop * (1 - victoryProba));
+                    int finalPop = (int)((float)destPop * (1.0F - victoryProba));
                   
                     result.Owner = Owner.Humans;
                     result.Population = finalPop;
