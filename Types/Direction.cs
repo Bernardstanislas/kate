@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ﻿using Kate.Maps;
 
 namespace Kate.Types
