@@ -13,7 +13,9 @@ namespace Kate.Utils
         public static bool IsWon(int oriPop, Owner oriOwner, int destPop, Owner destOwner)
         {
             bool res = false;
-            int victoryProba = oriPop / (oriPop + destPop);
+
+            var victoryProba = GetProba(oriPop, destPop);
+
             switch (destOwner)
             {
             case Owner.Humans:
@@ -36,7 +38,8 @@ namespace Kate.Utils
 
         public static Tile FightResult(Owner oriOwner, int attackingPop, Owner destOwner, int destPop)
         {
-            float victoryProba = (float)attackingPop / (float)(attackingPop + destPop);
+            var victoryProba = GetProba(attackingPop, destPop);
+
             Tile result = new Tile();
 
             switch (destOwner) 
@@ -51,7 +54,7 @@ namespace Kate.Utils
                 // Defeat case, defending human pop is partly killed.
                 else
                 {
-                    int finalPop = (int)(destPop * (1 - victoryProba));
+                    int finalPop = (int)((float)destPop * (1.0F - victoryProba));
                   
                     result.Owner = Owner.Humans;
                     result.Population = finalPop;
@@ -60,7 +63,7 @@ namespace Kate.Utils
 
             case Owner.Me:
                 // We only treat attacks. So it is assumed the oriOwner is Opponent.
-                if (attackingPop >= destPop*1.5)
+                if (attackingPop >= destPop * 1.5)
                 {
                     result.Owner = oriOwner;
                     result.Population = attackingPop;
@@ -75,7 +78,7 @@ namespace Kate.Utils
                 // Random battle defenders victory
                 else
                 {
-                    int finalPop = (int)(destPop * (1-victoryProba));
+                    int finalPop = (int)(destPop * (1 - victoryProba));
                     result.Owner = Owner.Me;
                     result.Population = finalPop;
                 }
@@ -105,6 +108,32 @@ namespace Kate.Utils
                 break;
             }
             return result;
-        }    
+        }
+
+        // Taken from the server source code
+        private static double GetProba(int attackercount, int attackedcount)
+        {
+            if (attackedcount == attackercount)
+                return .5;
+
+            double x0, y0, x1 = attackedcount, y1 = 0.5;
+
+            if (attackercount < attackedcount)
+            {
+                x0 = 0;
+                y0 = 0;
+
+                return (y0 - y1) / (x0 - x1) * attackercount;
+            }
+            else
+            {
+                x0 = 1.5 * attackedcount;
+                y0 = 1;
+                double
+                    m = (y0 - y1) / (x0 - x1),
+                    c = 1 - m * x0;
+                return m * attackercount + c;
+            }
+        }
     }
 }
