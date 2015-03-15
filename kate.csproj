@@ -68,6 +68,7 @@
     <Compile Include="Maps\Tile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Types\Direction.cs" />
     <Compile Include="Types\Owner.cs" />
     <Compile Include="Types\Side.cs" />
     <Compile Include="Utils\Extensions.cs" />
@@ -79,13 +80,6 @@
     <Compile Include="Maps\AbstractMapMoves.cs" />
     <Compile Include="Maps\AbstractMapCommon.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Bots\" />
-    <Folder Include="IO\" />
-    <Folder Include="Commands\" />
-    <Folder Include="Maps\" />
-    <Folder Include="Types\" />
-    <Folder Include="Utils\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
