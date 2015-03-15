@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Kate.Types;
+using Kate.Commands;
 
 namespace Kate.Maps
 {
@@ -14,5 +15,6 @@ namespace Kate.Maps
         void setTile (Tile newTile);
         void updateMap(IMapUpdater mapUpdater);
         bool HasGameEnded();
+        List<List<Move>> GenerateMovesLists(Owner owner);
     }
 }

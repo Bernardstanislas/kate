@@ -6,7 +6,7 @@ using Kate.Types;
 namespace Kate.Maps
 {
     [Serializable()]
-    public abstract class AbstractMap: IMap
+    public abstract partial class AbstractMap : IMap
     {
         #region implemented
         protected int hash = 0;
@@ -23,14 +23,14 @@ namespace Kate.Maps
 
         public void setTile(Tile newTile)
         {
-            updateHash(newTile);
-            updateTile(newTile);
+            UpdateTile(newTile);
+            UpdateHash(newTile);
         }
         #endregion
 
         #region abstract
-        protected abstract void updateTile(Tile newTile);
-        protected abstract void updateHash(Tile newTile);
+        protected abstract void UpdateTile(Tile newTile);
+        protected abstract void UpdateHash(Tile newTile);
         public abstract IEnumerable<Tile> getGrid();
         public abstract Tile getTile (int xCoordinate, int yCoordinate);
         public abstract IEnumerable<Tile> getPlayerTiles(Owner owner);
