@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-
+using Kate.Utils;
 using Kate.Types;
 using Kate.Commands;
 
@@ -156,5 +156,92 @@ namespace Kate.Maps
                 AreMultipleMoveCoherent(multipleMove, multipleMovePair[1])
             );
         }
+
+
+        // Return all possible moves where all the units from a tile move towards an other tile
+        private static List<List<Move>> GetMissionMoves(Tile tile)
+        {
+            var opponentTiles = new List<Tile>();
+            Owner opponent = tile.Owner.Opposite();
+
+            opponentTiles = GetPlayerTiles(opponent).ToList();
+
+            var humanTiles = new List<Tile>();
+            humanTiles = GetPlayerTiles(Kate.Types.Owner.Humans).ToList();
+
+            var possibleMoves = new List<List<Move>>();
+
+            var tileMoves = new List<Move>();
+            var targetDirections = new HashSet<Direction>();
+
+            foreach (var opponentTile in opponentTiles)
+            {
+                targetDirections.Add (GetMissionDirection (tile, opponentTile));
+                targetDirections.Add (GetMissionOppositeDirection (tile, opponentTile));
+            }
+            foreach (var humanTile in humanTiles)
+            {
+                targetDirections.Add (GetMissionDirection (tile, humanTile));
+            }
+
+            var surroundinTiles = GetSurroundingTiles (tile);
+
+            foreach (var surroundingTile in surroundinTiles)
+            {
+                var currentDirection = GetMissionDirection(tile, surroundingTile);
+
+                if (targetDirections.Contains(targetDirections))
+                    tileMoves.Add (new Move{tile, surroundingTile, tile.Population});
+
+                possibleMoves.Add(tileMoves);
+            }
+            return possibleMoves;
+        }
+
+        // Generate split moves in only North-South and Est-West direction for each tile
+        private static List<List<Move>> GetHumanTargetedSplitMoves(Tile tile)
+        {
+            var humanTiles = new List<Tile>();
+            humanTiles = GetPlayerTiles(Kate.Types.Owner.Humans).ToList();
+
+            var possibleMoves = new List<List<Move>>();
+
+
+            var targetDirections = new HashSet<Direction>();
+            foreach (var humanTile in humanTiles)
+            {
+                targetDirections.Add (GetMissionDirection (tile, humanTile));
+            }
+
+            var tileMoves = new List<Move>();
+
+            var surroundinTiles = GetSurroundingTiles (tile);
+            var destTiles = new List<Tile>();
+
+            foreach (var surroundingTile in surroundinTiles)
+            {
+                var currentDirection = GetMissionDirection(tile, surroundingTile);
+                {
+                    if (surroundingTile.X == targetDirections [i] [0] && surroundingTile.Y == targetDirections [i] [1]) {
+
+                        destTiles.Add (surroundingTile);
+                        break;
+                    }
+                }
+
+                int totalPop = tile.Population;
+                int pop = (int)(Math.Floor((double)(tile.Population / destTiles.Count)));
+                var dictDestTile = new Dictionary<Tile, int> ();
+                foreach (var destTile in destTiles)
+                {
+                    dictDestTile.Add(destTile, pop);
+                }
+                tileMoves.Add(new MultipleMove(tile, dictDestTile));
+            }
+            possibleMoves.Add(tileMoves);
+
+            return possibleMoves;
+        }
+
     }
 }
