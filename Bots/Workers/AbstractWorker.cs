@@ -36,7 +36,7 @@ namespace Kate.Bots.Workers
 
         private IEnumerable<Tuple<List<MapUpdater>, List<Move>>> getMapUpdatersPerNode()
         {
-            var movesListsPerNode = MoveGenerator.GenerateMoves(Map, Turn);
+            var movesListsPerNode = Map.GenerateMovesLists(Turn);
             movesListsPerNode.RemoveAt(movesListsPerNode.Count - 1); // Last move is empty
             return movesListsPerNode.Select(moveList => Tuple.Create(MapUpdaterFactory.Generate(moveList), moveList));
         }

@@ -27,8 +27,6 @@ namespace kate
 
             IClient client;
 
-            if (ipAddress == "" || port == 0)
-            {
                 Console.WriteLine("Missing IP or port number: Starting test client");
                 var tiles = new List<Tile>()
                 {
@@ -38,13 +36,6 @@ namespace kate
                     new Tile(4, 4, Owner.Humans, 1)
                 };
                 client = new TestClient(6, 5, tiles);
-            }
-            else
-            {
-                Console.WriteLine("Connecting to " + ipAddress + " on port " + port.ToString());
-                client = new SocketClient(ipAddress, port);
-            }
-
             Console.WriteLine("KATE has started");
             var bot = new AlphaBetaBot(client, "KATE", Worker.DefaultWorker, 1950);
             bot.Start();

@@ -28,27 +28,7 @@ namespace Kate.Utils
             else if (targetTile.Y < originTile.Y) {
                 yPos = - 1;
             }
-            return DirectionExt.GetDirection(xPos, yPos);
-        }
-
-        public static Direction GetMissionOppositeDirection(Tile originTile, Tile targetTile)
-        {
-            int xPos = 0;
-            int yPos = 0;
-            if (targetTile.X > originTile.X) {
-                xPos = 1;
-            }
-            else if (targetTile.X < originTile.X) {
-                xPos = - 1;
-            }
-
-            if (targetTile.Y > originTile.Y) {
-                yPos = 1;
-            }
-            else if (targetTile.Y < originTile.Y) {
-                yPos = - 1;
-            }
-            return DirectionExt.GetDirection(-xPos, -yPos);
+            return Directions.Get(xPos, yPos);
         }
 
 

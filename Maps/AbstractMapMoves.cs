@@ -110,7 +110,7 @@ namespace Kate.Maps
         /**
          * Generate MultipleMoves associated with a tile
          */
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         private List<Move[]> GenerateMultipleMoves(Tile tile) 
         {
             return new List<Move[]>();
@@ -119,7 +119,7 @@ namespace Kate.Maps
         /**
          * Check if the MultipleMoves are coherent (origin different from target)
          */
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         static private Boolean AreMultipleMoveCoherent(Move[] firstMultipleMove, Move[] secondMultipleMove) 
         {
             for (int moveIndex = 0; moveIndex < secondMultipleMove.Length; moveIndex++) 
@@ -147,7 +147,7 @@ namespace Kate.Maps
         /**
          * Check if the MultipleMove is coherent with a pair 
          */
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         static private Boolean IsMultipleMoveCoherentWithPair(Move[] multipleMove, Move[][] multipleMovePair)
         {
             return 
@@ -159,12 +159,12 @@ namespace Kate.Maps
 
 
         // Return all possible moves where all the units from a tile move towards an other tile
-        private static List<List<Move>> GetMissionMoves(Tile tile)
+        private List<List<Move>> GetMissionMoves(Tile tile)
         {
             var opponentTiles = new List<Tile>();
             Owner opponent = tile.Owner.Opposite();
 
-            opponentTiles = GetPlayerTiles(opponent).ToList();
+            opponentTiles = this.GetPlayerTiles(opponent).ToList();
 
             var humanTiles = new List<Tile>();
             humanTiles = GetPlayerTiles(Kate.Types.Owner.Humans).ToList();
@@ -176,19 +176,20 @@ namespace Kate.Maps
 
             foreach (var opponentTile in opponentTiles)
             {
-                targetDirections.Add (GetMissionDirection (tile, opponentTile));
-                targetDirections.Add (GetMissionOppositeDirection (tile, opponentTile));
+                var direction = MoveGenerator.GetMissionDirection (tile, opponentTile);
+                targetDirections.Add(direction);
+                targetDirections.Add (direction.Opposite());
             }
             foreach (var humanTile in humanTiles)
             {
-                targetDirections.Add (GetMissionDirection (tile, humanTile));
+                targetDirections.Add (MoveGenerator.GetMissionDirection (tile, humanTile));
             }
 
             var surroundinTiles = GetSurroundingTiles (tile);
 
             foreach (var surroundingTile in surroundinTiles)
             {
-                var currentDirection = GetMissionDirection(tile, surroundingTile);
+                var currentDirection = MoveGenerator.GetMissionDirection(tile, surroundingTile);
 
                 if (targetDirections.Contains(targetDirections))
                     tileMoves.Add (new Move{tile, surroundingTile, tile.Population});
@@ -199,7 +200,7 @@ namespace Kate.Maps
         }
 
         // Generate split moves in only North-South and Est-West direction for each tile
-        private static List<List<Move>> GetHumanTargetedSplitMoves(Tile tile)
+        private List<List<Move>> GetHumanTargetedSplitMoves(Tile tile)
         {
             var humanTiles = new List<Tile>();
             humanTiles = GetPlayerTiles(Kate.Types.Owner.Humans).ToList();
@@ -210,7 +211,7 @@ namespace Kate.Maps
             var targetDirections = new HashSet<Direction>();
             foreach (var humanTile in humanTiles)
             {
-                targetDirections.Add (GetMissionDirection (tile, humanTile));
+                targetDirections.Add (MoveGenerator.GetMissionDirection (tile, humanTile));
             }
 
             var tileMoves = new List<Move>();
@@ -220,7 +221,7 @@ namespace Kate.Maps
 
             foreach (var surroundingTile in surroundinTiles)
             {
-                var currentDirection = GetMissionDirection(tile, surroundingTile);
+                var currentDirection = MoveGenerator.GetMissionDirection(tile, surroundingTile);
                 {
                     if (surroundingTile.X == targetDirections [i] [0] && surroundingTile.Y == targetDirections [i] [1]) {
 
@@ -236,7 +237,7 @@ namespace Kate.Maps
                 {
                     dictDestTile.Add(destTile, pop);
                 }
-                tileMoves.Add(new MultipleMove(tile, dictDestTile));
+                //tileMoves.Add(new MultipleMove(tile, dictDestTile));
             }
             possibleMoves.Add(tileMoves);
 
