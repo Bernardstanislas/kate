@@ -47,20 +47,26 @@
     <Compile Include="Bots\RandomBot.cs" />
     <Compile Include="Bots\MinMaxBot.cs" />
     <Compile Include="Bots\Workers\AbstractWorker.cs" />
+    <Compile Include="Bots\Workers\DefaultWorker.cs" />
     <Compile Include="Bots\Workers\IWorker.cs" />
     <Compile Include="Bots\Workers\WorkerFactory.cs" />
+    <Compile Include="Commands\DeclareName.cs" />
+    <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\Move.cs" />
     <Compile Include="Heuristics\AbstractHeuristicManager.cs" />
+    <Compile Include="Heuristics\HeuristicManager.cs" />
+    <Compile Include="Heuristics\Rules\DistanceToEnemiesRule.cs" />
+    <Compile Include="Heuristics\Rules\DistanceToHumansRule.cs" />
+    <Compile Include="Heuristics\Rules\GroupsDifferenceRule.cs" />
+    <Compile Include="Heuristics\Rules\IScoringRule.cs" />
+    <Compile Include="Heuristics\Rules\PopulationDifferenceRule.cs" />
     <Compile Include="IO\AbstractClient.cs" />
     <Compile Include="IO\SocketCommandExtensions.cs" />
     <Compile Include="IO\IClient.cs" />
     <Compile Include="IO\SocketClient.cs" />
-    <Compile Include="Commands\DeclareName.cs" />
-    <Compile Include="Commands\ICommand.cs" />
-    <Compile Include="Commands\Move.cs" />
-    <Compile Include="Heuristics\HeuristicManager.cs" />
-    <Compile Include="Heuristics\Rules\IScoringRule.cs" />
-    <Compile Include="Heuristics\Rules\PopulationDifferenceRule.cs" />
     <Compile Include="IO\TestClient.cs" />
+    <Compile Include="Maps\AbstractMapMoves.cs" />
+    <Compile Include="Maps\AbstractMapCommon.cs" />
     <Compile Include="Maps\IMap.cs" />
     <Compile Include="Maps\IMapUpdater.cs" />
     <Compile Include="Maps\Map.cs" />
@@ -76,10 +82,6 @@
     <Compile Include="Utils\MapUpdaterFactory.cs" />
     <Compile Include="Utils\MoveGenerator.cs" />
     <Compile Include="Utils\MultipleMove.cs" />
-    <Compile Include="Bots\Workers\DefaultWorker.cs" />
-    <Compile Include="Maps\AbstractMapMoves.cs" />
-    <Compile Include="Maps\AbstractMapCommon.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
