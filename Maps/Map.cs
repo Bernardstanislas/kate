@@ -88,7 +88,7 @@ namespace Kate.Maps
 
         public override IEnumerable<Tile> GetSurroundingTiles(Tile tile)
         {
-            int[] gridDim = this.getMapDimension();
+            int[] gridDim = this.GetMapDimension();
             var surroundingTiles = new List<Tile> ();
 
             for (int i = -1; i <= 1; i++)
@@ -117,7 +117,7 @@ namespace Kate.Maps
                             // The null move is not generated
                             if (!(xPos == tile.X && yPos == tile.Y))
                             {
-                                Tile destTile = this.getTile(xPos, yPos);
+                                Tile destTile = this.GetTile(xPos, yPos);
                                 surroundingTiles.Add(destTile);
                             }
                         }
