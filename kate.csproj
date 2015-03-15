@@ -86,7 +86,6 @@
     <Folder Include="Maps\" />
     <Folder Include="Types\" />
     <Folder Include="Utils\" />
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; Refactor moves generation
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
