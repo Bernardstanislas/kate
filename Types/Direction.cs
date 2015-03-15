@@ -1,6 +1,8 @@
+<<<<<<< HEAD
 ﻿using Kate.Maps;
 
 namespace Kate.Types
+
 {
     public enum Direction
     {
@@ -45,6 +47,7 @@ namespace Kate.Types
                     return Direction.SW;
             }
         }
+
 
         public static int[] GetTileCoordinates(this Direction direction, Tile tile)
         {
@@ -92,5 +95,4 @@ namespace Kate.Types
             }
         }
     }
-
 }
