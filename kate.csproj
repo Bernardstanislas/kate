@@ -61,10 +61,6 @@
     <Compile Include="Heuristics\Rules\IScoringRule.cs" />
     <Compile Include="Heuristics\Rules\PopulationDifferenceRule.cs" />
     <Compile Include="IO\TestClient.cs" />
-    <Compile Include="Commands\Socket\ISocketCommand.cs" />
-    <Compile Include="Commands\Socket\SocketCommandFactory.cs" />
-    <Compile Include="Commands\Socket\SocketDeclareName.cs" />
-    <Compile Include="Commands\Socket\SocketMove.cs" />
     <Compile Include="Maps\IMap.cs" />
     <Compile Include="Maps\IMapUpdater.cs" />
     <Compile Include="Maps\Map.cs" />
@@ -85,10 +81,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Bots\" />
-    <Folder Include="Bots\Algorithms\" />
     <Folder Include="IO\" />
     <Folder Include="Commands\" />
-    <Folder Include="Commands\Socket\" />
     <Folder Include="Maps\" />
     <Folder Include="Types\" />
     <Folder Include="Utils\" />
