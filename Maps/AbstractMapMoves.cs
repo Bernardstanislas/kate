@@ -16,7 +16,7 @@ namespace Kate.Maps
         /**
          * Generate all the moves associated with an owner
          */
-        public List<List<Move>> GenerateMovesLists(Owner owner)
+        public List<Move[]> GenerateMovesLists(Owner owner)
         {
             var movesLists = new List<Move[]>();
 
@@ -26,13 +26,13 @@ namespace Kate.Maps
 
             for (int firstTileIndex = 0; firstTileIndex < tilesLength; firstTileIndex++) {
                 if (multipleMovesByTile[firstTileIndex] == null)
-                    multipleMovesByTile[firstTileIndex] = GenerateMultipleMoves(tiles[firstTileIndex]);
+                    multipleMovesByTile[firstTileIndex] = GenerateMultipleMoves(tiles[firstTileIndex]).ToArray();
 
                 movesLists.AddRange(multipleMovesByTile[firstTileIndex]);
 
-                for (int secondTileIndex = firstTileIndex + 1; secondTileIndex < tiles.Count; secondTileIndex++) {
+                for (int secondTileIndex = firstTileIndex + 1; secondTileIndex < tiles.Length; secondTileIndex++) {
                     if (multipleMovesByTile[secondTileIndex] == null)
-                        multipleMovesByTile[secondTileIndex] = GenerateMultipleMoves(tiles[secondTileIndex]);
+                        multipleMovesByTile[secondTileIndex] = GenerateMultipleMoves(tiles[secondTileIndex]).ToArray();
 
                     var multipleMovesByTilePair = new List<Move[][]>();
                     for (
@@ -63,9 +63,9 @@ namespace Kate.Maps
                                 });
                             }
 
-                    for (int thirdTileIndex = secondTileIndex + 1; thirdTileIndex < tiles.Count; thirdTileIndex++) {
+                    for (int thirdTileIndex = secondTileIndex + 1; thirdTileIndex < tiles.Length; thirdTileIndex++) {
                         if (multipleMovesByTile[thirdTileIndex] == null)
-                            multipleMovesByTile[thirdTileIndex] = GenerateMultipleMoves(tiles[thirdTileIndex]);
+                            multipleMovesByTile[thirdTileIndex] = GenerateMultipleMoves(tiles[thirdTileIndex]).ToArray();
                             
                         for (int pairIndex = 0; pairIndex < multipleMovesByTilePair.Count; pairIndex++) {
                             var movePair = multipleMovesByTilePair[pairIndex];
@@ -94,15 +94,17 @@ namespace Kate.Maps
                     }
                 }
             }
+
+            return movesLists;
         }
 
         /**
          * Generate MultipleMoves associated with a tile
          */
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private Move[][] GenerateMultipleMoves(Tile tile) 
+        private List<Move[]> GenerateMultipleMoves(Tile tile) 
         {
-            return new Move[2][3]();
+            return new List<Move[]>();
         }
 
         /**

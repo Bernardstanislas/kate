@@ -70,7 +70,7 @@ namespace Kate.Bots
         private void applyMapModifications(MapUpdateEventArgs mapUpdateEventArgs)
         {
             foreach (var tile in mapUpdateEventArgs.NewTiles)
-                map.setTile(tile);
+                map.SetTile(tile);
         }
         #endregion
     }

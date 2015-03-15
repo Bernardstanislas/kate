@@ -79,8 +79,8 @@ namespace Kate.Utils
         private static List<List<MultipleMove>> GetAllFullForceMoves(IMap map, Owner owner)
         {
             List<Tile> myTiles = new List<Tile>();
-            myTiles = map.getPlayerTiles(owner).ToList(); // Get all the tiles with my units
-            int[] gridDim = map.getMapDimension();
+            myTiles = map.GetPlayerTiles(owner).ToList(); // Get all the tiles with my units
+            int[] gridDim = map.GetMapDimension();
 
             var possibleMoves = new List<List<MultipleMove>>();
 
@@ -114,7 +114,7 @@ namespace Kate.Utils
                                 // The null move is not generated
                                 if (!(xPos == tile.X && yPos == tile.Y))
                                 {
-                                    Tile destTile = map.getTile(xPos, yPos);
+                                    Tile destTile = map.GetTile(xPos, yPos);
                                     var move = new MultipleMove(tile, new Dictionary<Tile, int>() { { destTile, tile.Population } });
                                     tileMoves.Add(move);
                                 }
@@ -131,8 +131,8 @@ namespace Kate.Utils
         private static List<List<MultipleMove>> GetAllSplitMoves(IMap map, Owner owner)
         {
             var myTiles = new List<Tile>();
-            myTiles = map.getPlayerTiles(owner).ToList(); // Get all the tiles with our units
-            int[] gridDim = map.getMapDimension();
+            myTiles = map.GetPlayerTiles(owner).ToList(); // Get all the tiles with our units
+            int[] gridDim = map.GetMapDimension();
 
             var possibleMoves = new List<List<MultipleMove>>();
 
@@ -159,8 +159,8 @@ namespace Kate.Utils
                             // Never generate null moves
                             if (!(xPos1 == tile.X && yPos1 == tile.Y) || !(xPos2 == tile.X && yPos2 == tile.Y))
                             {
-                                Tile destTile1 = map.getTile(xPos1, yPos1);
-                                Tile destTile2 = map.getTile(xPos2, yPos2);
+                                Tile destTile1 = map.GetTile(xPos1, yPos1);
+                                Tile destTile2 = map.GetTile(xPos2, yPos2);
 
                                 // Split units in two groups equivalent in number
                                 int pop1 = (int)(tile.Population / 2);

@@ -19,7 +19,7 @@ namespace Kate.Maps
 
         public void execute(IMap target)
         {
-            Tile destTile = new Tile(target.getTile(xCoord, yCoord));
+            Tile destTile = new Tile(target.GetTile(xCoord, yCoord));
       
             if (destTile.Owner.Equals(Owner.Me))
                 myPop = destTile.Population;
@@ -53,7 +53,7 @@ namespace Kate.Maps
                 destTile.Population = 0;
             }
             // The destination Tile processed during the function is then set in the map.
-            target.setTile(destTile);
+            target.SetTile(destTile);
         }
 
         public MapUpdater(int x, int y, int deltaH = 0, int deltaM = 0, int deltaO = 0)

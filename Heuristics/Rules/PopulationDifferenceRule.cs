@@ -11,7 +11,7 @@ namespace Kate.Heuristics.Rules
         {
             int myPopulation = 0;
             int enemyPopulation = 0;
-            foreach (var tile in map.getGrid())
+            foreach (var tile in map.GetGrid())
             {
                 if (tile.Owner == Owner.Me)
                     myPopulation += tile.Population;

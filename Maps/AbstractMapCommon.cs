@@ -16,12 +16,12 @@ namespace Kate.Maps
             return hash;
         }
 
-        public virtual void updateMap(IMapUpdater mapUpdater)
+        public virtual void UpdateMap(IMapUpdater mapUpdater)
         {
             mapUpdater.execute(this);
         }
 
-        public void setTile(Tile newTile)
+        public void SetTile(Tile newTile)
         {
             UpdateTile(newTile);
             UpdateHash(newTile);
@@ -31,10 +31,10 @@ namespace Kate.Maps
         #region abstract
         protected abstract void UpdateTile(Tile newTile);
         protected abstract void UpdateHash(Tile newTile);
-        public abstract IEnumerable<Tile> getGrid();
-        public abstract Tile getTile (int xCoordinate, int yCoordinate);
-        public abstract IEnumerable<Tile> getPlayerTiles(Owner owner);
-        public abstract int[] getMapDimension();
+        public abstract IEnumerable<Tile> GetGrid();
+        public abstract Tile GetTile(int xCoordinate, int yCoordinate);
+        public abstract IEnumerable<Tile> GetPlayerTiles(Owner owner);
+        public abstract int[] GetMapDimension();
         public abstract bool HasGameEnded();
         #endregion
     }
