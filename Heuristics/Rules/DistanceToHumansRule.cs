@@ -20,7 +20,15 @@ namespace Kate.Heuristics.Rules
             }
             var mapDimension = map.GetMapDimension(); 
             int maxPossibleDistance = mapDimension[0] + mapDimension[1];
-            return 1 - 2 * ((float)minDistance) / ((float)maxPossibleDistance);
+
+            if (minDistance.Equals(int.MaxValue))
+            {
+                return 1.0F;
+            }
+            else
+            {
+                return 1.0F - 2.0F * ((float)minDistance) / ((float)maxPossibleDistance);
+            }
         }
 
         private static int getClosestHumanDistance(IMap map, Tile tile)

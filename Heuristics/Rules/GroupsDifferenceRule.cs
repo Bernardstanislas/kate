@@ -18,7 +18,13 @@ namespace Kate.Heuristics.Rules
                     enemyGroups += 1;
             }
 
-            return ((float) (myGroups - enemyGroups)) / ((float) (myGroups + enemyGroups));
+            if ((myGroups + enemyGroups).Equals(0))
+            {
+                return 0;
+            } else {
+                return ((float) (myGroups - enemyGroups)) / ((float) (myGroups + enemyGroups));
+            }
+
         }
     }
 }

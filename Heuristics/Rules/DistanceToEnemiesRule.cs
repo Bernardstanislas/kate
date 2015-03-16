@@ -26,18 +26,25 @@ namespace Kate.Heuristics.Rules
                             int distance = getManhattanDistance(tile, otherTile);
                             if (FightUtil.IsWon(tile.Population, tile.Owner, otherTile.Population, otherTile.Owner))
                             {
-                                score += 1 - ((float)distance) / ((float)maxPossibleDistance);
+                                score += 1.0F - ((float)distance) / ((float)maxPossibleDistance);
                             }
                             else
                             {
-                                score += ((float)distance) / ((float)maxPossibleDistance) - 1;
+                                score += ((float)distance) / ((float)maxPossibleDistance) - 1.0F;
                             } 
                         }
                     }
                 }
             }
 
-            return score / evaluationCount;
+            if (evaluationCount.Equals(0))
+            {
+                return 1;
+            }
+            else
+            {
+                return score / evaluationCount;
+            }
         }
 
         private static int getManhattanDistance(Tile tile1, Tile tile2)
