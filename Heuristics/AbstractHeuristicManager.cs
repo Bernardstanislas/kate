@@ -41,7 +41,6 @@ namespace Kate.Heuristics
                     score += weightedRule.Key.EvaluateScore(map) * weightedRule.Value;
                 return score / weightedRules.TotalWeight;
             };
-            //GetScore = GetScore.Memoize();
         }
     }
 }

@@ -24,23 +24,27 @@ namespace Kate.Maps
             var tilesLength = tiles.Length;
             var multipleMovesByTile = new Move[tilesLength][][];
 
-            for (int firstTileIndex = 0; firstTileIndex < tilesLength; firstTileIndex++) {
+            for (int firstTileIndex = 0; firstTileIndex < tilesLength; firstTileIndex++) 
+            {
                 if (multipleMovesByTile[firstTileIndex] == null)
                     multipleMovesByTile[firstTileIndex] = GenerateMultipleMoves(tiles[firstTileIndex]).ToArray();
 
                 movesLists.AddRange(multipleMovesByTile[firstTileIndex]);
 
-                for (int secondTileIndex = firstTileIndex + 1; secondTileIndex < tiles.Length; secondTileIndex++) {
+                for (int secondTileIndex = firstTileIndex + 1; secondTileIndex < tiles.Length; secondTileIndex++) 
+                {
                     if (multipleMovesByTile[secondTileIndex] == null)
                         multipleMovesByTile[secondTileIndex] = GenerateMultipleMoves(tiles[secondTileIndex]).ToArray();
 
                     var multipleMovesByTilePair = new List<Move[][]>();
-                    for (
+                    for 
+                    (
                         int firstMultipleMoveIndex = 0; 
                         firstMultipleMoveIndex < multipleMovesByTile[firstTileIndex].Length; 
                         firstMultipleMoveIndex++
                     )
-                        for (
+                        for 
+                        (
                             int secondMultipleMoveIndex = 0; 
                             secondMultipleMoveIndex < multipleMovesByTile[secondTileIndex].Length; 
                             secondMultipleMoveIndex++
@@ -48,7 +52,8 @@ namespace Kate.Maps
                             if (AreMultipleMoveCoherent(
                                 multipleMovesByTile[firstTileIndex][firstMultipleMoveIndex], 
                                 multipleMovesByTile[secondTileIndex][secondMultipleMoveIndex]
-                            )) {
+                            )) 
+                            {
                                 var firstLength = multipleMovesByTile[firstTileIndex][firstMultipleMoveIndex].Length;
                                 var mergedMultipleMoves = new Move[
                                     firstLength + multipleMovesByTile[secondTileIndex][secondMultipleMoveIndex].Length
@@ -63,18 +68,22 @@ namespace Kate.Maps
                                 });
                             }
 
-                    for (int thirdTileIndex = secondTileIndex + 1; thirdTileIndex < tiles.Length; thirdTileIndex++) {
+                    for (int thirdTileIndex = secondTileIndex + 1; thirdTileIndex < tiles.Length; thirdTileIndex++) 
+                    {
                         if (multipleMovesByTile[thirdTileIndex] == null)
                             multipleMovesByTile[thirdTileIndex] = GenerateMultipleMoves(tiles[thirdTileIndex]).ToArray();
                             
-                        for (int pairIndex = 0; pairIndex < multipleMovesByTilePair.Count; pairIndex++) {
+                        for (int pairIndex = 0; pairIndex < multipleMovesByTilePair.Count; pairIndex++) 
+                        {
                             var movePair = multipleMovesByTilePair[pairIndex];
 
-                            for (
+                            for
+                            (
                                 int multipleMoveIndex = 0; 
                                 multipleMoveIndex < multipleMovesByTile[thirdTileIndex].Length; 
                                 multipleMoveIndex++
-                            ) {
+                            ) 
+                            {
                                 if (IsMultipleMoveCoherentWithPair(multipleMovesByTile[thirdTileIndex][multipleMoveIndex], movePair)) {
                                     var firstLength = movePair[0].Length;
                                     var secondLength = movePair[1].Length + firstLength;
@@ -113,15 +122,19 @@ namespace Kate.Maps
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static private Boolean AreMultipleMoveCoherent(Move[] firstMultipleMove, Move[] secondMultipleMove) 
         {
-            for (int moveIndex = 0; moveIndex < secondMultipleMove.Length; moveIndex++) {
-                if (
+            for (int moveIndex = 0; moveIndex < secondMultipleMove.Length; moveIndex++) 
+            {
+                if 
+                (
                     secondMultipleMove[moveIndex].Dest.X == firstMultipleMove[0].Origin.X &&
                     secondMultipleMove[moveIndex].Dest.Y == firstMultipleMove[0].Origin.Y
                 ) 
                     return false;
             }
-            for (int moveIndex = 0; moveIndex < firstMultipleMove.Length; moveIndex++) {
-                if (
+            for (int moveIndex = 0; moveIndex < firstMultipleMove.Length; moveIndex++) 
+            {
+                if
+                (
                     firstMultipleMove[moveIndex].Dest.X == secondMultipleMove[0].Origin.X &&
                     firstMultipleMove[moveIndex].Dest.Y == secondMultipleMove[0].Origin.Y
                 ) 
@@ -137,7 +150,8 @@ namespace Kate.Maps
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         static private Boolean IsMultipleMoveCoherentWithPair(Move[] multipleMove, Move[][] multipleMovePair)
         {
-            return (
+            return 
+            (
                 AreMultipleMoveCoherent(multipleMove, multipleMovePair[0]) && 
                 AreMultipleMoveCoherent(multipleMove, multipleMovePair[1])
             );
