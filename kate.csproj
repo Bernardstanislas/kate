@@ -52,7 +52,6 @@
     <Compile Include="Commands\DeclareName.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\Move.cs" />
-    <Compile Include="Heuristics\AbstractHeuristicManager.cs" />
     <Compile Include="Heuristics\HeuristicManager.cs" />
     <Compile Include="Heuristics\Rules\DistanceToEnemiesRule.cs" />
     <Compile Include="Heuristics\Rules\DistanceToHumansRule.cs" />

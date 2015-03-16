@@ -8,8 +8,12 @@ using Kate.Utils;
 
 namespace Kate.Heuristics
 {
-    public sealed class HeuristicManager : AbstractHeuristicManager
+    public sealed class HeuristicManager 
     {
+        public Func<IMap, float> GetScore { get; private set; }
+
+        private HeuristicDictionary weightedRules;
+
         private static readonly Lazy<HeuristicManager> lazy = new Lazy<HeuristicManager>(() => new HeuristicManager());
         public static HeuristicManager Instance { get { return lazy.Value; } }
         private HeuristicManager()
@@ -22,7 +26,28 @@ namespace Kate.Heuristics
                 {new PopulationDifferenceRule(), 1},
             });
 
-            createGetScore();
+            GetScore = (IMap map) =>
+            {
+                float score = 0;
+                foreach (var weightedRule in weightedRules)
+                    score += weightedRule.Key.EvaluateScore(map) * weightedRule.Value;
+                return score / weightedRules.TotalWeight;
+            };
+        }
+    }
+
+    public class HeuristicDictionary : Dictionary<IScoringRule, int>
+    {
+        public int TotalWeight { get; private set; }
+
+        public HeuristicDictionary(Dictionary<IScoringRule, int> weightedRules)
+        {
+            TotalWeight = 0;
+            foreach (var weightedRule in weightedRules)
+            {
+                Add(weightedRule.Key, weightedRule.Value);
+                TotalWeight += weightedRule.Value;
+            }
         }
     }
 }
