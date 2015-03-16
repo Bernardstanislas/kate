@@ -100,6 +100,8 @@ namespace Kate.Maps
                     }
                 }
             }
+            Utils.MoveUtils.PrintMove (movesLists);
+            Utils.MoveUtils.PrintListStats (movesLists);
             return movesLists;
         }
 
@@ -144,6 +146,7 @@ namespace Kate.Maps
             {
                 var humanDirection = getMissionDirection(tile, humanTile);
                 humanTargetDirections.Add(humanDirection);
+                targetDirections.Add (humanDirection);
             }
                 
 
