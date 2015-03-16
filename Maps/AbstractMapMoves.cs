@@ -161,17 +161,18 @@ namespace Kate.Maps
         // Return all possible moves where all the units from a tile move towards an other tile
         private List<List<Move>> GetMissionMoves(Tile tile)
         {
+            // Find enemy tiles
             var opponentTiles = new List<Tile>();
             Owner opponent = tile.Owner.Opposite();
-
             opponentTiles = this.GetPlayerTiles(opponent).ToList();
 
+            // Find human tiles
             var humanTiles = new List<Tile>();
             humanTiles = GetPlayerTiles(Kate.Types.Owner.Humans).ToList();
 
             var possibleMoves = new List<List<Move>>();
 
-            var tileMoves = new List<Move>();
+            // Find directions for both rush to ennemies and humans, and fleeing from enemies
             var targetDirections = new HashSet<Direction>();
 
             foreach (var opponentTile in opponentTiles)
@@ -185,64 +186,61 @@ namespace Kate.Maps
                 targetDirections.Add (MoveGenerator.GetMissionDirection (tile, humanTile));
             }
 
+
+            // Iterate over surrounding tile, check compatibility with 
             var surroundinTiles = GetSurroundingTiles (tile);
+            int splitCount = 0;
+            var splitDestTiles = new List<Tile> ();
 
-            foreach (var surroundingTile in surroundinTiles)
+            foreach (var targetDirection in targetDirections)
             {
-                var currentDirection = MoveGenerator.GetMissionDirection(tile, surroundingTile);
+                // Generate fullForce moves
+                var fullForceMoves = new List<Move>();
+                int[] coords = Direction.GetTileCoordinates (targetDirection, tile);
+                var surroundingTile = GetTile(coords [0], coords [1]);
 
-                if (targetDirections.Contains(targetDirections))
-                    tileMoves.Add (new Move{tile, surroundingTile, tile.Population});
+                fullForceMoves.Add (new Move { tile, surroundingTile, tile.Population });
+                possibleMoves.Add(fullForceMoves);
 
-                possibleMoves.Add(tileMoves);
-            }
-            return possibleMoves;
-        }
-
-        // Generate split moves in only North-South and Est-West direction for each tile
-        private List<List<Move>> GetHumanTargetedSplitMoves(Tile tile)
-        {
-            var humanTiles = new List<Tile>();
-            humanTiles = GetPlayerTiles(Kate.Types.Owner.Humans).ToList();
-
-            var possibleMoves = new List<List<Move>>();
-
-
-            var targetDirections = new HashSet<Direction>();
-            foreach (var humanTile in humanTiles)
-            {
-                targetDirections.Add (MoveGenerator.GetMissionDirection (tile, humanTile));
-            }
-
-            var tileMoves = new List<Move>();
-
-            var surroundinTiles = GetSurroundingTiles (tile);
-            var destTiles = new List<Tile>();
-
-            foreach (var surroundingTile in surroundinTiles)
-            {
-                var currentDirection = MoveGenerator.GetMissionDirection(tile, surroundingTile);
+                // Store tiles that are candidates to split moves
+                if (splitCount < 4)
                 {
-                    if (surroundingTile.X == targetDirections [i] [0] && surroundingTile.Y == targetDirections [i] [1]) {
-
-                        destTiles.Add (surroundingTile);
-                        break;
-                    }
+                    splitDestTiles.Add (surroundingTile);
+                    splitCount++;
                 }
+            }
 
+            // Split haves multiples destination tiles
+            if (splitDestTiles.Count > 1)
+            {
+                // Create two cases: either we want to split in two groups, either in three groups.
                 int totalPop = tile.Population;
-                int pop = (int)(Math.Floor((double)(tile.Population / destTiles.Count)));
-                var dictDestTile = new Dictionary<Tile, int> ();
-                foreach (var destTile in destTiles)
-                {
-                    dictDestTile.Add(destTile, pop);
-                }
-                //tileMoves.Add(new MultipleMove(tile, dictDestTile));
-            }
-            possibleMoves.Add(tileMoves);
+                int totalPopDividedBy2 = (int)(Math.Floor ((double)(tile.Population / 2)));
+                int totalPopDividedBy3 = (int)(Math.Floor ((double)(tile.Population / 3)));
 
+                var pop2 = new int[] {totalPopDividedBy2, totalPop - totalPopDividedBy2};
+                var pop3 = new int[] {totalPopDividedBy3, totalPopDividedBy3, totalPop - 2 * totalPopDividedBy3};
+
+                // Generate splits in two groups
+                var split2Moves = new List<Move>();
+                for (int i = 0; i < 2; i++)
+                {
+                    split2Moves.Add (tile, splitDestTiles[i], pop2[i]);
+                }
+                possibleMoves.Add (split2Moves);
+
+                // Generate splits in 3 groups
+                if (splitDestTiles.Count > 2)
+                {
+                    var split3Moves = new List<Move> ();
+                    for (int i = 0; i < 3; i++)
+                    {
+                        split3Moves.Add (tile, splitDestTiles[i], pop3[i]);
+                    }
+                    possibleMoves.Add(split3Moves);
+                }
+            }
             return possibleMoves;
         }
-
     }
 }
