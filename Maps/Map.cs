@@ -39,6 +39,19 @@ namespace Kate.Maps
             hashArray = map.HashArray;
         }
 
+        public Tuple<Types.Direction, int>[] GetDistances(Owner owner, Owner target)
+        {
+
+
+
+        }
+
+        private void GenerateDistances()
+        {
+
+
+        }
+
         public override bool HasGameEnded()
         {
             int meCount = 0;

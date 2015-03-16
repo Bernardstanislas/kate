@@ -12,11 +12,6 @@ namespace Kate.Maps
         public int Y { get; private set; }
         public Owner Owner { get; set; }
         public int Population { get; set; }
-
-        public override int GetHashCode()
-        {
-            return hash;
-        }
         #endregion
 
         #region Private attributes
@@ -34,8 +29,6 @@ namespace Kate.Maps
             Y = y;
             Owner = owner;
             Population = population;
-
-            hash = int(owner) + population * 10 + x * 10000 + y * 10000000;
         }
 
         public Tile(Tile oT) : this(oT.X, oT.Y, oT.Owner,oT.Population) { }

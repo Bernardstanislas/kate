@@ -17,5 +17,6 @@ namespace Kate.Maps
         IEnumerable<Tile> GetSurroundingTiles(Tile tile);
         bool HasGameEnded();
         List<Move[]> GenerateMovesLists(Owner owner);
+        Tuple<Types.Direction, int>[] GetDistances(Owner owner, Owner target);
     }
 }
