@@ -130,9 +130,7 @@ namespace Kate.Maps
 
             foreach (var humanTile in humanTiles)
                 targetDirections.Add(getMissionDirection(tile, humanTile));
-
-            // Iterate over surrounding tile, check compatibility with 
-            var surroundingTiles = GetSurroundingTiles(tile);
+                
             int splitCount = 0;
             var splitDestTiles = new List<Tile>();
 
