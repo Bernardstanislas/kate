@@ -42,14 +42,14 @@ namespace Kate.Bots
                 var task = new Task(() =>
                 {
                     var alpha = float.MinValue;
-                    var beta = float.MaxValue;
-
                     foreach (var child in childNodes)
                     {
-                        alpha = Math.Max(alpha, alphaBeta(child, depth - 1, alpha, beta, Owner.Opponent));
-                        bestNode = child;
-                        if (beta < alpha)
-                            break;
+                        var newAlpha = alphaBeta(child, depth - 1, alpha, float.MaxValue, Owner.Opponent);
+                        if (newAlpha > alpha)
+                        {
+                            alpha = newAlpha;
+                            bestNode = child;
+                        }
                     }
                 });
                 task.Start();

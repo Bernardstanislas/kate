@@ -23,7 +23,7 @@ namespace Kate.Heuristics
                 {new DistanceToEnemiesRule(), 1},
                 {new DistanceToHumansRule(), 1},
                 {new GroupsDifferenceRule(), 1},
-                {new PopulationDifferenceRule(), 1},
+                {new PopulationDifferenceRule(), 1}
             });
 
             GetScore = (IMap map) =>
