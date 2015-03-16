@@ -1,37 +1,14 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Collections;
+
 using Kate.Commands;
 using Kate.Maps;
 using Kate.Types;
 
 namespace Kate.Utils
 {
-    public static class MoveGenerator
+    public static class MoveUtils
     {
-        // Return a list with the coordinates of the surrounding tile of the origin tile that is in the direction of targetTile
-        public static Direction GetMissionDirection(Tile originTile, Tile targetTile)
-        {
-            int xPos = 0;
-            int yPos = 0;
-            if (targetTile.X > originTile.X) {
-                xPos = 1;
-            }
-            else if (targetTile.X < originTile.X) {
-                xPos = - 1;
-            }
-
-            if (targetTile.Y > originTile.Y) {
-                yPos = 1;
-            }
-            else if (targetTile.Y < originTile.Y) {
-                yPos = - 1;
-            }
-            return Directions.Get(xPos, yPos);
-        }
-
-
         public static void PrintMove(List<List<Move>> moveListList)
         {
             foreach (List<Move> moveList in moveListList)

@@ -77,9 +77,8 @@
     <Compile Include="Types\Side.cs" />
     <Compile Include="Utils\Extensions.cs" />
     <Compile Include="Utils\FightUtil.cs" />
-    <Compile Include="Utils\MapUpdaterFactory.cs" />
-    <Compile Include="Utils\MoveGenerator.cs" />
-    <Compile Include="Utils\MultipleMove.cs" />
+    <Compile Include="Maps\MapUpdaterFactory.cs" />
+    <Compile Include="Utils\MoveUtils.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

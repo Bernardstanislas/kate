@@ -2,20 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Kate.Utils;
-using Kate.Types;
-using Kate.Commands;
 
-/**
- * Convention: a MultipleMove is a list of moves with the same origin
- */
+using Kate.Commands;
+using Kate.Types;
+using Kate.Utils;
+
+// Convention: a MultipleMove is a list of moves with the same origin
+
 namespace Kate.Maps
 {
     public abstract partial class AbstractMap : IMap
     {
-        /**
-         * Generate all the moves associated with an owner
-         */
         public List<Move[]> GenerateMovesLists(Owner owner)
         {
             var movesLists = new List<Move[]>();
@@ -103,24 +100,17 @@ namespace Kate.Maps
                     }
                 }
             }
-
             return movesLists;
         }
 
-        /**
-         * Generate MultipleMoves associated with a tile
-         */
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         private List<Move[]> GenerateMultipleMoves(Tile tile) 
         {
             return new List<Move[]>();
         }
 
-        /**
-         * Check if the MultipleMoves are coherent (origin different from target)
-         */
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static private Boolean AreMultipleMoveCoherent(Move[] firstMultipleMove, Move[] secondMultipleMove) 
+        static private bool AreMultipleMoveCoherent(Move[] firstMultipleMove, Move[] secondMultipleMove) 
         {
             for (int moveIndex = 0; moveIndex < secondMultipleMove.Length; moveIndex++) 
             {
@@ -144,11 +134,8 @@ namespace Kate.Maps
             return true;
         }
 
-        /**
-         * Check if the MultipleMove is coherent with a pair 
-         */
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        static private Boolean IsMultipleMoveCoherentWithPair(Move[] multipleMove, Move[][] multipleMovePair)
+        static private bool IsMultipleMoveCoherentWithPair(Move[] multipleMove, Move[][] multipleMovePair)
         {
             return 
             (
@@ -177,20 +164,19 @@ namespace Kate.Maps
 
             foreach (var opponentTile in opponentTiles)
             {
-                var direction = MoveGenerator.GetMissionDirection (tile, opponentTile);
+                var direction = getMissionDirection (tile, opponentTile);
                 targetDirections.Add(direction);
                 targetDirections.Add (direction.Opposite());
             }
             foreach (var humanTile in humanTiles)
             {
-                targetDirections.Add (MoveGenerator.GetMissionDirection (tile, humanTile));
+                targetDirections.Add(getMissionDirection(tile, humanTile));
             }
 
-
             // Iterate over surrounding tile, check compatibility with 
-            var surroundinTiles = GetSurroundingTiles (tile);
+            var surroundinTiles = GetSurroundingTiles(tile);
             int splitCount = 0;
-            var splitDestTiles = new List<Tile> ();
+            var splitDestTiles = new List<Tile>();
 
             foreach (var targetDirection in targetDirections)
             {
@@ -215,11 +201,11 @@ namespace Kate.Maps
             {
                 // Create two cases: either we want to split in two groups, either in three groups.
                 int totalPop = tile.Population;
-                int totalPopDividedBy2 = (int)(Math.Floor ((double)(tile.Population / 2)));
-                int totalPopDividedBy3 = (int)(Math.Floor ((double)(tile.Population / 3)));
+                int totalPopDividedBy2 = (int)(Math.Floor((double)(tile.Population / 2)));
+                int totalPopDividedBy3 = (int)(Math.Floor((double)(tile.Population / 3)));
 
-                var pop2 = new int[] {totalPopDividedBy2, totalPop - totalPopDividedBy2};
-                var pop3 = new int[] {totalPopDividedBy3, totalPopDividedBy3, totalPop - 2 * totalPopDividedBy3};
+                var pop2 = new int[] { totalPopDividedBy2, totalPop - totalPopDividedBy2 };
+                var pop3 = new int[] { totalPopDividedBy3, totalPopDividedBy3, totalPop - 2 * totalPopDividedBy3 };
 
                 // Generate splits in two groups
                 var split2Moves = new List<Move>();
@@ -241,6 +227,25 @@ namespace Kate.Maps
                 }
             }
             return possibleMoves;
+        }
+
+        // Return a list with the coordinates of the surrounding tile of the origin tile that is in the direction of targetTile
+        private Direction getMissionDirection(Tile originTile, Tile targetTile)
+        {
+            int xPos = 0;
+            int yPos = 0;
+
+            if (targetTile.X > originTile.X)
+                xPos = 1;
+            else if (targetTile.X < originTile.X)
+                xPos = -1;
+
+            if (targetTile.Y > originTile.Y)
+                yPos = 1;
+            else if (targetTile.Y < originTile.Y)
+                yPos = -1;
+
+            return Directions.Get(xPos, yPos);
         }
     }
 }

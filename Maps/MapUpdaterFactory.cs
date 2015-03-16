@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 
 using Kate.Commands;
-using Kate.Maps;
+using Kate.Utils;
 using Kate.Types;
 
-namespace Kate.Utils
+namespace Kate.Maps
 {
     public static class MapUpdaterFactory
     {
         // This method will create MapUpdaters from a list of moves
-        public static List<MapUpdater> Generate(List<Move> moves)
+        public static List<MapUpdater> Generate(Move[] moves)
         {
             var SameDestMoves = new Dictionary<Tile, List<Move>>();
 
