@@ -152,17 +152,18 @@ namespace Kate.Maps
 
             // Generate split moves
             int splitCount = 0;
-            foreach (var humanDirection in humanTargetDirections)
+            if (humanTargetDirections.Count > 1)
             {
-                var coords = Directions.GetTileCoordinates(humanDirection, tile);
-                // Store tiles that are candidates to split moves
+                foreach (var humanDirection in humanTargetDirections) {
+                    var coords = Directions.GetTileCoordinates (humanDirection, tile);
+                    // Store tiles that are candidates to split moves
 
-                if (coords[0] < mapDimension[0] && coords[0] >= 0 && coords[1] < mapDimension[1] && coords[1] >= 0)
-                if (splitCount < 4)
-                {
-                    var surroundingHumanTile = GetTile(coords[0], coords[1]);
-                    splitDestTiles.Add(surroundingHumanTile);
-                    splitCount++;
+                    if (coords [0] < mapDimension [0] && coords [0] >= 0 && coords [1] < mapDimension [1] && coords [1] >= 0)
+                    if (splitCount < 4) {
+                        var surroundingHumanTile = GetTile (coords [0], coords [1]);
+                        splitDestTiles.Add (surroundingHumanTile);
+                        splitCount++;
+                    }
                 }
             }
 
