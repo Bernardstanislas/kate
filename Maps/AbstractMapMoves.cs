@@ -196,10 +196,10 @@ namespace Kate.Maps
             {
                 // Generate fullForce moves
                 var fullForceMoves = new List<Move>();
-                int[] coords = Direction.GetTileCoordinates (targetDirection, tile);
+                int[] coords = Directions.GetTileCoordinates (targetDirection, tile);
                 var surroundingTile = GetTile(coords [0], coords [1]);
 
-                fullForceMoves.Add (new Move { tile, surroundingTile, tile.Population });
+                fullForceMoves.Add (new Move(tile, surroundingTile, tile.Population));
                 possibleMoves.Add(fullForceMoves);
 
                 // Store tiles that are candidates to split moves
@@ -225,7 +225,7 @@ namespace Kate.Maps
                 var split2Moves = new List<Move>();
                 for (int i = 0; i < 2; i++)
                 {
-                    split2Moves.Add (tile, splitDestTiles[i], pop2[i]);
+                    split2Moves.Add (new Move(tile, splitDestTiles[i], pop2[i]));
                 }
                 possibleMoves.Add (split2Moves);
 
@@ -235,7 +235,7 @@ namespace Kate.Maps
                     var split3Moves = new List<Move> ();
                     for (int i = 0; i < 3; i++)
                     {
-                        split3Moves.Add (tile, splitDestTiles[i], pop3[i]);
+                        split3Moves.Add (new Move(tile, splitDestTiles[i], pop3[i]));
                     }
                     possibleMoves.Add(split3Moves);
                 }
