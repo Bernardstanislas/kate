@@ -18,14 +18,13 @@ namespace Kate.Bots
         public IEnumerable<int> EnemyChildrenHashes { get; private set; }
 
         public TreeNode(IMap value) : this(value, new List<Move>()) { }
-        public TreeNode(IMap value, List<Move> moveList) : this(value, moveList, new List<int>(), new List<int>()) { }
-        public TreeNode(IMap value, List<Move> moveList, IEnumerable<int> myChildrenHashes, IEnumerable<int> enemyChildrenHashes)
+        public TreeNode(IMap value, List<Move> moveList)
         {
             Map = value;
             Heuristic = HeuristicManager.Instance.GetScore(Map);
             MoveList = moveList;
-            MyChildrenHashes = myChildrenHashes;
-            EnemyChildrenHashes = enemyChildrenHashes;
+            MyChildrenHashes = new List<int>();
+            EnemyChildrenHashes = new List<int>();
         }
         
         public IEnumerable<int> GetChildrenHashes(Owner player)

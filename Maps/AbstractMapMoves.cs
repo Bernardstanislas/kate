@@ -100,8 +100,6 @@ namespace Kate.Maps
                     }
                 }
             }
-            Utils.MoveUtils.PrintMove (movesLists);
-            Utils.MoveUtils.PrintListStats (movesLists);
             return movesLists;
         }
 

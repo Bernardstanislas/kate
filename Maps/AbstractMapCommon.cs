@@ -23,8 +23,8 @@ namespace Kate.Maps
 
         public void SetTile(Tile newTile)
         {
-            UpdateTile(newTile);
             UpdateHash(newTile);
+            UpdateTile(newTile);
         }
         #endregion
 
