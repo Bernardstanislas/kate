@@ -36,12 +36,12 @@ namespace Kate.Bots
                 return EnemyChildrenHashes;
         }
 
-        public static TreeNode NewNodeWithChildren(TreeNode node, IEnumerable<int> childrenHashes, Owner player)
+        public void AddChildren(IEnumerable<int> childrenHashes, Owner player)
         {
             if(player == Owner.Me)
-                return new TreeNode(node.Map, node.MoveList, childrenHashes, node.EnemyChildrenHashes);
+                MyChildrenHashes = childrenHashes;
             else
-                return new TreeNode(node.Map, node.MoveList, node.MyChildrenHashes, childrenHashes);
+                EnemyChildrenHashes = childrenHashes;
         }
 
         public override int GetHashCode()

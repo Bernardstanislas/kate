@@ -42,10 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bots\Bot.cs" />
-    <Compile Include="Bots\AlphaBetaBot.cs" />
     <Compile Include="Bots\TreeNode.cs" />
     <Compile Include="Bots\RandomBot.cs" />
-    <Compile Include="Bots\MinMaxBot.cs" />
+    <Compile Include="Bots\AlphaBetaBot.cs" />
     <Compile Include="Bots\Workers\AbstractWorker.cs" />
     <Compile Include="Bots\Workers\DefaultWorker.cs" />
     <Compile Include="Bots\Workers\IWorker.cs" />

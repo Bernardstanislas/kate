@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Kate.Bots;
+using Kate.Bots.Workers;
 using Kate.IO;
 using Kate.Maps;
 using Kate.Types;
@@ -45,7 +46,7 @@ namespace kate
             }
 
             Console.WriteLine("KATE has started");
-            var bot = new AlphaBetaBot(client, "KATE", 1950);
+            var bot = new AlphaBetaBot(client, "KATE", Worker.DefaultWorker, 1950);
             bot.Start();
             Console.ReadKey();
         }
