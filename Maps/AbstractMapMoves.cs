@@ -122,11 +122,22 @@ namespace Kate.Maps
             var targetDirections = new HashSet<Direction>();
             var humanTargetDirections = new HashSet<Direction>();
 
+            var mapDimension = GetMapDimension();
+
             foreach (var opponentTile in opponentTiles)
             {
                 var direction = getMissionDirection(tile, opponentTile);
                 targetDirections.Add(direction);
-                targetDirections.Add(direction.Opposite());
+
+                if (tile.X == mapDimension [0] || tile.Y == mapDimension [1])
+                {
+                    targetDirections.Add (Direction.E);
+                    targetDirections.Add (Direction.W);
+                    targetDirections.Add (Direction.N);
+                    targetDirections.Add (Direction.S);
+                }
+                else
+                    targetDirections.Add(direction.Opposite());
             }
 
             foreach (var humanTile in humanTiles)
@@ -137,7 +148,7 @@ namespace Kate.Maps
                 
 
             var splitDestTiles = new List<Tile>();
-            var mapDimension = GetMapDimension();
+
 
             // Generate fullForce moves
             foreach (var targetDirection in targetDirections)
