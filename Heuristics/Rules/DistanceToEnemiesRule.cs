@@ -10,7 +10,7 @@ namespace Kate.Heuristics.Rules
         public float EvaluateScore(IMap map)
         {
             var mapDimension = map.GetMapDimension();
-            int maxPossibleDistance = mapDimension[0] + mapDimension[1];
+            float maxPossibleDistance = mapDimension[0] + mapDimension[1];
             int evaluationCount = 0;
             float score = 0;
 
@@ -23,7 +23,7 @@ namespace Kate.Heuristics.Rules
                         if (otherTile.Owner.Equals(Owner.Opponent))
                         {
                             evaluationCount++;
-                            int distance = getManhattanDistance(tile, otherTile);
+                            float distance = getLTwoDistance(tile, otherTile);
                             if (FightUtil.IsWon(tile.Population, tile.Owner, otherTile.Population, otherTile.Owner))
                             {
                                 score += 1.0F - ((float)distance) / ((float)maxPossibleDistance);
@@ -47,9 +47,9 @@ namespace Kate.Heuristics.Rules
             }
         }
 
-        private static int getManhattanDistance(Tile tile1, Tile tile2)
+        private static float getLTwoDistance(Tile tile1, Tile tile2)
         {
-            return Math.Abs(tile1.X - tile2.X) + Math.Abs(tile1.Y - tile2.Y);
+            return (float) Math.Sqrt ((tile1.X - tile2.X) * (tile1.X - tile2.X) + (tile1.Y - tile2.Y) * (tile1.Y - tile2.Y));
         }
     }
 }
