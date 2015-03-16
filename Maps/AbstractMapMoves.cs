@@ -120,6 +120,7 @@ namespace Kate.Maps
 
             // Find directions for both rush to ennemies and humans, and fleeing from enemies
             var targetDirections = new HashSet<Direction>();
+            var humanTargetDirections = new HashSet<Direction>();
 
             foreach (var opponentTile in opponentTiles)
             {
@@ -129,28 +130,39 @@ namespace Kate.Maps
             }
 
             foreach (var humanTile in humanTiles)
-                targetDirections.Add(getMissionDirection(tile, humanTile));
+            {
+                var humanDirection = getMissionDirection(tile, humanTile);
+                humanTargetDirections.Add(humanDirection);
+            }
                 
-            int splitCount = 0;
-            var splitDestTiles = new List<Tile>();
 
+            var splitDestTiles = new List<Tile>();
+            var mapDimension = GetMapDimension();
+
+            // Generate fullForce moves
             foreach (var targetDirection in targetDirections)
             {
-                // Generate fullForce moves
                 var coords = Directions.GetTileCoordinates(targetDirection, tile);
-                var mapDimension = GetMapDimension();
                 if (coords[0] < mapDimension[0] && coords[0] >= 0 && coords[1] < mapDimension[1] && coords[1] >= 0)
                 {
                     var surroundingTile = GetTile(coords[0], coords[1]);
-
                     possibleMoves.Add(new Move[1] { new Move(tile, surroundingTile, tile.Population) });
+                }
+            }
 
-                    // Store tiles that are candidates to split moves
-                    if (splitCount < 4)
-                    {
-                        splitDestTiles.Add(surroundingTile);
-                        splitCount++;
-                    }
+            // Generate split moves
+            int splitCount = 0;
+            foreach (var humanDirection in humanTargetDirections)
+            {
+                var coords = Directions.GetTileCoordinates(humanDirection, tile);
+                // Store tiles that are candidates to split moves
+
+                if (coords[0] < mapDimension[0] && coords[0] >= 0 && coords[1] < mapDimension[1] && coords[1] >= 0)
+                if (splitCount < 4)
+                {
+                    var surroundingHumanTile = GetTile(coords[0], coords[1]);
+                    splitDestTiles.Add(surroundingHumanTile);
+                    splitCount++;
                 }
             }
 
