@@ -9,9 +9,9 @@ namespace Kate.Utils
 {
     public static class MoveUtils
     {
-        public static void PrintMove(List<List<Move>> moveListList)
+        public static void PrintMove(List<Move[]> moveListList)
         {
-            foreach (List<Move> moveList in moveListList)
+            foreach (Move[] moveList in moveListList)
             {
                 foreach (Move element in moveList)
                     Console.WriteLine ("Or: " + element.Origin.X + element.Origin.Y + " pop :" + element.PopToMove + " Dest: " + element.Dest.X + element.Dest.Y);
@@ -20,7 +20,7 @@ namespace Kate.Utils
             }
         }
 
-        public static void PrintListStats(List<List<Move>> moveListList)
+        public static void PrintListStats(List<Move[]> moveListList)
         {
             var count1 = 0;
             var count2 = 0;
@@ -28,22 +28,22 @@ namespace Kate.Utils
             var count4 = 0;
             var countElse = 0;
 
-            foreach (List<Move> moveList in moveListList)
+            foreach (Move[] moveList in moveListList)
                 foreach (Move element in moveList) 
                 {
-                    if (moveList.Count == 1)
+                    if (moveList.Length == 1)
                         count1++;
 
-                    if (moveList.Count == 2)
+                    if (moveList.Length == 2)
                         count2++;
 
-                    if (moveList.Count == 3)
+                    if (moveList.Length == 3)
                         count3++;
 
-                    if (moveList.Count == 4)
+                    if (moveList.Length == 4)
                         count4++;
 
-                    if (moveList.Count > 4)
+                    if (moveList.Length > 4)
                         countElse++;
                 }
 
