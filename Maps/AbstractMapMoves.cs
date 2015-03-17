@@ -21,35 +21,35 @@ namespace Kate.Maps
             var tilesLength = tiles.Length;
             var multipleMovesByTile = new Move[tilesLength][][];
 
-            for (int firstTileIndex = 0; firstTileIndex < tilesLength; firstTileIndex++) 
+            for (int firstTileIndex = 0; firstTileIndex < tilesLength; firstTileIndex++)
             {
                 if (multipleMovesByTile[firstTileIndex] == null)
                     multipleMovesByTile[firstTileIndex] = GenerateMultipleMoves(tiles[firstTileIndex]).ToArray();
 
                 movesLists.AddRange(multipleMovesByTile[firstTileIndex]);
 
-                for (int secondTileIndex = firstTileIndex + 1; secondTileIndex < tiles.Length; secondTileIndex++) 
+                for (int secondTileIndex = firstTileIndex + 1; secondTileIndex < tiles.Length; secondTileIndex++)
                 {
                     if (multipleMovesByTile[secondTileIndex] == null)
                         multipleMovesByTile[secondTileIndex] = GenerateMultipleMoves(tiles[secondTileIndex]).ToArray();
 
                     var multipleMovesByTilePair = new List<Move[][]>();
-                    for 
+                    for
                     (
-                        int firstMultipleMoveIndex = 0; 
-                        firstMultipleMoveIndex < multipleMovesByTile[firstTileIndex].Length; 
+                        int firstMultipleMoveIndex = 0;
+                        firstMultipleMoveIndex < multipleMovesByTile[firstTileIndex].Length;
                         firstMultipleMoveIndex++
                     )
-                        for 
+                        for
                         (
-                            int secondMultipleMoveIndex = 0; 
-                            secondMultipleMoveIndex < multipleMovesByTile[secondTileIndex].Length; 
+                            int secondMultipleMoveIndex = 0;
+                            secondMultipleMoveIndex < multipleMovesByTile[secondTileIndex].Length;
                             secondMultipleMoveIndex++
                         )
                             if (AreMultipleMoveCoherent(
-                                multipleMovesByTile[firstTileIndex][firstMultipleMoveIndex], 
+                                multipleMovesByTile[firstTileIndex][firstMultipleMoveIndex],
                                 multipleMovesByTile[secondTileIndex][secondMultipleMoveIndex]
-                            )) 
+                            ))
                             {
                                 var firstLength = multipleMovesByTile[firstTileIndex][firstMultipleMoveIndex].Length;
                                 var mergedMultipleMoves = new Move[
@@ -65,30 +65,31 @@ namespace Kate.Maps
                                 });
                             }
 
-                    for (int thirdTileIndex = secondTileIndex + 1; thirdTileIndex < tiles.Length; thirdTileIndex++) 
+                    for (int thirdTileIndex = secondTileIndex + 1; thirdTileIndex < tiles.Length; thirdTileIndex++)
                     {
                         if (multipleMovesByTile[thirdTileIndex] == null)
                             multipleMovesByTile[thirdTileIndex] = GenerateMultipleMoves(tiles[thirdTileIndex]).ToArray();
-                            
-                        for (int pairIndex = 0; pairIndex < multipleMovesByTilePair.Count; pairIndex++) 
+
+                        for (int pairIndex = 0; pairIndex < multipleMovesByTilePair.Count; pairIndex++)
                         {
                             var movePair = multipleMovesByTilePair[pairIndex];
 
                             for
                             (
-                                int multipleMoveIndex = 0; 
-                                multipleMoveIndex < multipleMovesByTile[thirdTileIndex].Length; 
+                                int multipleMoveIndex = 0;
+                                multipleMoveIndex < multipleMovesByTile[thirdTileIndex].Length;
                                 multipleMoveIndex++
-                            ) 
+                            )
                             {
-                                if (IsMultipleMoveCoherentWithPair(multipleMovesByTile[thirdTileIndex][multipleMoveIndex], movePair)) {
+                                if (IsMultipleMoveCoherentWithPair(multipleMovesByTile[thirdTileIndex][multipleMoveIndex], movePair))
+                                {
                                     var firstLength = movePair[0].Length;
                                     var secondLength = movePair[1].Length + firstLength;
 
                                     var mergedMultipleMoves = new Move[
                                         secondLength + multipleMovesByTile[thirdTileIndex][multipleMoveIndex].Length
                                     ];
-                                        
+
                                     movePair[0].CopyTo(mergedMultipleMoves, 0);
                                     movePair[1].CopyTo(mergedMultipleMoves, firstLength);
                                     multipleMovesByTile[thirdTileIndex][multipleMoveIndex].CopyTo(mergedMultipleMoves, secondLength);
@@ -100,10 +101,6 @@ namespace Kate.Maps
                     }
                 }
             }
-
-            Utils.MoveUtils.PrintListStats(movesLists);
-            Utils.MoveUtils.PrintMove(movesLists);
-
             return movesLists;
         }
 
