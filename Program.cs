@@ -15,13 +15,10 @@ namespace kate
             string ipAddress = "";
             int port = 0;
 
-            foreach (var arg in args)
+            if (args.Length == 2)
             {
-                var content = arg.Split('=');
-                if (content[0] == "-ip")
-                    ipAddress = content[1];
-                else if (content[0] == "-port")
-                    port = Convert.ToInt32(content[1]);
+                ipAddress = args[0];
+                port = Convert.ToInt32(args[1]);
             }
 
             IClient client;
@@ -44,7 +41,7 @@ namespace kate
             }
 
             Console.WriteLine("KATE has started");
-            var bot = new AlphaBetaBot(client, "KATE", 1950);
+            var bot = new AlphaBetaBot(client, "kate", 2900);
             bot.Start();
             Console.ReadKey();
         }

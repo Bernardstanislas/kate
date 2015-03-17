@@ -12,10 +12,10 @@ namespace Kate.Heuristics
     {
         private static HeuristicDictionary weightedRules = new HeuristicDictionary(new Dictionary<IScoringRule, int> 
         {
-            {new DistanceToEnemiesRule(), 12},
-            {new DistanceToHumansRule(), 3},
-            {new GroupsDifferenceRule(), 2},
-            {new PopulationDifferenceRule(), 8}
+            {new DistanceToEnemiesRule(), 1},
+            {new DistanceToHumansRule(), 5},
+            {new GroupsDifferenceRule(), 8},
+            {new PopulationDifferenceRule(), 30}
         });
 
         public static float GetScore(IMap map)
