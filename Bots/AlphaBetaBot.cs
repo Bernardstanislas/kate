@@ -31,7 +31,10 @@ namespace Kate.Bots
 
             var childNodesWithMoveList = getChildNodeHashesWithMoveList(map.GetHashCode(), Owner.Me);
 
-            var bestMoveList = new List<Move>();
+            // If we don't have the time to compute anything, we'll return a random moveList.
+            var random = new Random();
+            var CNWMLList = childNodesWithMoveList.ToList();
+            var bestMoveList = CNWMLList[random.Next(CNWMLList.Count)].Item2;
 
             int depth = 0;
             while (elapsedTime.ElapsedMilliseconds < timeout)
