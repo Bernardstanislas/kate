@@ -34,7 +34,7 @@ namespace Kate.Maps
         public abstract IEnumerable<Tile> GetGrid();
         public abstract Tile GetTile(int xCoordinate, int yCoordinate);
         public abstract IEnumerable<Tile> GetPlayerTiles(Owner owner);
-        public abstract IEnumerable<Tile> GetSurroundingTiles(Tile tile);
+        public abstract Tuple<Direction, int>[] GetDistances(Tile tile, Owner target);
         public abstract int[] GetMapDimension();
         public abstract bool HasGameEnded();
         #endregion
