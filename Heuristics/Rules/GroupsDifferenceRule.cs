@@ -6,7 +6,7 @@ namespace Kate.Heuristics.Rules
 {
     public class GroupsDifferenceRule : IScoringRule
     {
-        public float EvaluateScore (IMap map)
+        public float EvaluateScore(IMap map)
         {
             float myGroups = 0;
             float enemyGroups = 0;
