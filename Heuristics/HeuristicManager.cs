@@ -12,9 +12,9 @@ namespace Kate.Heuristics
     {
         private static HeuristicDictionary weightedRules = new HeuristicDictionary(new Dictionary<IScoringRule, int> 
         {
-            {new DistanceToEnemiesRule(), 1},
-            {new DistanceToHumansRule(), 5},
-            {new GroupsDifferenceRule(), 8},
+            {new DistanceToEnemiesRule(), 4},
+            {new DistanceToHumansRule(), 1},
+            {new GroupsDifferenceRule(), 2},
             {new PopulationDifferenceRule(), 30}
         });
 

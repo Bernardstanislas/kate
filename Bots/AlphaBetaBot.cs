@@ -34,7 +34,10 @@ namespace Kate.Bots
             // If we don't have the time to compute anything, we'll return a random moveList.
             var random = new Random();
             var CNWMLList = childNodesWithMoveList.ToList();
-            var bestMoveList = CNWMLList[random.Next(CNWMLList.Count)].Item2;
+
+            var bestMoveList = new List<Move>();
+            while(bestMoveList.Count == 0)
+                bestMoveList = CNWMLList[random.Next(CNWMLList.Count)].Item2;
 
             int depth = 0;
             while (elapsedTime.ElapsedMilliseconds < timeout)
@@ -49,7 +52,8 @@ namespace Kate.Bots
                         if (newAlpha > alpha)
                         {
                             alpha = newAlpha;
-                            bestMoveList = child.Item2;
+                            if(child.Item2.Count != 0)
+                                bestMoveList = child.Item2;
                         }
                     }
                 });
@@ -59,7 +63,7 @@ namespace Kate.Bots
 
             Console.Write("Depth computed: ");
             Console.WriteLine(depth);
-
+            Console.WriteLine("Number of moves : {0}", bestMoveList.Count);
             elapsedTime.Stop();
 
             return bestMoveList;
@@ -67,9 +71,15 @@ namespace Kate.Bots
 
         private float alphaBeta(int nodeHash, int depth, float alpha, float beta, Owner player)
         {
-            var node = tree[nodeHash];
-            if (depth == 0 || node.Map.HasGameEnded())
-                return node.Heuristic;
+            if (tree.ContainsKey(nodeHash))
+            {
+                var node = tree[nodeHash];
+                if (depth == 0 || node.Map.HasGameEnded())
+                    return node.Heuristic;
+            }
+
+            else
+                return 0;
 
             if (player == Owner.Me)
             {

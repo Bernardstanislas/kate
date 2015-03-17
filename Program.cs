@@ -41,7 +41,7 @@ namespace kate
             }
 
             Console.WriteLine("KATE has started");
-            var bot = new AlphaBetaBot(client, "kate", 2900);
+            var bot = new AlphaBetaBot(client, "kate", 2200);
             bot.Start();
             Console.ReadKey();
         }
