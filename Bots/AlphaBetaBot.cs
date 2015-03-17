@@ -20,16 +20,20 @@ namespace Kate.Bots
         public AlphaBetaBot(IClient socket, string name, int timeout) : base(socket, name) 
         {
             this.timeout = timeout;
+            tree = new Dictionary<int, TreeNode>();
         }
 
         protected override ICollection<Move> playTurn()
         {
             var elapsedTime = new Stopwatch();
             elapsedTime.Start();
-            tree = new Dictionary<int, TreeNode>();
-            tree.Add(map.GetHashCode(), new TreeNode(map));
 
-            var childNodesWithMoveList = getChildNodeHashesWithMoveList(map.GetHashCode(), Owner.Me);
+            var mapHash = map.GetHashCode();
+
+            if(!tree.ContainsKey(mapHash))
+                tree.Add(mapHash, new TreeNode(map));
+
+            var childNodesWithMoveList = getChildNodeHashesWithMoveList(mapHash, Owner.Me);
 
             // If we don't have the time to compute anything, we'll return a random moveList.
             var random = new Random();
@@ -105,16 +109,15 @@ namespace Kate.Bots
 
             var nodeChildren = NodeComputer.GetChildren(node.Map, turn);
 
-            foreach (var childNode in nodeChildren)
+            var nodeChildrenHashes = nodeChildren.Select(child => 
             {
-                var key = childNode.GetHashCode();
+                var key = child.GetHashCode();
                 if (!tree.ContainsKey(key))
-                    tree.Add(key, childNode);
-            }
+                    tree.Add(key, child);
+                return key;
+            });
 
-            var nodeChildrenHashes = nodeChildren.Select(child => child.GetHashCode());
             node.AddChildren(nodeChildrenHashes, turn);
-
             return nodeChildrenHashes;
         }
 
@@ -123,20 +126,19 @@ namespace Kate.Bots
             var node = tree[nodeHash];
             var nodeChildren = NodeComputer.GetChildrenWithMoveList(node.Map, turn);
 
-            foreach (var childNode in nodeChildren)
-            {
-                var key = childNode.Item1.GetHashCode();
-                if (!tree.ContainsKey(key))
-                    tree.Add(key, childNode.Item1);
-            }
-
             if (node.GetChildrenHashes(turn).Count() == 0)
             {
                 var nodeChildrenHashes = nodeChildren.Select(child => child.Item1.GetHashCode());
                 node.AddChildren(nodeChildrenHashes, turn);
             }
 
-            return nodeChildren.Select(child => Tuple.Create(child.Item1.GetHashCode(), child.Item2));
+            return nodeChildren.Select(child => 
+            {
+                var key = child.Item1.GetHashCode();
+                if (!tree.ContainsKey(key))
+                    tree.Add(key, child.Item1);
+                return Tuple.Create(child.Item1.GetHashCode(), child.Item2);
+            });
         }
     }
 }
