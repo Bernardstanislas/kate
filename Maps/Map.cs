@@ -14,6 +14,8 @@ namespace Kate.Maps
         private int[, , ,] hashArray;
         public int[, , ,] HashArray { get { return hashArray; } }
 
+        private Dictionary<Tile, Dictionary<Owner, Tuple<Direction, int>[]>> distances = null;
+
         public Map(int xSize, int ySize)
         {
             generateHashArray(xSize, ySize);
@@ -39,17 +41,61 @@ namespace Kate.Maps
             hashArray = map.HashArray;
         }
 
-        public Tuple<Types.Direction, int>[] GetDistances(Owner owner, Owner target)
+        public override Tuple<Direction, int>[] GetDistances(Tile tile, Owner target)
         {
+            if (distances == null) 
+                GenerateDistances();
 
-
-
+            return distances[tile][target];
         }
 
         private void GenerateDistances()
         {
+            var humansTiles = GetPlayerTiles (Owner.Humans).ToArray ();
+            var myTiles = GetPlayerTiles (Owner.Me).ToArray ();
+            var opponentTiles = GetPlayerTiles (Owner.Opponent).ToArray ();
 
+            var humansLength = humansTiles.Length;
+            var myLength = myTiles.Length;
+            var opponentLength = opponentTiles.Length;
 
+            for (var myTileIndex = 0; myTileIndex < myTiles.Length; myTileIndex++) {
+                distances [myTiles [myTileIndex]] [Owner.Humans] = Tuple<Direction, int> [humansLength];
+                for (var humansTileIndex = 0; humansTileIndex < humansLength; humansTileIndex++) {
+                    distances [myTiles [myTileIndex]] [Owner.Humans] [humansTileIndex] = Tuple.Create
+                    (
+                        Directions.Get (myTiles [myTileIndex], humansTiles [humansTileIndex]),
+                        myTiles [myTileIndex].GetDistance (humansTiles [humansTileIndex])
+                    );
+                }
+
+                for (var opponentTileIndex = 0; opponentTileIndex < opponentTiles.Length; opponentTileIndex++) {
+                    var meToOpponentDirection = Directions.Get (myTiles [myTileIndex], opponentTiles [opponentTileIndex]);
+                    var distance = myTiles [myTileIndex].GetDistance (opponentTiles [opponentTileIndex]);
+
+                    distances [Owner.Me] [Owner.Opponent] [myTileIndex, opponentTileIndex] = Tuple.Create
+                    (
+                        meToOpponentDirection,
+                        distance
+                    );
+                    distances [Owner.Opponent] [Owner.Me] [myTileIndex, opponentTileIndex] = Tuple.Create
+                    (
+                        Directions.Opposite(meToOpponentDirection),
+                        distance
+                    );
+                }
+            }
+
+            for (var opponentTileIndex = 0; opponentTileIndex < opponentTiles.Length; opponentTileIndex++) {
+                distances [opponentTiles [opponentTileIndex]] [Owner.Humans] = Tuple<Direction, int> [humansLength];
+                for (var humansTileIndex = 0; humansTileIndex < humansLength; humansTileIndex++) {
+                    distances[opponentTiles[opponentTileIndex]][Owner.Humans][humansTileIndex] = Tuple.Create
+                    (
+                        Directions.Get(opponentTiles[opponentTileIndex], humansTiles[humansTileIndex]),
+                        opponentTiles[opponentTileIndex].GetDistance(humansTiles[humansTileIndex])
+                    );
+                }
+            }
         }
 
         public override bool HasGameEnded()
