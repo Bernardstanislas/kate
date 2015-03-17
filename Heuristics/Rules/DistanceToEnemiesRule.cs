@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Linq;
+
 using Kate.Maps;
 using Kate.Types;
 using Kate.Utils;
@@ -10,46 +12,35 @@ namespace Kate.Heuristics.Rules
         public float EvaluateScore(IMap map)
         {
             var mapDimension = map.GetMapDimension();
-            float maxPossibleDistance = mapDimension[0] + mapDimension[1];
-            int evaluationCount = 0;
+
+            float maxPossibleDistance = Math.Max(mapDimension[0], mapDimension[1]);
+            float evaluationCount = 0;
             float score = 0;
 
-            foreach (var tile in map.GetGrid())
-            {
-                if (tile.Owner.Equals(Owner.Me))
-                {
-                    foreach (var otherTile in map.GetGrid())
-                    {
-                        if (otherTile.Owner.Equals(Owner.Opponent))
-                        {
-                            evaluationCount++;
-                            float distance = getLTwoDistance(tile, otherTile);
-                            if (FightUtil.IsWon(tile.Population, tile.Owner, otherTile.Population, otherTile.Owner))
-                            {
-                                score += 1.0F - ((float)distance) / ((float)maxPossibleDistance);
-                            }
-                            else
-                            {
-                                score += ((float)distance) / ((float)maxPossibleDistance) - 1.0F;
-                            } 
-                        }
-                    }
-                }
-            }
+            var myTiles = map.GetPlayerTiles(Owner.Me);
+            if (myTiles.Count() == 0)
+                return -1;
 
-            if (evaluationCount.Equals(0))
-            {
+            foreach (var myTile in map.GetPlayerTiles(Owner.Me))
+                foreach (var enemyTile in map.GetPlayerTiles(Owner.Opponent))
+                {
+                    evaluationCount++;
+                    float distance = getLTwoDistance(myTile, enemyTile);
+                    if (FightUtil.IsWon(myTile.Population, myTile.Owner, enemyTile.Population, enemyTile.Owner))
+                        score += 1 - distance / maxPossibleDistance;
+                    else
+                        score += distance / maxPossibleDistance - 1;
+                }
+
+            if (evaluationCount == 0)
                 return 1;
-            }
             else
-            {
-                return score / evaluationCount;
-            }
+                return Math.Max(-1, Math.Min(1, score / evaluationCount));
         }
 
         private static float getLTwoDistance(Tile tile1, Tile tile2)
         {
-            return (float) Math.Sqrt ((tile1.X - tile2.X) * (tile1.X - tile2.X) + (tile1.Y - tile2.Y) * (tile1.Y - tile2.Y));
+            return (float) Math.Sqrt((tile1.X - tile2.X) * (tile1.X - tile2.X) + (tile1.Y - tile2.Y) * (tile1.Y - tile2.Y));
         }
     }
 }

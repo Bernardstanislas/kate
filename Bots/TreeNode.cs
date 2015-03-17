@@ -19,7 +19,7 @@ namespace Kate.Bots
         public TreeNode(IMap value)
         {
             Map = value;
-            Heuristic = HeuristicManager.Instance.GetScore(Map);
+            Heuristic = HeuristicManager.GetScore(Map);
             MyChildrenHashes = new List<int>();
             EnemyChildrenHashes = new List<int>();
         }

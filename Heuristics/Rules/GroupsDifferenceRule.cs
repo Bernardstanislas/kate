@@ -20,6 +20,10 @@ namespace Kate.Heuristics.Rules
 
             if (myGroups + enemyGroups == 0)
                 return 0;
+            else if (myGroups == 0)
+                return -1;
+            else if (enemyGroups == 0)
+                return 1;
             else
                 return (enemyGroups - myGroups) / (myGroups + enemyGroups);
 
