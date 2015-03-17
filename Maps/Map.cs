@@ -14,7 +14,8 @@ namespace Kate.Maps
         private int[, , ,] hashArray;
         public int[, , ,] HashArray { get { return hashArray; } }
 
-        private Dictionary<Tile, Dictionary<Owner, Tuple<Direction, int>[]>> distances = null;
+        private Dictionary<Tile, Dictionary<Owner, Tuple<Direction, int>[]>> distances = 
+            new Dictionary<Tile, Dictionary<Owner, Tuple<Direction, int>[]>>();
 
         public Map(int xSize, int ySize)
         {
@@ -43,7 +44,7 @@ namespace Kate.Maps
 
         public override Tuple<Direction, int>[] GetDistances(Tile tile, Owner target)
         {
-            if (distances == null) 
+            if (distances.Count == 0) 
                 GenerateDistances();
 
             return distances[tile][target];
@@ -51,49 +52,32 @@ namespace Kate.Maps
 
         private void GenerateDistances()
         {
-            var humansTiles = GetPlayerTiles (Owner.Humans).ToArray ();
-            var myTiles = GetPlayerTiles (Owner.Me).ToArray ();
-            var opponentTiles = GetPlayerTiles (Owner.Opponent).ToArray ();
-
-            var humansLength = humansTiles.Length;
-            var myLength = myTiles.Length;
-            var opponentLength = opponentTiles.Length;
-
-            for (var myTileIndex = 0; myTileIndex < myTiles.Length; myTileIndex++) {
-                distances [myTiles [myTileIndex]] [Owner.Humans] = Tuple<Direction, int> [humansLength];
-                for (var humansTileIndex = 0; humansTileIndex < humansLength; humansTileIndex++) {
-                    distances [myTiles [myTileIndex]] [Owner.Humans] [humansTileIndex] = Tuple.Create
-                    (
-                        Directions.Get (myTiles [myTileIndex], humansTiles [humansTileIndex]),
-                        myTiles [myTileIndex].GetDistance (humansTiles [humansTileIndex])
-                    );
-                }
-
-                for (var opponentTileIndex = 0; opponentTileIndex < opponentTiles.Length; opponentTileIndex++) {
-                    var meToOpponentDirection = Directions.Get (myTiles [myTileIndex], opponentTiles [opponentTileIndex]);
-                    var distance = myTiles [myTileIndex].GetDistance (opponentTiles [opponentTileIndex]);
-
-                    distances [Owner.Me] [Owner.Opponent] [myTileIndex, opponentTileIndex] = Tuple.Create
-                    (
-                        meToOpponentDirection,
-                        distance
-                    );
-                    distances [Owner.Opponent] [Owner.Me] [myTileIndex, opponentTileIndex] = Tuple.Create
-                    (
-                        Directions.Opposite(meToOpponentDirection),
-                        distance
-                    );
-                }
+            var data = new Dictionary<Owner, Tuple<Tile[], int>>();
+            foreach (var owner in new Owner[]{Owner.Me, Owner.Opponent, Owner.Humans})
+            {
+                var tiles = GetPlayerTiles(owner).ToArray();
+                data[owner] = Tuple.Create(tiles, tiles.Length);
             }
 
-            for (var opponentTileIndex = 0; opponentTileIndex < opponentTiles.Length; opponentTileIndex++) {
-                distances [opponentTiles [opponentTileIndex]] [Owner.Humans] = Tuple<Direction, int> [humansLength];
-                for (var humansTileIndex = 0; humansTileIndex < humansLength; humansTileIndex++) {
-                    distances[opponentTiles[opponentTileIndex]][Owner.Humans][humansTileIndex] = Tuple.Create
-                    (
-                        Directions.Get(opponentTiles[opponentTileIndex], humansTiles[humansTileIndex]),
-                        opponentTiles[opponentTileIndex].GetDistance(humansTiles[humansTileIndex])
-                    );
+            foreach (var owner in new Owner[]{Owner.Me, Owner.Opponent})
+            {
+                for (var ownerIndex = 0; ownerIndex < data[owner].Item2; ownerIndex++) 
+                {
+                    distances[data[owner].Item1[ownerIndex]] = new Dictionary<Owner, Tuple<Direction, int>[]>();
+
+                    foreach (var otherOwner in new Owner[]{owner.Opposite(), Owner.Humans}) 
+                    {
+                        distances[data[owner].Item1[ownerIndex]][otherOwner] = new Tuple<Direction, int>[data[otherOwner].Item2];
+                        for (var otherTileIndex = 0; otherTileIndex < data[otherOwner].Item2; otherTileIndex++) 
+                        { 
+                            distances[data[owner].Item1[ownerIndex]][otherOwner][otherTileIndex] = Tuple.Create
+                            (
+                                Directions.Get(data[owner].Item1[ownerIndex], data[otherOwner].Item1[otherTileIndex]),
+                                data[owner].Item1[ownerIndex].GetDistance(data[otherOwner].Item1[otherTileIndex])
+                            );
+                        }
+                        Array.Sort(distances[data[owner].Item1[ownerIndex]][otherOwner], (first, second) => first.Item2 - second.Item2);
+                    }
                 }
             }
         }
@@ -142,48 +126,6 @@ namespace Kate.Maps
         public override Tile GetTile(int xCoordinate, int yCoordinate) 
         {
             return grid[xCoordinate, yCoordinate];
-        }
-
-
-        public override IEnumerable<Tile> GetSurroundingTiles(Tile tile)
-        {
-            int[] gridDim = this.GetMapDimension();
-            var surroundingTiles = new List<Tile> ();
-
-            for (int i = -1; i <= 1; i++)
-            {
-                int xPos = tile.X;
-
-                if (
-                    0 < tile.X && tile.X < gridDim[0] - 1
-                    || tile.X == 0 && i != -1               // Tile on left edge
-                    || tile.X == gridDim[0] - 1 && i != 1   // Tile on right edge
-                    )
-                {
-                    xPos += i;
-
-                    for (int j = -1; j <= 1; j++)
-                    {
-                        int yPos = tile.Y;
-                        if (
-                            0 < tile.Y && tile.Y < gridDim[1] - 1
-                            || tile.Y == 0 && j != -1              // Tile on top edge
-                            || tile.Y == gridDim[1] - 1 && j != 1  // Tile on bottom edge
-                            )
-                        {
-                            yPos += j;
-
-                            // The null move is not generated
-                            if (!(xPos == tile.X && yPos == tile.Y))
-                            {
-                                Tile destTile = this.GetTile(xPos, yPos);
-                                surroundingTiles.Add(destTile);
-                            }
-                        }
-                    }
-                }
-            }
-            return surroundingTiles;
         }
         #endregion
 

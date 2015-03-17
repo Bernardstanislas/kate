@@ -37,7 +37,7 @@ namespace Kate.Maps
             Y = y;
             Owner = owner;
             Population = population;
-            hash = int(owner) + population * 10 + x * 10000 + y * 10000000;
+            hash = (int)(owner) + population * 10 + x * 10000 + y * 10000000;
         }
 
         public Tile(Tile oT) : this(oT.X, oT.Y, oT.Owner,oT.Population) { }
