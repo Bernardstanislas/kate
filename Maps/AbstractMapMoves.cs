@@ -111,7 +111,7 @@ namespace Kate.Maps
             var possibleMoves = new List<Move[]>();
 
             var humansDistances = GetDistances(tile, Owner.Humans);
-            var opponentDistances = GetDistances(tile, Owner.Opponent);
+            var opponentDistances = GetDistances(tile, tile.Owner.Opposite());
 
             var humansLength = humansDistances.Length;
 
