@@ -12,17 +12,14 @@ namespace Kate.Bots
     public class TreeNode
     {
         public IMap Map { get; private set; }
-        public List<Move> MoveList { get; private set; }
         public float Heuristic { get; private set; }
         public IEnumerable<int> MyChildrenHashes { get; private set; }
         public IEnumerable<int> EnemyChildrenHashes { get; private set; }
 
-        public TreeNode(IMap value) : this(value, new List<Move>()) { }
-        public TreeNode(IMap value, List<Move> moveList)
+        public TreeNode(IMap value)
         {
             Map = value;
             Heuristic = HeuristicManager.Instance.GetScore(Map);
-            MoveList = moveList;
             MyChildrenHashes = new List<int>();
             EnemyChildrenHashes = new List<int>();
         }

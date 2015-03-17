@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Kate.Bots.Workers;
 using Kate.Commands;
 using Kate.Heuristics;
 using Kate.IO;
@@ -16,12 +15,10 @@ namespace Kate.Bots
     public class AlphaBetaBot : Bot
     {
         protected readonly int timeout;
-        protected readonly Worker worker;
         protected Dictionary<int, TreeNode> tree;
 
-        public AlphaBetaBot(IClient socket, string name, Worker worker, int timeout) : base(socket, name) 
+        public AlphaBetaBot(IClient socket, string name, int timeout) : base(socket, name) 
         {
-            this.worker = worker;
             this.timeout = timeout;
         }
 
@@ -32,9 +29,9 @@ namespace Kate.Bots
             tree = new Dictionary<int, TreeNode>();
             tree.Add(map.GetHashCode(), new TreeNode(map));
 
-            var childNodes = getChildNodeHashes(map.GetHashCode(), Owner.Me);
+            var childNodesWithMoveList = getChildNodeHashesWithMoveList(map.GetHashCode(), Owner.Me);
 
-            var bestNode = tree[map.GetHashCode()];
+            var bestMoveList = new List<Move>();
 
             int depth = 0;
             while (elapsedTime.ElapsedMilliseconds < timeout)
@@ -43,13 +40,13 @@ namespace Kate.Bots
                 var task = new Task(() =>
                 {
                     var alpha = float.MinValue;
-                    foreach (var child in childNodes)
+                    foreach (var child in childNodesWithMoveList)
                     {
-                        var newAlpha = alphaBeta(child, depth - 1, alpha, float.MaxValue, Owner.Opponent);
+                        var newAlpha = alphaBeta(child.Item1, depth - 1, alpha, float.MaxValue, Owner.Opponent);
                         if (newAlpha > alpha)
                         {
                             alpha = newAlpha;
-                            bestNode = tree[child];
+                            bestMoveList = child.Item2;
                         }
                     }
                 });
@@ -62,7 +59,7 @@ namespace Kate.Bots
 
             elapsedTime.Stop();
 
-            return bestNode.MoveList;
+            return bestMoveList;
         }
 
         private float alphaBeta(int nodeHash, int depth, float alpha, float beta, Owner player)
@@ -100,24 +97,43 @@ namespace Kate.Bots
             var node = tree[nodeHash];
             var existingNodeChildrenHashes = node.GetChildrenHashes(turn);
 
-
             if (existingNodeChildrenHashes.Count() > 0)
                 return existingNodeChildrenHashes;
 
-            var newWorker = WorkerFactory.Build(worker, node.Map, turn);
-            var nodeChildren = newWorker.ComputeNodeChildren();
+            var nodeChildren = NodeComputer.GetChildren(node.Map, turn);
 
             foreach (var childNode in nodeChildren)
             {
-                if (!tree.ContainsKey(childNode.GetHashCode()))
-                    tree.Add(childNode.GetHashCode(), childNode);
+                var key = childNode.GetHashCode();
+                if (!tree.ContainsKey(key))
+                    tree.Add(key, childNode);
             }
 
             var nodeChildrenHashes = nodeChildren.Select(child => child.GetHashCode());
-
             node.AddChildren(nodeChildrenHashes, turn);
 
             return nodeChildrenHashes;
+        }
+
+        private IEnumerable<Tuple<int, List<Move>>> getChildNodeHashesWithMoveList(int nodeHash, Owner turn)
+        {
+            var node = tree[nodeHash];
+            var nodeChildren = NodeComputer.GetChildrenWithMoveList(node.Map, turn);
+
+            foreach (var childNode in nodeChildren)
+            {
+                var key = childNode.Item1.GetHashCode();
+                if (!tree.ContainsKey(key))
+                    tree.Add(key, childNode.Item1);
+            }
+
+            if (node.GetChildrenHashes(turn).Count() == 0)
+            {
+                var nodeChildrenHashes = nodeChildren.Select(child => child.Item1.GetHashCode());
+                node.AddChildren(nodeChildrenHashes, turn);
+            }
+
+            return nodeChildren.Select(child => Tuple.Create(child.Item1.GetHashCode(), child.Item2));
         }
     }
 }
