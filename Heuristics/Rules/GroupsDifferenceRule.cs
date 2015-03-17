@@ -8,8 +8,8 @@ namespace Kate.Heuristics.Rules
     {
         public float EvaluateScore (IMap map)
         {
-            int myGroups = 0;
-            int enemyGroups = 0;
+            float myGroups = 0;
+            float enemyGroups = 0;
             foreach (var tile in map.GetGrid())
             {
                 if (tile.Owner == Owner.Me)
@@ -18,12 +18,10 @@ namespace Kate.Heuristics.Rules
                     enemyGroups += 1;
             }
 
-            if ((myGroups + enemyGroups).Equals(0))
-            {
+            if (myGroups + enemyGroups == 0)
                 return 0;
-            } else {
-                return ((float) (myGroups - enemyGroups)) / ((float) (myGroups + enemyGroups));
-            }
+            else
+                return (enemyGroups - myGroups) / (myGroups + enemyGroups);
 
         }
     }
