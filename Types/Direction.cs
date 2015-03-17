@@ -1,4 +1,5 @@
-﻿using Kate.Maps;
+﻿using System;
+using Kate.Maps;
 
 namespace Kate.Types
 
@@ -17,6 +18,14 @@ namespace Kate.Types
 
     public static class Directions
     {
+        public static Direction Get(Tile origin, Tile target)
+        {
+            var deltaX = target.X - origin.X;
+            var deltaY = target.Y - origin.Y;
+
+            return Get(deltaX / Math.Abs(deltaX), deltaY / Math.Abs(deltaY));
+        }
+
         public static Direction Get(int x, int y)
         {
             if (x == 1)
